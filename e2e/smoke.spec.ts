@@ -49,7 +49,9 @@ test('page editor uploads to the album and edits a page', async ({ page }) => {
   const before = await page.locator('.square-page .el').count();
   await page.locator('.page-slot__edit').first().click();
   await expect(page.locator('.peditor')).toBeVisible();
-  await page.locator('.peditor input[type=file]').setInputFiles({ name: 'test.png', mimeType: 'image/png', buffer: TINY_PNG });
+  await page
+    .locator('.peditor input[type=file]')
+    .setInputFiles({ name: 'test.png', mimeType: 'image/png', buffer: TINY_PNG });
   await expect(page.locator('.album__item')).toHaveCount(1);
   await expect(page.locator('.peditor .frame__img')).toHaveCount(1);
   await page.getByRole('button', { name: 'Note', exact: true }).click();
@@ -68,7 +70,9 @@ test('image editor: frame, 1:1 crop pan and effects', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/book/b4');
   await page.locator('.page-slot__edit').first().click();
-  await page.locator('.peditor input[type=file]').setInputFiles({ name: 'shot.svg', mimeType: 'image/svg+xml', buffer: SAMPLE_SVG });
+  await page
+    .locator('.peditor input[type=file]')
+    .setInputFiles({ name: 'shot.svg', mimeType: 'image/svg+xml', buffer: SAMPLE_SVG });
   await expect(page.locator('.peditor .frame__img')).toHaveCount(1);
 
   await page.getByRole('button', { name: /Edit image/ }).click();
@@ -88,7 +92,9 @@ test('image editor: frame, 1:1 crop pan and effects', async ({ page }) => {
   await expect(page.locator('.imgedit .el__inner--frame-film')).toHaveCount(1);
 
   await page.locator('.imgedit .chip--wide', { hasText: 'B&W' }).click();
-  const filter = await page.locator('.imgedit .frame__img').evaluate((el) => getComputedStyle(el).filter);
+  const filter = await page
+    .locator('.imgedit .frame__img')
+    .evaluate((el) => getComputedStyle(el).filter);
   expect(filter).toContain('saturate(0)');
 
   await page.locator('.imgedit input[placeholder="Preset name…"]').fill('Mine');
@@ -108,7 +114,9 @@ test('note editor: write, pen, paper and effects', async ({ page }) => {
   await expect(page.locator('.noteedit')).toBeVisible();
 
   // the preview uses the real note renderer, defaults centred horizontally
-  const centred = await page.locator('.noteedit .note__text').evaluate((el) => getComputedStyle(el).textAlign);
+  const centred = await page
+    .locator('.noteedit .note__text')
+    .evaluate((el) => getComputedStyle(el).textAlign);
   expect(centred).toBe('center');
 
   await page.locator('.noteedit .text-input').fill('Hello note');
@@ -117,7 +125,10 @@ test('note editor: write, pen, paper and effects', async ({ page }) => {
 
   const style = await page.locator('.noteedit .note__text').evaluate((el) => {
     const s = getComputedStyle(el);
-    return { family: s.fontFamily, bg: getComputedStyle(el.parentElement as HTMLElement).backgroundImage };
+    return {
+      family: s.fontFamily,
+      bg: getComputedStyle(el.parentElement as HTMLElement).backgroundImage,
+    };
   });
   expect(style.family).toContain('Permanent Marker');
   expect(style.bg).toContain('repeating-linear-gradient');
@@ -135,7 +146,10 @@ test('note editor: height, scale and font are independent', async ({ page }) => 
   await expect(page.locator('.noteedit')).toBeVisible();
 
   const box = () => page.locator('.noteedit .note-box').boundingBox();
-  const font = () => page.locator('.noteedit .note__text').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  const font = () =>
+    page
+      .locator('.noteedit .note__text')
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
   const start = (await box())!;
   const startFont = await font();
 
@@ -173,7 +187,9 @@ test('layers pane: rename an item and use no emoji', async ({ page }) => {
   await page.locator('.page-slot__edit').first().click();
   const emoji = await page
     .locator('.layers')
-    .evaluate((el) => new RegExp('[\\u{1F000}-\\u{1FAFF}\\u{2600}-\\u{27BF}]', 'u').test(el.innerHTML));
+    .evaluate((el) =>
+      new RegExp('[\\u{1F000}-\\u{1FAFF}\\u{2600}-\\u{27BF}]', 'u').test(el.innerHTML),
+    );
   expect(emoji).toBe(false);
   const label = page.locator('.layer-row__label').first();
   await label.dblclick();
@@ -262,7 +278,9 @@ test('export a book to a file and import it back (with images)', async ({ page }
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/book/b4');
   await page.locator('.page-slot__edit').first().click();
-  await page.locator('.peditor input[type=file]').setInputFiles({ name: 'shot.svg', mimeType: 'image/svg+xml', buffer: SAMPLE_SVG });
+  await page
+    .locator('.peditor input[type=file]')
+    .setInputFiles({ name: 'shot.svg', mimeType: 'image/svg+xml', buffer: SAMPLE_SVG });
   await expect(page.locator('.peditor .frame__img')).toHaveCount(1);
   await page.getByRole('button', { name: 'Done', exact: true }).click();
   await page.getByRole('button', { name: 'Save', exact: true }).click();
@@ -275,7 +293,10 @@ test('export a book to a file and import it back (with images)', async ({ page }
     page.locator('.tile-pop').getByText('Export to file').click(),
   ]);
   const file = (await download.path())!;
-  const data = JSON.parse(readFileSync(file, 'utf8')) as { format: string; media: { dataUrl: string }[] };
+  const data = JSON.parse(readFileSync(file, 'utf8')) as {
+    format: string;
+    media: { dataUrl: string }[];
+  };
   expect(data.format).toBe('journeybook.book');
   expect(data.media.length).toBe(1);
   expect(data.media[0].dataUrl.startsWith('data:image')).toBe(true);
@@ -351,4 +372,45 @@ test('places a catalog item and locks it', async ({ page }) => {
   await expect(page.locator('.room-item')).toHaveCount(before + 1);
   await page.getByLabel('Lock in place').check();
   await expect(page.locator('.room-item--locked')).toHaveCount(1);
+});
+
+function localDateTime(daysAhead: number): string {
+  const d = new Date(Date.now() + daysAhead * 86_400_000);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+test('home countdown opens the calendar', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.locator('.countdown').click();
+  await expect(page.locator('.calendar__tag')).toHaveText('Our Calendar');
+  const overflow = await page
+    .locator('.calendar')
+    .evaluate((el) => el.scrollHeight - el.clientHeight);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('calendar: add a visit and count down to it', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/calendar');
+  await page.locator('.calendar__head').getByRole('button', { name: 'Add' }).click();
+  await expect(page.locator('.event-dialog')).toBeVisible();
+  await page.locator('.event-dialog input[type=text]').first().fill('Trip to see her');
+  await page.locator('.event-dialog input[type=datetime-local]').first().fill(localDateTime(10));
+  await page.locator('.event-dialog').getByRole('button', { name: 'Add', exact: true }).click();
+  await expect(page.locator('.event-dialog')).toHaveCount(0);
+  await expect(page.locator('.calendar__banner')).toContainText("until you're together");
+  await expect(page.locator('.event-card', { hasText: 'Trip to see her' }).first()).toBeVisible();
+});
+
+test('calendar: a visit in progress reads as together', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/calendar');
+  await page.locator('.calendar__head').getByRole('button', { name: 'Add' }).click();
+  await page.locator('.event-dialog input[type=text]').first().fill('Together weekend');
+  await page.locator('.event-dialog input[type=datetime-local]').first().fill(localDateTime(-1));
+  await page.locator('.event-dialog input[type=datetime-local]').nth(1).fill(localDateTime(1));
+  await page.locator('.event-dialog').getByRole('button', { name: 'Add', exact: true }).click();
+  await expect(page.locator('.calendar__banner')).toContainText("You're together right now");
 });

@@ -1,8 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAppStore } from '@/stores/app';
+import { togetherStatus } from '@/calendar/events';
 import pressedFlower from '@/assets/svg/pressed-flower.svg';
 
 const router = useRouter();
+const app = useAppStore();
+
+const status = computed(() => togetherStatus(app.data.events, new Date()));
+const togetherText = computed(() => {
+  const s = status.value;
+  if (s.state === 'together') return "You're together right now";
+  if (s.state === 'apart') return `${s.days} ${s.days === 1 ? 'day' : 'days'} until we're together`;
+  return 'Plan our next visit';
+});
 </script>
 
 <template>
@@ -19,10 +31,9 @@ const router = useRouter();
         <img class="hero-book__flower" :src="pressedFlower" alt="" aria-hidden="true" />
       </button>
     </div>
-    <div class="soon" aria-label="Coming soon">
-      <span class="soon__item">Notes <span class="icon icon--pencil"></span></span>
-      <span class="soon__item">Games <span class="icon icon--star"></span></span>
-      <span class="soon__item">Camera <span class="icon icon--camera"></span></span>
-    </div>
+    <button class="together-link" type="button" @click="router.push({ name: 'calendar' })">
+      <span class="icon icon--calendar" aria-hidden="true"></span>
+      <span>{{ togetherText }}</span>
+    </button>
   </section>
 </template>

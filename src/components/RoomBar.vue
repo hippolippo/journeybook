@@ -1,17 +1,40 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
+import { togetherStatus } from '@/calendar/events';
 
 const app = useAppStore();
 const editor = useEditorStore();
 const router = useRouter();
 
-const NEXT_VISIT = new Date('2026-11-19T00:00:00');
-const days = computed(() => Math.max(0, Math.ceil((NEXT_VISIT.getTime() - Date.now()) / 86400000)));
+const now = ref(new Date());
+let timer: number | undefined;
+onMounted(() => {
+  timer = window.setInterval(() => (now.value = new Date()), 30_000);
+});
+onBeforeUnmount(() => {
+  if (timer) window.clearInterval(timer);
+});
+
+const status = computed(() => togetherStatus(app.data.events, now.value));
+const countdown = computed(() => {
+  const s = status.value;
+  if (s.state === 'together') return { num: '♥', txt: 'together right now' };
+  if (s.state === 'apart') {
+    return {
+      num: String(s.days),
+      txt: s.days === 1 ? 'day until we are together' : 'days until we are together',
+    };
+  }
+  return { num: '—', txt: 'set our next visit' };
+});
 const night = computed(() => app.timeOfDay === 'night');
 
+function openCalendar() {
+  router.push({ name: 'calendar' });
+}
 function toggleNight() {
   app.setDayNightMode(night.value ? 'day' : 'night');
 }
@@ -27,11 +50,11 @@ function home() {
       <span class="roombar__title hand">our little room</span>
     </button>
     <div class="roombar__right">
-      <span class="countdown" title="until we are together again">
-        <span class="countdown__num">{{ days }}</span>
-        <span class="countdown__txt">days until we are together</span>
+      <button class="countdown" type="button" title="Our calendar" @click="openCalendar">
+        <span class="countdown__num">{{ countdown.num }}</span>
+        <span class="countdown__txt">{{ countdown.txt }}</span>
         <span class="icon icon--heart countdown__heart" aria-hidden="true"></span>
-      </span>
+      </button>
       <button
         class="roombar__btn"
         type="button"

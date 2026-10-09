@@ -11,6 +11,7 @@ export function loadData(): AppData | null {
     const parsed = JSON.parse(raw) as AppData;
     if (!parsed || typeof parsed !== 'object' || parsed.version !== 1) return null;
     if (!parsed.content.media) parsed.content.media = [];
+    if (!Array.isArray(parsed.events)) parsed.events = [];
     return parsed;
   } catch {
     return null;

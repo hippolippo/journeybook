@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type {
   AppData,
+  CalendarEvent,
   CoverColor,
   ImagePreset,
   MediaAsset,
@@ -404,6 +405,20 @@ export const useAppStore = defineStore('app', {
     },
     async deleteLayout(id: string) {
       await backend.deleteLayout(id);
+    },
+
+    // ---- calendar ----
+    saveEvent(event: CalendarEvent) {
+      const idx = this.data.events.findIndex((e) => e.id === event.id);
+      if (idx >= 0) this.data.events[idx] = clone(event);
+      else this.data.events.push(clone(event));
+      this.save();
+      backend.eventSave(event);
+    },
+    deleteEvent(id: string) {
+      this.data.events = this.data.events.filter((e) => e.id !== id);
+      this.save();
+      backend.eventDelete(id);
     },
   },
 });
