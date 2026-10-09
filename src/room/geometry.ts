@@ -41,15 +41,17 @@ export function resolveItemStyle(
   cat: Pick<CatalogItem, 'aspect'>,
 ): ResolvedStyle {
   const band = bandFor(layer);
-  const heightVh = placement.scale * band.height * 100;
-  const widthVh = heightVh * cat.aspect;
+  // `cqh` = 1% of the room stage's height, so items scale with the stage
+  // (full viewport normally, or a phone-sized preview in the editor).
+  const height = placement.scale * band.height * 100;
+  const width = height * cat.aspect;
   const bottomFrac = band.top + placement.y * band.height;
-  const topVh = bottomFrac * 100 - heightVh;
+  const top = bottomFrac * 100 - height;
   return {
     left: `${placement.x * 100}%`,
-    top: `${topVh}vh`,
-    width: `${widthVh}vh`,
-    height: `${heightVh}vh`,
+    top: `${top}cqh`,
+    width: `${width}cqh`,
+    height: `${height}cqh`,
     transform: `translateX(-50%) rotate(${placement.rotation}deg) scaleX(${placement.flip ? -1 : 1})`,
     transformOrigin: '50% 100%',
     zIndex: String(itemZ),

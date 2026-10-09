@@ -1,20 +1,73 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import type { PageElement } from '@/data/types';
 import { useAppStore } from '@/stores/app';
+import { usePageEditorStore } from '@/stores/pageEditor';
 import { useViewport } from '@/composables/useViewport';
-import { clampStart, lastStart, pageRange, pagesPerView } from '@/room/pagination';
+import { clampStart, lastStart, pageRange } from '@/room/pagination';
+import PageCanvas from '@/components/PageCanvas.vue';
+import PageEditor from '@/scrapbook/PageEditor.vue';
 import polaroidEmpty from '@/assets/svg/polaroid-empty.svg';
+
+/** The page is authored at this fixed logical size, then uniformly scaled. */
+const PAGE = 480;
 
 const props = defineProps<{ bookId: string }>();
 const app = useAppStore();
-const router = useRouter();
+const pe = usePageEditorStore();
 const { isMobile } = useViewport();
+const router = useRouter();
+
+function editPage(index: number) {
+  const page = pages.value[index];
+  if (page) pe.start(props.bookId, page.id);
+}
 
 const book = computed(() => app.node(props.bookId));
+const published = computed(() => !!book.value?.published);
 const pages = computed(() => app.pagesOf(props.bookId));
-const perView = computed(() => pagesPerView(!isMobile.value));
+
+function unpublish() {
+  app.updateNode(props.bookId, { published: false });
+}
+
+const spreadEl = ref<HTMLElement | null>(null);
+const avail = ref({ w: 600, h: 600 });
+let observer: ResizeObserver | null = null;
+
+function measure() {
+  const el = spreadEl.value;
+  if (el) avail.value = { w: el.clientWidth, h: el.clientHeight };
+  clampPan();
+}
+onMounted(() => {
+  measure();
+  if (typeof ResizeObserver !== 'undefined' && spreadEl.value) {
+    observer = new ResizeObserver(measure);
+    observer.observe(spreadEl.value);
+  }
+  window.addEventListener('resize', measure);
+  window.addEventListener('keydown', onKey);
+});
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  window.removeEventListener('resize', measure);
+  window.removeEventListener('keydown', onKey);
+});
+
+const perView = computed(() => (avail.value.w >= 720 && avail.value.h >= 340 ? 2 : 1));
+const pageSize = computed(() => {
+  const pv = perView.value;
+  const usableW = avail.value.w - 24 * (pv - 1) - 16;
+  const s = Math.min(usableW / pv, avail.value.h - 16);
+  return Math.max(120, Math.floor(s));
+});
+const spreadStyle = computed(() => ({
+  '--page-size': `${pageSize.value}px`,
+  '--page-scale': String(pageSize.value / PAGE),
+}));
+
+const pagesMenu = ref(false);
 const start = ref(0);
 const clamped = computed(() => clampStart(start.value, pages.value.length, perView.value));
 const visible = computed(() => pageRange(clamped.value, pages.value.length, perView.value));
@@ -45,58 +98,74 @@ function back() {
     b.parentId ? { name: 'organizer', params: { folderId: b.parentId } } : { name: 'organizer' },
   );
 }
-function elementsOf(pageId: string): PageElement[] {
+function elementsOf(pageId: string) {
   return app.elementsOf(pageId);
 }
-function elStyle(el: PageElement) {
-  return {
-    left: `${el.x * 100}%`,
-    top: `${el.y * 100}%`,
-    width: `${el.w * 100}%`,
-    height: `${el.h * 100}%`,
-    transform: `translate(-50%, -50%) rotate(${el.rotation}deg)`,
-    zIndex: String(el.z),
-    opacity: String(el.opacity),
+/* -------------------- double-tap zoom -------------------- */
+const zoomIndex = ref<number | null>(null);
+const zoomSize = computed(() => pageSize.value * 2);
+const pan = ref({ x: 0, y: 0 });
+const zoomStyle = computed(() => ({
+  '--page-size': `${zoomSize.value}px`,
+  '--page-scale': String(zoomSize.value / PAGE),
+  transform: `translate(-50%, -50%) translate(${pan.value.x}px, ${pan.value.y}px)`,
+}));
+
+function clampPan() {
+  if (zoomIndex.value === null) return;
+  const mx = Math.max(0, (zoomSize.value - window.innerWidth) / 2);
+  const my = Math.max(0, (zoomSize.value - window.innerHeight) / 2);
+  pan.value = {
+    x: Math.min(mx, Math.max(-mx, pan.value.x)),
+    y: Math.min(my, Math.max(-my, pan.value.y)),
   };
 }
-function currentPageId(): string {
-  const list = pages.value;
-  if (list.length === 0) return app.addPage(props.bookId).id;
-  return list[Math.min(clamped.value, list.length - 1)].id;
+function openZoom(index: number) {
+  if (zoomIndex.value === index) return;
+  zoomIndex.value = index;
+  pan.value = { x: 0, y: 0 };
+  clampPan();
 }
-function addPhoto() {
-  app.addElement(currentPageId(), {
-    kind: 'photo',
-    photo: 'sunset',
-    caption: 'new memory',
-    x: 0.5,
-    y: 0.44,
-    w: 0.5,
-    h: 0.5,
-    rotation: -2,
-  });
+function closeZoom() {
+  zoomIndex.value = null;
 }
-function addNote() {
-  app.addElement(currentPageId(), {
-    kind: 'note',
-    text: 'Write something sweet…',
-    x: 0.5,
-    y: 0.5,
-    w: 0.52,
-    h: 0.24,
-    rotation: 2,
-  });
+function onKey(e: KeyboardEvent) {
+  if (e.key === 'Escape') closeZoom();
 }
-function addSticker() {
-  app.addElement(currentPageId(), {
-    kind: 'sticker',
-    icon: 'heart',
-    x: 0.5,
-    y: 0.5,
-    w: 0.16,
-    h: 0.16,
-    rotation: -6,
-  });
+
+const panStart = { x: 0, y: 0, px: 0, py: 0, active: false };
+function onPanStart(e: PointerEvent) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  panStart.x = e.clientX;
+  panStart.y = e.clientY;
+  panStart.px = pan.value.x;
+  panStart.py = pan.value.y;
+  panStart.active = true;
+  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+}
+function onPanMove(e: PointerEvent) {
+  if (!panStart.active) return;
+  pan.value = { x: panStart.px + (e.clientX - panStart.x), y: panStart.py + (e.clientY - panStart.y) };
+  clampPan();
+}
+function onPanEnd(e: PointerEvent) {
+  panStart.active = false;
+  const el = e.currentTarget as HTMLElement;
+  if (el.hasPointerCapture?.(e.pointerId)) el.releasePointerCapture(e.pointerId);
+}
+
+/* -------------------- double-tap detection -------------------- */
+let lastTap = { t: 0, x: 0, y: 0, index: -1 };
+function onPageTap(index: number, e: PointerEvent) {
+  const now = Date.now();
+  const near =
+    Math.abs(e.clientX - lastTap.x) < 28 && Math.abs(e.clientY - lastTap.y) < 28;
+  if (lastTap.index === index && now - lastTap.t < 350 && near) {
+    lastTap = { t: 0, x: 0, y: 0, index: -1 };
+    openZoom(index);
+    return;
+  }
+  lastTap = { t: now, x: e.clientX, y: e.clientY, index };
 }
 </script>
 
@@ -106,35 +175,41 @@ function addSticker() {
       <span class="icon icon--back"></span>{{ book ? 'Back' : 'Scrapbooks' }}
     </button>
     <span class="tag">{{ book ? book.title : 'Book' }}</span>
+    <span v-if="book && !published" class="tag tag--draft">Draft</span>
+    <button v-if="published && !isMobile" class="btn btn--small" type="button" @click="unpublish">Unpublish</button>
   </div>
 
-  <div class="spread">
-    <div v-for="index in visible" :key="index" class="square-page">
-      <div
-        v-for="el in elementsOf(pages[index].id)"
-        :key="el.id"
-        class="el"
-        :class="[
-          el.kind === 'photo' ? 'el--photo' : '',
-          el.kind === 'note' ? 'el--note' : '',
-          el.kind === 'sticker' ? `el--sticker el--sticker--${el.icon}` : '',
-        ]"
-        :style="elStyle(el)"
-      >
-        <template v-if="el.kind === 'photo'">
-          <span class="el__photo" :class="`el__photo--${el.photo}`"></span>
-          <span class="cap">{{ el.caption }}</span>
-        </template>
-        <template v-else-if="el.kind === 'note'">{{ el.text }}</template>
+  <div ref="spreadEl" class="spread" :style="spreadStyle">
+    <div
+      v-for="index in visible"
+      :key="index"
+      class="page-slot"
+      @pointerup="onPageTap(index, $event)"
+      @dblclick="openZoom(index)"
+    >
+      <div class="page-scaler">
+        <PageCanvas :elements="elementsOf(pages[index].id)" :num="index + 1" :paper="pages[index].background" />
       </div>
-      <span class="square-page__num">{{ index + 1 }}</span>
-      <span v-if="visible.length === 1" class="sr-only">page {{ index + 1 }}</span>
+      <button
+        v-if="!isMobile && !published"
+        class="page-slot__edit"
+        type="button"
+        title="Edit this page"
+        @click.stop="editPage(index)"
+      >
+        <span class="icon icon--pencil"></span>
+      </button>
     </div>
-    <div v-if="pages.length === 0" class="square-page">
-      <div class="empty" style="border: none; background: transparent">
-        <img :src="polaroidEmpty" alt="" aria-hidden="true" />
-        <h3>A blank book</h3>
-        <p>Add your first memory?</p>
+
+    <div v-if="pages.length === 0" class="page-slot">
+      <div class="page-scaler">
+        <div class="square-page">
+          <div class="empty" style="border: none; background: transparent">
+            <img :src="polaroidEmpty" alt="" aria-hidden="true" />
+            <h3>A blank book</h3>
+            <p>Add your first memory?</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -149,19 +224,64 @@ function addSticker() {
         <span class="icon icon--chev-right"></span>
       </button>
     </div>
-    <div class="add-bar">
-      <button class="btn btn--small" type="button" @click="addPhoto">
-        <span class="icon icon--camera"></span>Add photo
-      </button>
-      <button class="btn btn--small" type="button" @click="addNote">
-        <span class="icon icon--pencil"></span>Add note
-      </button>
-      <button class="btn btn--small" type="button" @click="addSticker">
-        <span class="icon icon--star"></span>Add sticker
-      </button>
+    <div v-if="!isMobile && !published" class="add-bar pages-tools">
       <button class="btn btn--small" type="button" @click="app.addPage(bookId)">
         <span class="icon icon--plus"></span>Add page
       </button>
+      <div class="pages-menu">
+        <button class="btn btn--small" type="button" :aria-expanded="pagesMenu" @click="pagesMenu = !pagesMenu">
+          <span class="icon icon--menu"></span>Manage pages
+        </button>
+        <div v-if="pagesMenu" class="pages-menu__pop">
+          <div v-for="(p, idx) in pages" :key="p.id" class="pages-menu__row">
+            <span class="pages-menu__thumb">
+              <span class="page-scaler" style="--page-scale: 0.0833">
+                <PageCanvas :elements="elementsOf(p.id)" :num="idx + 1" :paper="p.background" />
+              </span>
+            </span>
+            <span class="pages-menu__label">Page {{ idx + 1 }}</span>
+            <button class="layer-mini" type="button" title="Move earlier" :disabled="idx === 0" @click.stop="app.movePage(p.id, -1)">
+              <span class="icon icon--chev-right rot-up"></span>
+            </button>
+            <button class="layer-mini" type="button" title="Move later" :disabled="idx === pages.length - 1" @click.stop="app.movePage(p.id, 1)">
+              <span class="icon icon--chev-right rot-down"></span>
+            </button>
+            <button class="layer-mini" type="button" title="Remove page" @click.stop="app.removePage(p.id)">
+              <span class="icon icon--trash"></span>
+            </button>
+          </div>
+          <p v-if="pages.length === 0" class="editor__muted">No pages yet.</p>
+        </div>
+      </div>
     </div>
+
   </div>
+
+  <Teleport to="body">
+    <div
+      v-if="zoomIndex !== null && pages[zoomIndex]"
+      class="page-zoom"
+      @pointerdown="onPanStart"
+      @pointermove="onPanMove"
+      @pointerup="onPanEnd"
+      @pointercancel="onPanEnd"
+    >
+      <div class="page-slot page-zoom__pan" :style="zoomStyle">
+        <div class="page-scaler">
+          <PageCanvas :elements="elementsOf(pages[zoomIndex].id)" :num="zoomIndex + 1" :paper="pages[zoomIndex].background" />
+        </div>
+      </div>
+      <button
+        class="page-zoom__close"
+        type="button"
+        aria-label="Close"
+        @pointerdown.stop
+        @click="closeZoom"
+      >
+        ×
+      </button>
+    </div>
+  </Teleport>
+
+  <PageEditor />
 </template>

@@ -146,7 +146,7 @@ export function createSeedData(): AppData {
     });
   }
 
-  const content: Content = { nodes: NODES, pages, elements };
+  const content: Content = { nodes: NODES, pages, elements, media: [] };
   return {
     version: 1,
     content,

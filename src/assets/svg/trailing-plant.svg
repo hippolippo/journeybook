@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200" fill="none">
+  <g fill="var(--c-leaves, #7e8f6b)">
+    <ellipse cx="34" cy="118" rx="13" ry="7" transform="rotate(-28 34 118)"/>
+    <ellipse cx="46" cy="150" rx="13" ry="7" transform="rotate(22 46 150)"/>
+    <ellipse cx="30" cy="170" rx="11" ry="6" transform="rotate(-18 30 170)"/>
+    <ellipse cx="86" cy="120" rx="13" ry="7" transform="rotate(28 86 120)"/>
+    <ellipse cx="74" cy="152" rx="13" ry="7" transform="rotate(-22 74 152)"/>
+    <ellipse cx="92" cy="172" rx="11" ry="6" transform="rotate(18 92 172)"/>
+    <ellipse cx="60" cy="150" rx="12" ry="7" transform="rotate(6 60 150)"/>
+    <ellipse cx="58" cy="182" rx="11" ry="6" transform="rotate(-8 58 182)"/>
+  </g>
+  <g stroke="var(--c-leaves, #7e8f6b)" stroke-width="3.5" stroke-linecap="round">
+    <path d="M60 66 C42 104 44 150 32 188"/>
+    <path d="M60 66 C78 104 76 150 90 188"/>
+    <path d="M60 66 C60 110 56 150 60 192"/>
+  </g>
+  <path d="M42 34 h36 l-5 30 a13 13 0 0 1 -26 0 Z" fill="var(--c-pot, #c97b5a)"/>
+  <rect x="40" y="30" width="40" height="8" rx="3" fill="var(--c-pot, #c97b5a)" opacity="0.85"/>
+</svg>

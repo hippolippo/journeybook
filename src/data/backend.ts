@@ -1,6 +1,19 @@
 import PocketBase, { type RecordModel } from 'pocketbase';
-import type { AppData, PageElement, PhotoStyle, Room, RoomItem, ScrapNode, ScrapPage } from './types';
-import { saveData } from './storage';
+import type {
+  AppData,
+  ImagePreset,
+  MediaAsset,
+  PageElement,
+  PageGroup,
+  PhotoStyle,
+  Room,
+  RoomItem,
+  ScrapNode,
+  ScrapPage,
+  StoredLayout,
+  TapeStyle,
+} from './types';
+import { loadLayouts, loadPresets, saveData, saveLayouts, savePresets } from './storage';
 import { createSeedData } from './seed';
 
 export const PB_URL = ((import.meta.env.VITE_PB_URL as string | undefined) ?? '').trim();
@@ -15,6 +28,8 @@ export interface Backend {
   nodeUpdate(node: ScrapNode): void;
   nodeDelete(id: string): void;
   pageCreate(page: ScrapPage): void;
+  pageUpdate(page: ScrapPage): void;
+  pageDelete(id: string): void;
   elementCreate(el: PageElement): void;
   elementUpdate(el: PageElement): void;
   elementDelete(id: string): void;
@@ -22,6 +37,13 @@ export interface Backend {
   roomItemCreate(item: RoomItem): void;
   roomItemUpdate(item: RoomItem): void;
   roomItemDelete(id: string): void;
+  applyRoomLayout(room: Room, items: RoomItem[]): void;
+  listLayouts(): Promise<StoredLayout[]>;
+  saveLayout(layout: StoredLayout): Promise<void>;
+  deleteLayout(id: string): Promise<void>;
+  listImagePresets(): Promise<ImagePreset[]>;
+  saveImagePreset(preset: ImagePreset): Promise<void>;
+  deleteImagePreset(id: string): Promise<void>;
   subscribe(onChange: () => void): void;
 }
 
@@ -39,6 +61,8 @@ export const localBackend: Backend = {
   nodeUpdate: noop,
   nodeDelete: noop,
   pageCreate: noop,
+  pageUpdate: noop,
+  pageDelete: noop,
   elementCreate: noop,
   elementUpdate: noop,
   elementDelete: noop,
@@ -46,6 +70,29 @@ export const localBackend: Backend = {
   roomItemCreate: noop,
   roomItemUpdate: noop,
   roomItemDelete: noop,
+  applyRoomLayout: noop,
+  async listLayouts() {
+    return loadLayouts();
+  },
+  async saveLayout(layout) {
+    const list = loadLayouts().filter((l) => l.id !== layout.id);
+    list.push(layout);
+    saveLayouts(list);
+  },
+  async deleteLayout(id) {
+    saveLayouts(loadLayouts().filter((l) => l.id !== id));
+  },
+  async listImagePresets() {
+    return loadPresets();
+  },
+  async saveImagePreset(preset) {
+    const list = loadPresets().filter((p) => p.id !== preset.id);
+    list.push(preset);
+    savePresets(list);
+  },
+  async deleteImagePreset(id) {
+    savePresets(loadPresets().filter((p) => p.id !== id));
+  },
   subscribe: noop,
 };
 
@@ -68,15 +115,18 @@ function mapNode(rec: RecordModel): ScrapNode {
     tags: field<string[]>(rec, 'tags', []),
     order: field<number>(rec, 'order', 0),
     cover: cover ? (cover as ScrapNode['cover']) : undefined,
+    published: field<boolean>(rec, 'published', false),
   };
 }
 
 function mapPage(rec: RecordModel): ScrapPage {
+  const groups = field<PageGroup[]>(rec, 'groups', []);
   return {
     id: rec.id,
     bookId: field<string>(rec, 'book', ''),
     index: field<number>(rec, 'index', 0),
     background: field<string>(rec, 'background', '') || undefined,
+    groups: Array.isArray(groups) && groups.length ? groups : undefined,
   };
 }
 
@@ -92,15 +142,38 @@ function mapElement(rec: RecordModel): PageElement {
     rotation: field<number>(rec, 'rotation', 0),
     z: field<number>(rec, 'z', 1),
     opacity: field<number>(rec, 'opacity', 1),
+    locked: field<boolean>(rec, 'locked', false),
+    aspectLocked: field<boolean>(rec, 'aspectLocked', true),
+    groupId: field<string>(rec, 'group', '') || undefined,
+    name: field<string>(rec, 'name', '') || undefined,
+    scale: field<number>(rec, 'scale', 1),
   };
-  const kind = field<'photo' | 'note' | 'sticker'>(rec, 'kind', 'note');
+  const color = payload.color as string | undefined;
+  const kind = field<'photo' | 'note' | 'sticker' | 'image' | 'tape'>(rec, 'kind', 'note');
   if (kind === 'photo') {
     return { ...base, kind: 'photo', photo: (payload.photo as PhotoStyle) ?? 'sunset', caption: payload.caption as string | undefined };
   }
   if (kind === 'sticker') {
-    return { ...base, kind: 'sticker', icon: (payload.icon as 'heart' | 'star' | 'sparkle') ?? 'heart' };
+    return { ...base, kind: 'sticker', icon: (payload.icon as 'heart' | 'star' | 'sparkle') ?? 'heart', color };
   }
-  return { ...base, kind: 'note', text: (payload.text as string) ?? '' };
+  if (kind === 'image') {
+    return { ...base, kind: 'image', mediaId: (payload.mediaId as string) ?? '', caption: payload.caption as string | undefined };
+  }
+  if (kind === 'tape') {
+    return { ...base, kind: 'tape', style: (payload.style as TapeStyle) ?? 'washi', color };
+  }
+  return { ...base, kind: 'note', text: (payload.text as string) ?? '', color };
+}
+
+function mapMedia(rec: RecordModel): MediaAsset {
+  const created = Date.parse(field<string>(rec, 'created', ''));
+  return {
+    id: rec.id,
+    bookId: field<string>(rec, 'book', ''),
+    name: field<string>(rec, 'name', ''),
+    fileName: field<string>(rec, 'file', '') || undefined,
+    created: Number.isNaN(created) ? Date.now() : created,
+  };
 }
 
 function mapRoom(rec: RecordModel): Room {
@@ -124,19 +197,64 @@ function mapRoomItem(rec: RecordModel): RoomItem {
     desktop: field<RoomItem['desktop']>(rec, 'desktop', { x: 0.5, y: 0.5, scale: 0.2, rotation: 0, flip: false }),
     mobile: mobile ? (mobile as unknown as RoomItem['desktop']) : undefined,
     hideMobile: field<boolean>(rec, 'hideMobile', false),
+    locked: field<boolean>(rec, 'locked', false),
   };
 }
 
+function mapLayout(rec: RecordModel): StoredLayout {
+  const data = field<{ room: Room; items: RoomItem[] }>(rec, 'data', {
+    room: { wallId: 'stripes-cream', floorId: 'wood-warm', dayNightMode: 'auto', referenceTz: 'America/Chicago' },
+    items: [],
+  });
+  return { id: rec.id, name: field<string>(rec, 'name', 'Untitled'), room: data.room, items: data.items ?? [] };
+}
+
 function nodeBody(node: ScrapNode): Record<string, unknown> {
-  return { type: node.type, title: node.title, parent: node.parentId ?? '', tags: node.tags, order: node.order, cover: node.cover ?? '' };
+  return {
+    type: node.type,
+    title: node.title,
+    parent: node.parentId ?? '',
+    tags: node.tags,
+    order: node.order,
+    cover: node.cover ?? '',
+    published: node.published ?? false,
+  };
 }
 function pageBody(page: ScrapPage): Record<string, unknown> {
-  return { book: page.bookId, index: page.index, background: page.background ?? '' };
+  return { book: page.bookId, index: page.index, background: page.background ?? '', groups: page.groups ?? [] };
+}
+
+function mapPreset(rec: RecordModel): ImagePreset {
+  return { id: rec.id, name: field<string>(rec, 'name', 'Untitled'), effects: field(rec, 'effects', {}) };
 }
 function elementBody(el: PageElement): Record<string, unknown> {
   const payload =
-    el.kind === 'photo' ? { photo: el.photo, caption: el.caption } : el.kind === 'note' ? { text: el.text } : { icon: el.icon };
-  return { page: el.pageId, kind: el.kind, payload, x: el.x, y: el.y, w: el.w, h: el.h, rotation: el.rotation, z: el.z, opacity: el.opacity };
+    el.kind === 'photo'
+      ? { photo: el.photo, caption: el.caption }
+      : el.kind === 'image'
+        ? { mediaId: el.mediaId, caption: el.caption }
+        : el.kind === 'note'
+          ? { text: el.text, color: el.color }
+          : el.kind === 'tape'
+            ? { style: el.style, color: el.color }
+            : { icon: el.icon, color: el.color };
+  return {
+    page: el.pageId,
+    kind: el.kind,
+    payload,
+    x: el.x,
+    y: el.y,
+    w: el.w,
+    h: el.h,
+    rotation: el.rotation,
+    z: el.z,
+    opacity: el.opacity,
+    locked: el.locked ?? false,
+    aspectLocked: el.aspectLocked ?? true,
+    group: el.groupId ?? '',
+    name: el.name ?? '',
+    scale: el.scale ?? 1,
+  };
 }
 function roomBody(room: Room): Record<string, unknown> {
   return { wallId: room.wallId, floorId: room.floorId, dayNightMode: room.dayNightMode, referenceTz: room.referenceTz };
@@ -151,6 +269,7 @@ function roomItemBody(item: RoomItem): Record<string, unknown> {
     desktop: item.desktop,
     mobile: item.mobile ?? null,
     hideMobile: item.hideMobile ?? false,
+    locked: item.locked ?? false,
   };
 }
 
@@ -196,15 +315,21 @@ export const pbBackend: Backend = {
     const client = pb;
     if (!client) return null;
     await seedIfEmpty(client);
-    const [nodes, pages, elements] = await Promise.all([
+    const [nodes, pages, elements, media] = await Promise.all([
       client.collection('nodes').getFullList(),
       client.collection('pages').getFullList(),
       client.collection('elements').getFullList(),
+      client.collection('media').getFullList(),
     ]);
     const { room, items } = await ensureRoom(client);
     return {
       version: 1,
-      content: { nodes: nodes.map(mapNode), pages: pages.map(mapPage), elements: elements.map(mapElement) },
+      content: {
+        nodes: nodes.map(mapNode),
+        pages: pages.map(mapPage),
+        elements: elements.map(mapElement),
+        media: media.map(mapMedia),
+      },
       room,
       roomItems: items,
     };
@@ -240,6 +365,12 @@ export const pbBackend: Backend = {
   pageCreate(page) {
     void pb?.collection('pages').create({ id: page.id, ...pageBody(page) }).catch((e) => console.error('pageCreate', e));
   },
+  pageUpdate(page) {
+    void pb?.collection('pages').update(page.id, pageBody(page)).catch((e) => console.error('pageUpdate', e));
+  },
+  pageDelete(id) {
+    void pb?.collection('pages').delete(id).catch((e) => console.error('pageDelete', e));
+  },
   elementCreate(el) {
     void pb?.collection('elements').create({ id: el.id, ...elementBody(el) }).catch((e) => console.error('elementCreate', e));
   },
@@ -266,10 +397,67 @@ export const pbBackend: Backend = {
   roomItemDelete(id) {
     void pb?.collection('room_items').delete(id).catch((e) => console.error('roomItemDelete', e));
   },
+  applyRoomLayout(room, items) {
+    void (async () => {
+      const client = pb;
+      if (!client) return;
+      const recs = await client.collection('room').getFullList();
+      if (recs[0]) await client.collection('room').update(recs[0].id, roomBody(room));
+      const existing = await client.collection('room_items').getFullList();
+      const keep = new Set(items.map((i) => i.id));
+      await Promise.all(existing.filter((r) => !keep.has(r.id)).map((r) => client.collection('room_items').delete(r.id)));
+      for (const item of items) {
+        const body = roomItemBody(item);
+        try {
+          await client.collection('room_items').update(item.id, body);
+        } catch {
+          await client.collection('room_items').create({ id: item.id, ...body });
+        }
+      }
+    })().catch((e) => console.error('applyRoomLayout', e));
+  },
+  async listLayouts() {
+    const client = pb;
+    if (!client) return [];
+    const recs = await client.collection('room_layouts').getFullList();
+    return recs.map(mapLayout);
+  },
+  async saveLayout(layout) {
+    const client = pb;
+    if (!client) return;
+    const body = { name: layout.name, data: { room: layout.room, items: layout.items } };
+    try {
+      await client.collection('room_layouts').update(layout.id, body);
+    } catch {
+      await client.collection('room_layouts').create({ id: layout.id, ...body });
+    }
+  },
+  async deleteLayout(id) {
+    await pb?.collection('room_layouts').delete(id);
+  },
+  async listImagePresets() {
+    const client = pb;
+    if (!client) return [];
+    const recs = await client.collection('image_presets').getFullList();
+    return recs.map(mapPreset);
+  },
+  async saveImagePreset(preset) {
+    const client = pb;
+    if (!client) return;
+    const body = { name: preset.name, effects: preset.effects };
+    try {
+      await client.collection('image_presets').update(preset.id, body);
+    } catch {
+      await client.collection('image_presets').create({ id: preset.id, ...body });
+    }
+  },
+  async deleteImagePreset(id) {
+    await pb?.collection('image_presets').delete(id);
+  },
   subscribe(onChange) {
     const client = pb;
     if (!client) return;
-    for (const name of ['nodes', 'pages', 'elements', 'room', 'room_items']) {
+    for (const name of ['nodes', 'pages', 'elements', 'media', 'room', 'room_items', 'room_layouts', 'image_presets']) {
       void client.collection(name).subscribe('*', () => onChange()).catch((e) => console.error('subscribe', e));
     }
   },

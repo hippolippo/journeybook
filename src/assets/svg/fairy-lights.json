@@ -1,0 +1,18 @@
+{
+  "kind": "room",
+  "label": "Fairy lights",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 2.66,
+  "defaultScale": 0.14,
+  "repeat": "x",
+  "effect": { "type": "twinkle", "duration": 3.2 },
+  "colorSlots": [
+    { "id": "bulbs", "label": "Bulbs", "default": "#f2b25c", "palette": ["#f2b25c", "#e88f9f", "#9dbfc9", "#cfe3c5"], "allowCustom": true }
+  ],
+  "presets": [
+    { "id": "warm", "label": "Warm", "colors": { "bulbs": "#f2b25c" } },
+    { "id": "candy", "label": "Candy", "colors": { "bulbs": "#e88f9f" } }
+  ]
+}

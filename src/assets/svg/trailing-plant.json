@@ -1,0 +1,18 @@
+{
+  "kind": "room",
+  "label": "Trailing plant",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 0.6,
+  "defaultScale": 0.34,
+  "effect": { "type": "sway", "amplitude": 2.5, "duration": 5, "origin": "top" },
+  "colorSlots": [
+    { "id": "leaves", "label": "Leaves", "default": "#7e8f6b", "palette": ["#7e8f6b", "#9caf88", "#6f855f", "#b7a44a"], "allowCustom": true },
+    { "id": "pot", "label": "Pot", "default": "#c97b5a", "palette": ["#c97b5a", "#d98c8c", "#9dbfc9", "#e8d9c0"], "allowCustom": true }
+  ],
+  "presets": [
+    { "id": "sage", "label": "Sage", "colors": { "leaves": "#9caf88", "pot": "#e8d9c0" } },
+    { "id": "autumn", "label": "Autumn", "colors": { "leaves": "#b7a44a", "pot": "#c97b5a" } }
+  ]
+}

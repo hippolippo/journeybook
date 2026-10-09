@@ -4,11 +4,13 @@ export const MOBILE_BREAKPOINT = 760;
 
 export function useViewport() {
   const width = ref(typeof window === 'undefined' ? 1200 : window.innerWidth);
+  const height = ref(typeof window === 'undefined' ? 800 : window.innerHeight);
   const onResize = () => {
     width.value = window.innerWidth;
+    height.value = window.innerHeight;
   };
   onMounted(() => window.addEventListener('resize', onResize));
   onUnmounted(() => window.removeEventListener('resize', onResize));
   const isMobile = computed(() => width.value <= MOBILE_BREAKPOINT);
-  return { width, isMobile };
+  return { width, height, isMobile };
 }

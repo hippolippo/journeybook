@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      heic2any:
+        specifier: ^0.0.4
+        version: 0.0.4
       pinia:
         specifier: ^2.2.6
         version: 2.3.1(typescript@5.9.3)(vue@3.5.43(typescript@5.9.3))
@@ -898,6 +901,9 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  heic2any@0.0.4:
+    resolution: {integrity: sha512-3lLnZiDELfabVH87htnRolZ2iehX9zwpRyGNz22GKXIu0fznlblf0/ftppXKNqS26dqFSeqfIBhAmAj/uSp0cA==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -2146,6 +2152,8 @@ snapshots:
   has-flag@4.0.0: {}
 
   he@1.2.0: {}
+
+  heic2any@0.0.4: {}
 
   ignore@5.3.2: {}
 
