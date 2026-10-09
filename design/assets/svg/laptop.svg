@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150" fill="none" aria-hidden="true">
+  <ellipse cx="100" cy="140" rx="86" ry="7" fill="#4a3b2e" opacity="0.12"/>
+  <rect x="28" y="8" width="144" height="92" rx="8" fill="#c7cbd0" stroke="#9aa0a6" stroke-width="3"/>
+  <rect x="37" y="17" width="126" height="76" rx="4" fill="#2f3134"/>
+  <rect x="43" y="23" width="114" height="64" rx="3" fill="#cfe3e8"/>
+  <circle cx="100" cy="20" r="2.4" fill="#6b747b"/>
+  <circle cx="139" cy="42" r="10" fill="#f6d27a"/>
+  <path d="M52 80 C 66 58, 84 66, 96 50 C 110 68, 128 58, 138 80 Z" fill="#9caf88" opacity="0.85"/>
+  <path d="M70 48 C 63 42, 56 44, 56 49 C 56 55, 66 58, 70 51 C 74 58, 84 55, 84 49 C 84 44, 77 42, 70 48 Z" fill="#d98c8c"/>
+  <path d="M30 100 L170 100 L182 130 L18 130 Z" fill="#c7cbd0" stroke="#9aa0a6" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="46" y="106" width="108" height="10" rx="2" fill="#adb2b8"/>
+  <g stroke="#9aa0a6" stroke-width="1.2" opacity="0.8">
+    <line x1="58" y1="107" x2="57" y2="115"/><line x1="72" y1="107" x2="71" y2="115"/>
+    <line x1="86" y1="107" x2="85" y2="115"/><line x1="100" y1="107" x2="100" y2="115"/>
+    <line x1="114" y1="107" x2="114" y2="115"/><line x1="128" y1="107" x2="128" y2="115"/>
+    <line x1="142" y1="107" x2="143" y2="115"/>
+  </g>
+  <rect x="86" y="120" width="28" height="7" rx="2" fill="#adb2b8"/>
+  <path d="M18 128 L182 128 L184 132 L16 132 Z" fill="#9aa0a6"/>
+</svg>
