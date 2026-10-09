@@ -6,6 +6,7 @@ scrapbook and a shared room. Scrapbooks, notes, real-time games, and camera.
 - Product & technical spec: [`SPEC.md`](SPEC.md)
 - Design mockups & visual spec: [`design/`](design/) ([`design/SPEC.md`](design/SPEC.md))
 - Agent constitution: [`AGENTS.md`](AGENTS.md)
+- Deployment: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
 
 ## Stack
 

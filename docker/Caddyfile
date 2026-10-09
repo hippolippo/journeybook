@@ -1,0 +1,26 @@
+# Journeybook web: serves the built SPA and reverse-proxies PocketBase.
+#
+# The site address is the DOMAIN env var (defaults to localhost, for which Caddy
+# issues an internal certificate). For a public domain, set DOMAIN and Caddy
+# provisions TLS automatically. For a bare LAN IP that has no DNS name, add a
+# `tls internal` line inside the site block.
+{$DOMAIN:localhost} {
+	encode zstd gzip
+
+	# PocketBase API + realtime subscriptions.
+	handle /api/* {
+		reverse_proxy pb:8090
+	}
+
+	# PocketBase admin UI.
+	handle /_/* {
+		reverse_proxy pb:8090
+	}
+
+	# Static SPA with history-mode fallback.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
