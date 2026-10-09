@@ -1,4 +1,5 @@
 import type { CatalogItem, ColorSlot } from './types';
+import { loadedRoomItems } from './loadDecor';
 
 import windowArt from '@/assets/svg/window-cozy.svg';
 import curtainArt from '@/assets/svg/curtain.svg';
@@ -38,7 +39,7 @@ function slot(id: string, label: string, def: string): ColorSlot {
   return { id, label, default: def, palette: PALETTE, allowCustom: true };
 }
 
-export const CATALOG: CatalogItem[] = [
+const BUILTIN: CatalogItem[] = [
   {
     id: 'window',
     label: 'Window',
@@ -251,6 +252,9 @@ export const CATALOG: CatalogItem[] = [
     attach: 'furniture',
   },
 ];
+
+/** Built-in items plus any loaded from artist asset definitions. */
+export const CATALOG: CatalogItem[] = [...BUILTIN, ...loadedRoomItems];
 
 export function getCatalogItem(id: string): CatalogItem | undefined {
   return CATALOG.find((item) => item.id === id);

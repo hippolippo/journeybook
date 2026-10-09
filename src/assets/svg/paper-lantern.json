@@ -1,0 +1,20 @@
+{
+  "kind": "room",
+  "label": "Paper lantern",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 0.72,
+  "defaultScale": 0.34,
+  "effect": [
+    { "type": "glow", "color": "#ffcf6b", "duration": 3.5 },
+    { "type": "flicker", "duration": 2.8 }
+  ],
+  "colorSlots": [
+    { "id": "glass", "label": "Glass", "default": "#f2b25c", "palette": ["#f2b25c", "#e88f9f", "#9dbfc9", "#fdf8ef"], "allowCustom": true }
+  ],
+  "presets": [
+    { "id": "amber", "label": "Amber", "colors": { "glass": "#f2b25c" } },
+    { "id": "rose", "label": "Rose", "colors": { "glass": "#e88f9f" } }
+  ]
+}

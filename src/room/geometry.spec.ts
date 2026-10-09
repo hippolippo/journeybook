@@ -18,10 +18,10 @@ describe('resolveItemStyle', () => {
       { aspect: 2 },
     );
     expect(style.left).toBe('50%');
-    // floor band height 0.26; scale 0.5 -> 13vh tall; bottoms out at 100vh -> top 87vh
-    expect(style.top).toBe('87vh');
-    expect(style.height).toBe('13vh');
-    expect(style.width).toBe('26vh');
+    // floor band height 0.26; scale 0.5 -> 13cqh tall (of the stage); bottoms out -> top 87cqh
+    expect(style.top).toBe('87cqh');
+    expect(style.height).toBe('13cqh');
+    expect(style.width).toBe('26cqh');
     expect(style.zIndex).toBe('20');
   });
 });

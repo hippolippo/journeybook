@@ -29,7 +29,8 @@ function home() {
     <div class="roombar__right">
       <span class="countdown" title="until we are together again">
         <span class="countdown__num">{{ days }}</span>
-        <span class="countdown__txt">days until we are together ♥</span>
+        <span class="countdown__txt">days until we are together</span>
+        <span class="icon icon--heart countdown__heart" aria-hidden="true"></span>
       </span>
       <button
         class="roombar__btn"
@@ -37,7 +38,7 @@ function home() {
         :title="night ? 'Switch to day' : 'Switch to night'"
         @click="toggleNight"
       >
-        {{ night ? '☾' : '☀' }}
+        <span class="icon" :class="night ? 'icon--moon' : 'icon--sun'"></span>
       </button>
       <button
         v-if="!editor.isEditing"
@@ -46,16 +47,16 @@ function home() {
         title="Edit room"
         @click="editor.start()"
       >
-        ✎
+        <span class="icon icon--pencil"></span>
       </button>
       <button
         v-else
         class="roombar__btn roombar__btn--edit"
         type="button"
         title="Done editing"
-        @click="editor.stop()"
+        @click="editor.requestExit()"
       >
-        ✓
+        <span class="icon icon--check"></span>
       </button>
       <span class="people" aria-label="you and me">
         <span class="avatar avatar--a"><span class="icon icon--heart"></span></span>

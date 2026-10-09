@@ -2,12 +2,16 @@ import { defineStore } from 'pinia';
 import type {
   AppData,
   CoverColor,
+  ImagePreset,
+  MediaAsset,
   PageElement,
   PageElementInput,
   Placement,
+  Room,
   RoomItem,
   ScrapNode,
   ScrapPage,
+  StoredLayout,
 } from '@/data/types';
 import { clearData, loadData } from '@/data/storage';
 import { createSeedData } from '@/data/seed';
@@ -15,6 +19,9 @@ import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
 import { backend } from '@/data/backend';
+import { deleteMedia, ensureMedia, hydrateMedia, mediaUrl, uploadMedia } from '@/data/media';
+import { prepareImageFile } from '@/data/imageImport';
+import { clone } from '@/utils/clone';
 
 const COVERS: CoverColor[] = ['rose', 'sage', 'mustard', 'terracotta', 'sky', 'kraft'];
 
@@ -29,7 +36,13 @@ let refreshTimer: number | undefined;
 export type Viewport = 'desktop' | 'mobile';
 
 export const useAppStore = defineStore('app', {
-  state: () => ({ data: (loadData() ?? createSeedData()) as AppData, synced: false }),
+  state: () => ({
+    data: (loadData() ?? createSeedData()) as AppData,
+    synced: false,
+    /** Bumped when album URLs change so dependent renders refresh. */
+    mediaVersion: 0,
+    imagePresets: [] as ImagePreset[],
+  }),
   getters: {
     room: (s) => s.data.room,
     roomItems: (s) => s.data.roomItems,
@@ -38,6 +51,15 @@ export const useAppStore = defineStore('app', {
     },
     itemById: (s) => {
       return (id: string): RoomItem | undefined => s.data.roomItems.find((i) => i.id === id);
+    },
+    mediaFor: (s) => {
+      return (bookId: string): MediaAsset[] => s.data.content.media.filter((m) => m.bookId === bookId);
+    },
+    assetUrl: (s) => {
+      return (id: string): string => {
+        void s.mediaVersion;
+        return mediaUrl(s.data.content.media.find((m) => m.id === id));
+      };
     },
   },
   actions: {
@@ -52,18 +74,43 @@ export const useAppStore = defineStore('app', {
 
     // ---- backend lifecycle ----
     async initBackend() {
-      if (backend.kind === 'local') {
-        this.synced = true;
-        return;
-      }
       try {
-        const data = await backend.fetchAll();
-        if (data) this.data = data;
-        backend.subscribe(() => this.scheduleRefresh());
+        if (backend.kind !== 'local') {
+          const data = await backend.fetchAll();
+          if (data) this.data = data;
+          backend.subscribe(() => this.scheduleRefresh());
+        }
         this.synced = true;
       } catch (e) {
         console.error('initBackend', e);
       }
+      await this.resolveMedia();
+      await this.loadImagePresets();
+    },
+    async resolveMedia() {
+      await hydrateMedia(this.data.content.media);
+      this.mediaVersion++;
+    },
+    async loadImagePresets() {
+      try {
+        this.imagePresets = await backend.listImagePresets();
+      } catch (e) {
+        console.error('loadImagePresets', e);
+      }
+    },
+    async saveImagePreset(preset: ImagePreset) {
+      await backend.saveImagePreset(preset);
+      await this.loadImagePresets();
+    },
+    async deleteImagePreset(id: string) {
+      await backend.deleteImagePreset(id);
+      await this.loadImagePresets();
+    },
+    async ensureAsset(id: string) {
+      const asset = this.data.content.media.find((m) => m.id === id);
+      if (!asset || mediaUrl(asset)) return;
+      await ensureMedia(asset);
+      if (mediaUrl(asset)) this.mediaVersion++;
     },
     scheduleRefresh() {
       if (refreshTimer) window.clearTimeout(refreshTimer);
@@ -73,7 +120,10 @@ export const useAppStore = defineStore('app', {
       if (backend.kind === 'local') return;
       try {
         const data = await backend.fetchAll();
-        if (data) this.data = data;
+        if (data) {
+          this.data = data;
+          await this.resolveMedia();
+        }
       } catch (e) {
         console.error('refreshFromBackend', e);
       }
@@ -114,6 +164,14 @@ export const useAppStore = defineStore('app', {
         backend.nodeUpdate(node);
       }
     },
+    updateNode(id: string, patch: Partial<ScrapNode>) {
+      const node = this.node(id);
+      if (node) {
+        Object.assign(node, patch);
+        this.save();
+        backend.nodeUpdate(node);
+      }
+    },
     deleteNode(id: string) {
       const doomed = new Set<string>();
       const collect = (rootId: string) => {
@@ -141,6 +199,40 @@ export const useAppStore = defineStore('app', {
       backend.pageCreate(page);
       return page;
     },
+    removePage(pageId: string) {
+      const page = this.data.content.pages.find((p) => p.id === pageId);
+      if (!page) return;
+      const doomed = this.data.content.elements.filter((e) => e.pageId === pageId).map((e) => e.id);
+      this.data.content.pages = this.data.content.pages.filter((p) => p.id !== pageId);
+      this.data.content.elements = this.data.content.elements.filter((e) => e.pageId !== pageId);
+      this.save();
+      backend.pageDelete(pageId);
+      for (const id of doomed) backend.elementDelete(id);
+      // keep the remaining indexes contiguous
+      this.pagesOf(page.bookId).forEach((p, i) => {
+        if (p.index !== i) {
+          p.index = i;
+          backend.pageUpdate(p);
+        }
+      });
+      this.save();
+    },
+    movePage(pageId: string, dir: -1 | 1) {
+      const page = this.data.content.pages.find((p) => p.id === pageId);
+      if (!page) return;
+      const order = this.pagesOf(page.bookId);
+      const i = order.findIndex((p) => p.id === pageId);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= order.length) return;
+      [order[i], order[j]] = [order[j], order[i]];
+      order.forEach((p, idx) => {
+        if (p.index !== idx) {
+          p.index = idx;
+          backend.pageUpdate(p);
+        }
+      });
+      this.save();
+    },
     addElement(pageId: string, el: PageElementInput) {
       const z = this.elementsOf(pageId).length + 1;
       const element = { id: newId(), pageId, z, opacity: 1, ...el } as PageElement;
@@ -156,10 +248,51 @@ export const useAppStore = defineStore('app', {
         backend.elementUpdate(el);
       }
     },
+    /** Insert or replace an element while keeping its id (used by the page editor). */
+    putElement(el: PageElement) {
+      const idx = this.data.content.elements.findIndex((e) => e.id === el.id);
+      if (idx >= 0) {
+        this.data.content.elements[idx] = clone(el);
+        this.save();
+        backend.elementUpdate(el);
+      } else {
+        this.data.content.elements.push(clone(el));
+        this.save();
+        backend.elementCreate(el);
+      }
+    },
     removeElement(id: string) {
       this.data.content.elements = this.data.content.elements.filter((e) => e.id !== id);
       this.save();
       backend.elementDelete(id);
+    },
+    updatePage(id: string, patch: Partial<ScrapPage>) {
+      const page = this.data.content.pages.find((p) => p.id === id);
+      if (page) {
+        Object.assign(page, patch);
+        this.save();
+        backend.pageUpdate(page);
+      }
+    },
+
+    // ---- album / media ----
+    async addMedia(bookId: string, file: File): Promise<MediaAsset> {
+      const prepared = await prepareImageFile(file);
+      const asset: MediaAsset = { id: newId(), bookId, name: prepared.name || 'photo', created: Date.now() };
+      const fileName = await uploadMedia(asset, prepared);
+      if (fileName) asset.fileName = fileName;
+      this.data.content.media.push(asset);
+      this.mediaVersion++;
+      this.save();
+      return asset;
+    },
+    async removeMedia(id: string) {
+      const asset = this.data.content.media.find((m) => m.id === id);
+      if (!asset) return;
+      await deleteMedia(asset);
+      this.data.content.media = this.data.content.media.filter((m) => m.id !== id);
+      this.mediaVersion++;
+      this.save();
     },
 
     // ---- room ----
@@ -247,6 +380,30 @@ export const useAppStore = defineStore('app', {
       }
       this.save();
       backend.roomItemUpdate(item);
+    },
+
+    // ---- whole-room apply + named layouts ----
+    applyRoomLayout(room: Room, items: RoomItem[]) {
+      this.data.room = clone(room);
+      this.data.roomItems = clone(items);
+      this.save();
+      backend.applyRoomLayout(this.data.room, this.data.roomItems);
+    },
+    listLayouts(): Promise<StoredLayout[]> {
+      return backend.listLayouts();
+    },
+    async saveNamedLayout(name: string, room: Room, items: RoomItem[]): Promise<StoredLayout> {
+      const layout: StoredLayout = {
+        id: newId(),
+        name,
+        room: clone(room),
+        items: clone(items),
+      };
+      await backend.saveLayout(layout);
+      return layout;
+    },
+    async deleteLayout(id: string) {
+      await backend.deleteLayout(id);
     },
   },
 });
