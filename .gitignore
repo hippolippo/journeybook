@@ -11,3 +11,5 @@ test-results/
 
 server/pocketbase
 server/pb_data/
+server/CHANGELOG.md
+server/LICENSE.md
