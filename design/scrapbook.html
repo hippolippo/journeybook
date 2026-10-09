@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journeybook · Scrapbooks</title>
+    <link rel="icon" href="assets/svg/doodle-heart.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="screens-nav" aria-label="Screen switcher">
+      <a href="index.html">Prototype</a>
+      <a href="home.html">Home</a>
+      <a href="scrapbook.html" aria-current="page">Scrapbooks</a>
+      <a href="folder.html">Folder</a>
+      <a href="interior.html">Inside a book</a>
+    </nav>
+    <main class="app" data-jb-app></main>
+    <script src="mock-data.js"></script>
+    <script src="app.js"></script>
+    <script>
+      JB.start('scrapbook');
+    </script>
+  </body>
+</html>
