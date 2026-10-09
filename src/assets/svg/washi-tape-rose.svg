@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="170" height="46" viewBox="0 0 170 46" aria-hidden="true">
+  <path d="M4 6 L22 4 L40 8 L58 4 L76 8 L94 4 L112 8 L130 4 L148 8 L166 4 L164 40 L146 42 L128 38 L110 42 L92 38 L74 42 L56 38 L38 42 L20 38 L6 42 Z"
+        fill="#d98c8c" opacity="0.72"/>
+  <g opacity="0.28" stroke="#a85f5f" stroke-width="3">
+    <line x1="10" y1="0" x2="18" y2="46"/>
+    <line x1="40" y1="0" x2="48" y2="46"/>
+    <line x1="70" y1="0" x2="78" y2="46"/>
+    <line x1="100" y1="0" x2="108" y2="46"/>
+    <line x1="130" y1="0" x2="138" y2="46"/>
+    <line x1="160" y1="0" x2="166" y2="46"/>
+  </g>
+</svg>
