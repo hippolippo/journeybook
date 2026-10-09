@@ -152,5 +152,6 @@ export function createSeedData(): AppData {
     content,
     room: { ...DEFAULT_ROOM },
     roomItems: createDefaultRoomItems(),
+    events: [],
   };
 }

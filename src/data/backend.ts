@@ -1,6 +1,7 @@
 import PocketBase, { type RecordModel } from 'pocketbase';
 import type {
   AppData,
+  CalendarEvent,
   ImagePreset,
   MediaAsset,
   PageElement,
@@ -38,6 +39,8 @@ export interface Backend {
   roomItemUpdate(item: RoomItem): void;
   roomItemDelete(id: string): void;
   applyRoomLayout(room: Room, items: RoomItem[]): void;
+  eventSave(event: CalendarEvent): void;
+  eventDelete(id: string): void;
   listLayouts(): Promise<StoredLayout[]>;
   saveLayout(layout: StoredLayout): Promise<void>;
   deleteLayout(id: string): Promise<void>;
@@ -71,6 +74,8 @@ export const localBackend: Backend = {
   roomItemUpdate: noop,
   roomItemDelete: noop,
   applyRoomLayout: noop,
+  eventSave: noop,
+  eventDelete: noop,
   async listLayouts() {
     return loadLayouts();
   },
@@ -227,6 +232,13 @@ function pageBody(page: ScrapPage): Record<string, unknown> {
 function mapPreset(rec: RecordModel): ImagePreset {
   return { id: rec.id, name: field<string>(rec, 'name', 'Untitled'), effects: field(rec, 'effects', {}) };
 }
+function mapEvent(rec: RecordModel): CalendarEvent {
+  const data = field<CalendarEvent>(rec, 'data', { id: rec.id, kind: 'occasion', title: '', startsAt: '', recurrence: 'none' });
+  return { ...data, id: rec.id };
+}
+function eventBody(event: CalendarEvent): Record<string, unknown> {
+  return { kind: event.kind, title: event.title, data: event };
+}
 function elementBody(el: PageElement): Record<string, unknown> {
   const payload =
     el.kind === 'photo'
@@ -315,11 +327,12 @@ export const pbBackend: Backend = {
     const client = pb;
     if (!client) return null;
     await seedIfEmpty(client);
-    const [nodes, pages, elements, media] = await Promise.all([
+    const [nodes, pages, elements, media, events] = await Promise.all([
       client.collection('nodes').getFullList(),
       client.collection('pages').getFullList(),
       client.collection('elements').getFullList(),
       client.collection('media').getFullList(),
+      client.collection('events').getFullList(),
     ]);
     const { room, items } = await ensureRoom(client);
     return {
@@ -332,6 +345,7 @@ export const pbBackend: Backend = {
       },
       room,
       roomItems: items,
+      events: events.map(mapEvent),
     };
   },
   persistLocal: noop,
@@ -416,6 +430,21 @@ export const pbBackend: Backend = {
       }
     })().catch((e) => console.error('applyRoomLayout', e));
   },
+  eventSave(event) {
+    void (async () => {
+      const client = pb;
+      if (!client) return;
+      const body = eventBody(event);
+      try {
+        await client.collection('events').update(event.id, body);
+      } catch {
+        await client.collection('events').create({ id: event.id, ...body });
+      }
+    })().catch((e) => console.error('eventSave', e));
+  },
+  eventDelete(id) {
+    void pb?.collection('events').delete(id).catch((e) => console.error('eventDelete', e));
+  },
   async listLayouts() {
     const client = pb;
     if (!client) return [];
@@ -457,7 +486,7 @@ export const pbBackend: Backend = {
   subscribe(onChange) {
     const client = pb;
     if (!client) return;
-    for (const name of ['nodes', 'pages', 'elements', 'media', 'room', 'room_items', 'room_layouts', 'image_presets']) {
+    for (const name of ['nodes', 'pages', 'elements', 'media', 'room', 'room_items', 'room_layouts', 'image_presets', 'events']) {
       void client.collection(name).subscribe('*', () => onChange()).catch((e) => console.error('subscribe', e));
     }
   },

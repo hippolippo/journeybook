@@ -194,9 +194,49 @@ export interface Content {
   media: MediaAsset[];
 }
 
+export type EventKind = 'visit' | 'anniversary' | 'birthday' | 'occasion';
+/** Which way a visit goes. */
+export type VisitDirection = 'to-her' | 'to-me' | 'together';
+export type Recurrence = 'none' | 'yearly' | 'monthly' | 'weekly';
+
+/** A single flight leg attached to a visit; times are ISO UTC instants. */
+export interface FlightLeg {
+  id: string;
+  label?: string;
+  airline?: string;
+  flightNo?: string;
+  /** IATA/ICAO airport code or free text. */
+  from?: string;
+  to?: string;
+  depart: string;
+  arrive: string;
+  /** Optional IANA timezone label shown for context (display only). */
+  tz?: string;
+}
+
+/**
+ * A shared calendar entry. Visits are one-time windows when we are together;
+ * anniversaries/birthdays/occasions recur.
+ */
+export interface CalendarEvent {
+  id: string;
+  kind: EventKind;
+  title: string;
+  notes?: string;
+  /** Occurrence start (ISO UTC); the anchor/first occurrence for recurrences. */
+  startsAt: string;
+  /** Visit window end (ISO UTC). Visits only. */
+  endsAt?: string;
+  direction?: VisitDirection;
+  flights?: FlightLeg[];
+  recurrence: Recurrence;
+  color?: string;
+}
+
 export interface AppData {
   version: number;
   content: Content;
   room: Room;
   roomItems: RoomItem[];
+  events: CalendarEvent[];
 }
