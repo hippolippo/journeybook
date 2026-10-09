@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="190" viewBox="0 0 140 190" fill="none" aria-hidden="true">
+  <ellipse cx="70" cy="186" rx="46" ry="6" fill="#4a3b2e" opacity="0.12"/>
+
+  <g transform="rotate(-36 70 108)"><rect x="65" y="8" width="10" height="108" rx="5" fill="#9dbfc9"/><path d="M65 8 L70 -2 L75 8 Z" fill="#f0e2c8"/><path d="M68 0 L70 -2 L72 0 Z" fill="#4a3b2e"/></g>
+  <g transform="rotate(-24 70 108)"><rect x="65" y="12" width="10" height="104" rx="5" fill="#d9a94e"/><path d="M65 12 L70 2 L75 12 Z" fill="#f0e2c8"/><path d="M68 6 L70 2 L72 6 Z" fill="#4a3b2e"/></g>
+  <g transform="rotate(-12 70 108)"><rect x="65" y="6" width="10" height="110" rx="5" fill="#6f5c49"/><path d="M65 6 L70 -6 L75 6 Z" fill="#3f352a"/><path d="M67 -2 L70 -6 L73 -2 Z" fill="#d9a94e"/></g>
+  <g transform="rotate(2 70 108)"><rect x="65" y="10" width="10" height="106" rx="5" fill="#d98c8c"/><path d="M65 10 L70 0 L75 10 Z" fill="#f0e2c8"/><path d="M68 4 L70 0 L72 4 Z" fill="#4a3b2e"/></g>
+  <g transform="rotate(14 70 108)"><rect x="65" y="14" width="10" height="102" rx="5" fill="#9caf88"/><path d="M65 14 L70 4 L75 14 Z" fill="#f0e2c8"/><path d="M68 8 L70 4 L72 8 Z" fill="#4a3b2e"/></g>
+  <g transform="rotate(28 70 108)"><rect x="65" y="8" width="10" height="108" rx="5" fill="#b08aa0"/><path d="M65 8 L70 -2 L75 8 Z" fill="#f0e2c8"/><path d="M68 0 L70 -2 L72 0 Z" fill="#4a3b2e"/></g>
+  <g transform="rotate(40 70 108)"><rect x="65" y="16" width="10" height="100" rx="5" fill="#c97b5a"/><path d="M65 16 L70 6 L75 16 Z" fill="#f0e2c8"/><path d="M68 10 L70 6 L72 10 Z" fill="#4a3b2e"/></g>
+
+  <path d="M28 104 L112 104 L104 178 C 102 184, 38 184, 36 178 Z" fill="#c97b5a" stroke="#8a6c47" stroke-width="3"/>
+  <path d="M28 104 L112 104 L108 122 L32 122 Z" fill="#b06a4b" stroke="#8a6c47" stroke-width="3"/>
+  <ellipse cx="70" cy="104" rx="42" ry="8" fill="#8a5a3e"/>
+  <ellipse cx="70" cy="104" rx="31" ry="5" fill="#3f3122"/>
+  <path d="M70 136 C 61 128, 49 130, 51 140 C 52 147, 63 150, 70 141 C 77 150, 88 147, 89 140 C 91 130, 79 128, 70 136 Z" fill="#f0e2c8"/>
+</svg>

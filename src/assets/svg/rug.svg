@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="150" viewBox="0 0 360 150" fill="none" aria-hidden="true">
+  <ellipse cx="180" cy="75" rx="176" ry="62" fill="var(--c-band1, #c97b5a)"/>
+  <ellipse cx="180" cy="75" rx="160" ry="54" fill="var(--c-band2, #d98c8c)"/>
+  <ellipse cx="180" cy="75" rx="140" ry="46" fill="var(--c-band3, #e8b4af)"/>
+  <ellipse cx="180" cy="75" rx="118" ry="38" fill="#f0d9b5"/>
+  <ellipse cx="180" cy="75" rx="92" ry="30" fill="var(--c-band4, #d9a94e)"/>
+  <ellipse cx="180" cy="75" rx="64" ry="21" fill="#9caf88"/>
+  <ellipse cx="180" cy="75" rx="36" ry="12" fill="var(--c-band3, #e8b4af)"/>
+  <g stroke="#a85f5f" stroke-width="3" stroke-linecap="round">
+    <line x1="8" y1="75" x2="0" y2="75"/>
+    <line x1="12" y1="58" x2="4" y2="55"/>
+    <line x1="12" y1="92" x2="4" y2="95"/>
+    <line x1="352" y1="75" x2="360" y2="75"/>
+    <line x1="348" y1="58" x2="356" y2="55"/>
+    <line x1="348" y1="92" x2="356" y2="95"/>
+  </g>
+</svg>
