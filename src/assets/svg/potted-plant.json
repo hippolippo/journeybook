@@ -1,0 +1,33 @@
+{
+  "kind": "room",
+  "id": "plant",
+  "label": "Plant",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "art": { "day": "potted-plant.svg" },
+  "aspect": 0.805,
+  "defaultScale": 0.18,
+  "defaultRotation": 3,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "pot",
+      "label": "Pot",
+      "default": "#e08868",
+      "palette": [
+        "#c97b5a",
+        "#e08868",
+        "#d98c8c",
+        "#e8b4af",
+        "#9caf88",
+        "#9dbfc9",
+        "#d9a94e",
+        "#e6b78a",
+        "#f5dab9",
+        "#4a3b2e"
+      ],
+      "allowCustom": true
+    }
+  ]
+}

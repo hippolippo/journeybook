@@ -1,0 +1,97 @@
+{
+  "kind": "room",
+  "id": "beanbag",
+  "label": "Bean bag",
+  "category": "furniture",
+  "layer": "floor",
+  "band": "floor",
+  "aspect": 1.444,
+  "defaultScale": 0.92,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Fabric",
+      "default": "#c97b5a",
+      "palette": [
+        "#d98c8c",
+        "#e8b4af",
+        "#c97b5a",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#d3b184",
+        "#b99362",
+        "#fcf7ec",
+        "#4a3b2e"
+      ],
+      "allowCustom": true
+    },
+    {
+      "id": "trim",
+      "label": "Seams",
+      "default": "#a85f43",
+      "palette": [
+        "#d98c8c",
+        "#e8b4af",
+        "#c97b5a",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#d3b184",
+        "#b99362",
+        "#fcf7ec",
+        "#4a3b2e"
+      ],
+      "allowCustom": true
+    },
+    {
+      "id": "seat",
+      "label": "Seat",
+      "default": "#b06a4b",
+      "palette": [
+        "#d98c8c",
+        "#e8b4af",
+        "#c97b5a",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#d3b184",
+        "#b99362",
+        "#fcf7ec",
+        "#4a3b2e"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    {
+      "id": "blush",
+      "label": "Blush",
+      "colors": { "body": "#e8b4af", "trim": "#d98c8c", "seat": "#f7c9c9" }
+    },
+    {
+      "id": "sage",
+      "label": "Sage",
+      "colors": { "body": "#9caf88", "trim": "#7e8f6b", "seat": "#cfe3c5" }
+    },
+    {
+      "id": "honey",
+      "label": "Honey",
+      "colors": { "body": "#f6e8a8", "trim": "#d9a94e", "seat": "#d3b184" }
+    },
+    {
+      "id": "sky",
+      "label": "Sky",
+      "colors": { "body": "#9dbfc9", "trim": "#cfe0ea", "seat": "#fcf7ec" }
+    },
+    {
+      "id": "cocoa",
+      "label": "Cocoa",
+      "colors": { "body": "#4a3b2e", "trim": "#b99362", "seat": "#d3b184" }
+    }
+  ]
+}

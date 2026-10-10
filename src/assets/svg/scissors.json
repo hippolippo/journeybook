@@ -1,0 +1,12 @@
+{
+  "kind": "room",
+  "id": "scissors",
+  "label": "Scissors",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.805,
+  "defaultScale": 0.12,
+  "defaultRotation": 12,
+  "attach": "furniture"
+}

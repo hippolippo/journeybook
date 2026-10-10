@@ -1,0 +1,12 @@
+{
+  "kind": "room",
+  "id": "pencil-cup",
+  "label": "Pencil cup",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.784,
+  "defaultScale": 0.17,
+  "defaultRotation": 4,
+  "attach": "furniture"
+}

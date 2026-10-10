@@ -1,0 +1,32 @@
+{
+  "kind": "room",
+  "label": "Flower",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.718,
+  "defaultScale": 0.18,
+  "attach": "any",
+  "colorSlots": [
+    {
+      "id": "pot",
+      "label": "Pot",
+      "default": "#E28E77",
+      "palette": ["#c97b5a", "#e08868", "#d98c8c", "#e8b4af", "#9caf88", "#9dbfc9", "#d9a94e", "#e6b78a", "#f5dab9", "#4a3b2e"],
+      "allowCustom": true
+    },
+    {
+      "id": "flower",
+      "label": "Flower",
+      "default": "#EF9584",
+      "palette": ["#ef9584", "#d98c8c", "#e8b4af", "#f6e8a8", "#d9a94e", "#9dbfc9", "#9caf88", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "classic", "label": "Classic", "colors": { "pot": "#c97b5a", "flower": "#ef9584" } },
+    { "id": "blush", "label": "Blush", "colors": { "pot": "#e8b4af", "flower": "#d98c8c" } },
+    { "id": "meadow", "label": "Meadow", "colors": { "pot": "#9caf88", "flower": "#fcf7ec" } },
+    { "id": "sky", "label": "Sky", "colors": { "pot": "#9dbfc9", "flower": "#f6e8a8" } }
+  ]
+}

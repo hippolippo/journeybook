@@ -1,0 +1,31 @@
+{
+  "kind": "room",
+  "id": "raccoon",
+  "label": "Raccoon",
+  "category": "pet",
+  "layer": "surface",
+  "band": "floor",
+  "art": { "day": "raccoon-sleeping.svg" },
+  "aspect": 1.381,
+  "defaultScale": 0.4,
+  "attach": "furniture",
+  "particles": [
+    {
+      "name": "zzz",
+      "count": 3,
+      "duration": 4,
+      "size": 9,
+      "opacity": 0.85,
+      "jitter": 0.5,
+      "spawn": { "x": 76, "y": 14, "spreadX": 5, "spreadY": 4 },
+      "shape": { "kind": "svg", "svg": "particle-zzz.svg", "color": "#9dbfc9" },
+      "motion": {
+        "keyframes": [
+          { "at": 0, "opacity": 0, "transform": "translate(0, 0) scale(0.6)" },
+          { "at": 20, "opacity": 0.9 },
+          { "at": 100, "opacity": 0, "transform": "translate(35%, -120%) scale(1.25)" }
+        ]
+      }
+    }
+  ]
+}

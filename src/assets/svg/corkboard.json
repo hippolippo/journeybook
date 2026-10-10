@@ -1,0 +1,10 @@
+{
+  "kind": "room",
+  "id": "corkboard",
+  "label": "Corkboard",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 1.36,
+  "defaultScale": 0.38
+}
