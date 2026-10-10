@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { WALL_LINE, bandFor, deriveMobile, itemRect, resolveAttachedStyle, resolveItemStyle } from './geometry';
+import { WALL_LINE, bandFor, deriveMobile, itemRect, resolveAttachedFlatStyle, resolveAttachedStyle, resolveItemStyle } from './geometry';
 
 describe('bandFor', () => {
   it('splits the stage into wall, floor and whole-stage bands', () => {
@@ -66,3 +66,24 @@ describe('deriveMobile', () => {
     expect(deriveMobile({ x: 0.5, y: 0.5, scale: 1, rotation: 0, flip: false }).x).toBe(0.5);
   });
 });
+
+describe('resolveAttachedFlatStyle', () => {
+  const hostCat = { band: 'floor' as const, aspect: 2, defaultScale: 1 };
+  const childCat = { band: 'floor' as const, aspect: 1 };
+  const child = { x: 0.5, y: 0.5, scale: 0.5, rotation: 0, flip: false, ax: 0.25, ay: 0 };
+
+  it('matches the flat attached placement for an unrotated host', () => {
+    const host = { x: 0.2, y: 1, scale: 1, rotation: 0, flip: false };
+    const style = resolveAttachedFlatStyle(hostCat, host, childCat, child, 30);
+    expect(style.left).toBe('calc(20.0000% - 13.0000cqh)');
+    expect(parseFloat(style.top)).toBeCloseTo(61);
+    expect(parseFloat(style.height)).toBeCloseTo(13);
+  });
+
+  it('adds the host rotation to the child transform', () => {
+    const host = { x: 0.2, y: 1, scale: 1, rotation: 30, flip: false };
+    const style = resolveAttachedFlatStyle(hostCat, host, childCat, { ...child, ax: 0.5, rotation: 10 }, 30);
+    expect(style.transform).toBe('translateX(-50%) rotate(40deg) scaleX(1)');
+  });
+});
+

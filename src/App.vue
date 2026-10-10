@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { useAuthStore } from '@/stores/auth';
@@ -38,16 +38,25 @@ const rootClass = computed(() =>
     : {},
 );
 const phoneScale = computed(() => {
-  const panelW = editor.dock === 'left' || editor.dock === 'right' ? (editor.collapsed ? 46 : 340) : 0;
-  const panelH = editor.dock === 'top' || editor.dock === 'bottom' ? (editor.collapsed ? 46 : 320) : 0;
+  const panelW = editor.collapsed ? 46 : 340;
   const availW = width.value - panelW - 48;
-  const availH = height.value - panelH - 48;
+  const availH = height.value - 48;
   return Math.min(1, availW / 410, availH / 864);
 });
 
 function onContentDown(event: PointerEvent) {
   if (event.target === event.currentTarget) editor.select(null);
 }
+
+// Clicking empty room space (not the bar, panel, or an item) deselects.
+function onGlobalPointerDown(event: PointerEvent) {
+  if (!editor.isEditing) return;
+  const target = event.target as Element | null;
+  if (target?.closest?.('.editor, .roombar, .room-item')) return;
+  editor.select(null);
+}
+onMounted(() => window.addEventListener('pointerdown', onGlobalPointerDown));
+onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerDown));
 </script>
 
 <template>
