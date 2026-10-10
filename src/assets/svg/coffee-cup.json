@@ -1,19 +1,19 @@
 {
   "kind": "room",
-  "id": "scissors",
-  "label": "Scissors",
+  "id": "coffee-cup",
+  "label": "Coffee cup",
   "category": "trinket",
   "layer": "surface",
   "band": "floor",
-  "aspect": 0.805,
-  "defaultScale": 0.32,
-  "defaultRotation": 12,
+  "aspect": 1.159,
+  "defaultScale": 0.24,
+  "defaultRotation": -4,
   "attach": "furniture",
   "colorSlots": [
     {
       "id": "body",
-      "label": "Handles",
-      "default": "#7e8f6b",
+      "label": "Cup",
+      "default": "#DC855F",
       "palette": [
         "#c97b5a",
         "#d98c8c",
@@ -28,5 +28,6 @@
       ],
       "allowCustom": true
     }
-  ]
+  ],
+  "effect": { "type": "smoke", "color": "#ffffff", "count": 3, "duration": 3.6 }
 }

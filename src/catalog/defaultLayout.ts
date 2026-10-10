@@ -79,7 +79,7 @@ export function createDefaultRoomItems(): RoomItem[] {
 
     // --- things on the desk ---
     mk('pencil-cup', 'surface', 35, ap(0.1, 0.02, 0.17, 4), { attachTo: desk.id }),
-    mk('mug', 'surface', 36, ap(0.22, 0.03, 0.14, -4), { attachTo: desk.id }),
+    mk('coffee-cup', 'surface', 36, ap(0.22, 0.03, 0.14, -4), { attachTo: desk.id }),
     mk('laptop', 'surface', 37, ap(0.35, 0, 0.22, -2), { attachTo: desk.id }),
     mk('scissors', 'surface', 38, ap(0.5, 0.05, 0.12, 12), { attachTo: desk.id }),
     mk('owala', 'surface', 39, ap(0.62, 0.02, 0.2, -3), { attachTo: desk.id }),

@@ -6,7 +6,28 @@
   "layer": "surface",
   "band": "floor",
   "aspect": 1.414,
-  "defaultScale": 0.22,
+  "defaultScale": 0.64,
   "defaultRotation": -2,
-  "attach": "furniture"
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Shell",
+      "default": "#cbc5c3",
+      "palette": [
+        "#c97b5a",
+        "#d98c8c",
+        "#e8b4af",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#6f97bb",
+        "#d3b184",
+        "#fce7ca",
+        "#cbc5c3"
+      ],
+      "allowCustom": true
+    }
+  ]
 }
