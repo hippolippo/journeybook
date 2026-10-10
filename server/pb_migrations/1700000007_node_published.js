@@ -2,11 +2,13 @@
 migrate(
   (app) => {
     const nodes = app.findCollectionByNameOrId('nodes');
+    let existing = null;
     try {
-      nodes.fields.getByName('published');
+      existing = nodes.fields.getByName('published');
     } catch (e) {
-      nodes.fields.add(new BoolField({ name: 'published' }));
+      existing = null;
     }
+    if (!existing) nodes.fields.add(new BoolField({ name: 'published' }));
     app.save(nodes);
   },
   () => {

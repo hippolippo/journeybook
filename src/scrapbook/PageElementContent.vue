@@ -2,15 +2,18 @@
 import { computed, ref } from 'vue';
 import type { ImageElement, PageElement } from '@/data/types';
 import { useAssetUrl } from '@/composables/useAssetUrl';
-import { stickerById } from '@/scrapbook/decor';
+import { stickerById, tapeById } from '@/scrapbook/decor';
 import { frameById } from '@/scrapbook/frames';
 import { noteInnerStyle, noteTextStyle } from '@/scrapbook/notes';
 import { effectsFilter } from '@/scrapbook/effects';
+import { slotVars } from '@/scrapbook/elementStyle';
+import FxLayer from '@/room/FxLayer.vue';
 import grainArt from '@/assets/svg/film-grain.svg';
 
 const props = defineProps<{ el: PageElement }>();
 
 const sticker = computed(() => (props.el.kind === 'sticker' ? stickerById(props.el.icon) : null));
+const tape = computed(() => (props.el.kind === 'tape' ? tapeById(props.el.style) : null));
 const imgEl = ref<HTMLImageElement | null>(null);
 const natAspect = ref(1);
 const imgUrl = useAssetUrl(() => (props.el.kind === 'image' ? props.el.mediaId : undefined));
@@ -25,7 +28,13 @@ const frameDef = computed(() => frameById(props.el.kind === 'image' ? (props.el.
 const hasFrame = computed(() => {
   const f = frameDef.value;
   const i = f.insets;
-  return i.l + i.r + i.t + i.b > 0 || !!f.bg || !!f.radius || !!f.tape || !!f.stack;
+  return i.l + i.r + i.t + i.b > 0 || !!f.bg || !!f.radius || !!f.tape || !!f.stack || !!f.art;
+});
+
+/** Animations/particles for the element's sticker, tape or frame definition. */
+const visuals = computed(() => {
+  const def = sticker.value ?? tape.value ?? (props.el.kind === 'image' ? frameDef.value : null);
+  return { animations: def?.animations ?? [], particles: def?.particles ?? [] };
 });
 
 const classes = computed(() => {
@@ -33,13 +42,12 @@ const classes = computed(() => {
   const c: Record<string, boolean> = {
     el__inner: true,
     [`el__inner--${k}`]: true,
-    'el__inner--tint': !!sticker.value?.tint,
-    'el__inner--art': !!sticker.value && !sticker.value.tint,
   };
   if (k === 'image') {
     c['el__inner--framed'] = hasFrame.value;
     c[`el__inner--frame-${frameDef.value.id}`] = true;
     if (frameDef.value.ring) c['el__inner--ring'] = true;
+    if (frameDef.value.art) c['el__inner--frame-art'] = true;
     if (props.el.frameColor === 'transparent') c['el__inner--transparent'] = true;
   }
   return c;
@@ -47,8 +55,9 @@ const classes = computed(() => {
 
 const frameVars = computed(() => {
   const f = frameDef.value;
-  const color = props.el.kind === 'image' ? (props.el.frameColor ?? f.bg ?? '#fdf8ef') : '#fdf8ef';
-  return {
+  const fallback = f.bg ?? (f.art ? 'transparent' : '#fdf8ef');
+  const color = props.el.kind === 'image' ? (props.el.frameColor ?? fallback) : '#fdf8ef';
+  const vars: Record<string, string> = {
     '--f-l': `${f.insets.l * 100}%`,
     '--f-r': `${f.insets.r * 100}%`,
     '--f-t': `${f.insets.t * 100}%`,
@@ -56,6 +65,8 @@ const frameVars = computed(() => {
     '--f-radius': `${f.radius ?? 0}px`,
     '--frame-bg': color,
   };
+  if (props.el.kind === 'image' && f.colorSlots?.length) Object.assign(vars, slotVars(f.colorSlots, props.el.frameColors));
+  return vars;
 });
 
 const windowClasses = computed(() => {
@@ -107,7 +118,12 @@ const grainUri = computed(() => `url("${grainArt}")`);
       <span class="cap">{{ el.caption }}</span>
     </template>
 
-    <template v-else-if="el.kind === 'image'">
+    <FxLayer
+      v-else-if="el.kind === 'image'"
+      :animations="visuals.animations"
+      :particles="visuals.particles"
+      :seed="el.id"
+    >
       <span v-if="frameDef.stack" class="frame__stack frame__stack--a"></span>
       <span v-if="frameDef.stack" class="frame__stack frame__stack--b"></span>
       <div class="frame__window" :class="windowClasses">
@@ -133,19 +149,34 @@ const grainUri = computed(() => `url("${grainArt}")`);
         <span class="frame__mount frame__mount--bl"></span>
         <span class="frame__mount frame__mount--br"></span>
       </template>
+      <span v-if="frameDef.raw" class="frame__overlay" v-html="frameDef.raw"></span>
+      <img v-else-if="frameDef.art" class="frame__overlay" :src="frameDef.art" alt="" draggable="false" />
       <span v-if="frameDef.caption" class="cap">{{ el.caption }}</span>
-    </template>
+    </FxLayer>
 
     <template v-else-if="el.kind === 'note'">
       <span class="note__text" :style="noteText ?? {}">{{ el.text }}</span>
     </template>
 
-    <img
-      v-else-if="el.kind === 'sticker' && sticker && !sticker.tint"
-      class="el__sticker-img"
-      :src="sticker.art"
-      alt=""
-      draggable="false"
-    />
+    <FxLayer
+      v-else-if="el.kind === 'sticker' && sticker"
+      :animations="visuals.animations"
+      :particles="visuals.particles"
+      :seed="el.id"
+    >
+      <span v-if="sticker.raw" class="el__sticker-svg" v-html="sticker.raw"></span>
+      <span v-else-if="sticker.tint" class="el__tint"></span>
+      <img v-else class="el__sticker-img" :src="sticker.art" alt="" draggable="false" />
+    </FxLayer>
+
+    <FxLayer
+      v-else-if="el.kind === 'tape' && tape"
+      :animations="visuals.animations"
+      :particles="visuals.particles"
+      :seed="el.id"
+    >
+      <span v-if="tape.raw" class="el__tape-svg" v-html="tape.raw"></span>
+      <span v-else class="el__tape-fill"></span>
+    </FxLayer>
   </div>
 </template>

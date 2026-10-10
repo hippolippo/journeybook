@@ -32,7 +32,9 @@ with DNS pointing here, Caddy provisions a trusted certificate automatically.
 1. Open `https://<DOMAIN>/_/` and create the first superuser when prompted
    (PocketBase's install screen).
 2. In the admin UI, open the `users` collection and create the two accounts for
-   you and your partner. Open registration is disabled by design.
+   you and your partner. For each, set **name** (shown around the app) and
+   **role** (`him` or `her`, used to phrase things from each person's side).
+   Open registration is disabled by design.
 
 Credentials are never placed in env or compose files.
 

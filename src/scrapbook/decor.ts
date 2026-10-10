@@ -1,4 +1,7 @@
 import type { TapeStyle } from '@/data/types';
+import type { ColorPreset, ColorSlot } from '@/catalog/types';
+import type { AnimationDef } from '@/catalog/animation';
+import type { ParticleDef } from '@/catalog/particles';
 import heartArt from '@/assets/svg/doodle-heart.svg';
 import starArt from '@/assets/svg/doodle-star.svg';
 import sparkleArt from '@/assets/svg/sparkle.svg';
@@ -52,6 +55,12 @@ export interface StickerDef {
   tint: boolean;
   aspect: number;
   defaultColor?: string;
+  /** Inlined SVG for multi-slot recolouring (uses `var(--c-<slot>, …)`). */
+  raw?: string;
+  colorSlots?: ColorSlot[];
+  presets?: ColorPreset[];
+  animations?: AnimationDef[];
+  particles?: ParticleDef[];
 }
 
 const BUILTIN_STICKERS: StickerDef[] = [
@@ -78,6 +87,12 @@ export interface TapeDef {
   aspect: number;
   defaultColor: string;
   opacity: number;
+  /** Inlined SVG for multi-slot recolouring (uses `var(--c-<slot>, …)`). */
+  raw?: string;
+  colorSlots?: ColorSlot[];
+  presets?: ColorPreset[];
+  animations?: AnimationDef[];
+  particles?: ParticleDef[];
 }
 
 const BUILTIN_TAPES: TapeDef[] = [

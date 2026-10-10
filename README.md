@@ -46,6 +46,8 @@ See [`server/README.md`](server/README.md) for details and dev credentials.
 ## What works
 
 - **Auth**: two invite-only accounts; login gate when a backend is configured.
+  Each account has a **name** and a **role** (`him`/`her`) so greetings, the
+  room-bar avatars, and visit directions read correctly for whoever is signed in.
 - **Room** rendered from a data catalog (default layout matches the mockup);
   day/night (auto by reference timezone + manual override); responsive
   band-relative placement. Wall/floor options and per-item color slots.

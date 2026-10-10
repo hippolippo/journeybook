@@ -8,8 +8,9 @@ export function colorizeSvg(raw: string, colors: Record<string, string>, slots: 
   let svg = raw;
   for (const slot of slots) {
     const color = colors[slot.id] ?? slot.default;
+    // Fallbacks may themselves contain parentheses (e.g. rgba(...)).
     svg = svg
-      .replace(new RegExp(`var\\(\\s*--c-${slot.id}\\s*,\\s*[^)]*\\)`, 'g'), color)
+      .replace(new RegExp(`var\\(\\s*--c-${slot.id}\\s*,\\s*(?:[^()]|\\([^()]*\\))*\\)`, 'g'), color)
       .replace(new RegExp(`var\\(\\s*--c-${slot.id}\\s*\\)`, 'g'), color);
   }
   return svg;

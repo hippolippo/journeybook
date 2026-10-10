@@ -2,6 +2,7 @@ import PocketBase, { type RecordModel } from 'pocketbase';
 import type {
   AppData,
   CalendarEvent,
+  ImageEffects,
   ImagePreset,
   MediaAsset,
   PageElement,
@@ -126,11 +127,13 @@ function mapNode(rec: RecordModel): ScrapNode {
 
 function mapPage(rec: RecordModel): ScrapPage {
   const groups = field<PageGroup[]>(rec, 'groups', []);
+  const paperColors = field<Record<string, string>>(rec, 'paperColors', {});
   return {
     id: rec.id,
     bookId: field<string>(rec, 'book', ''),
     index: field<number>(rec, 'index', 0),
     background: field<string>(rec, 'background', '') || undefined,
+    paperColors: Object.keys(paperColors).length ? paperColors : undefined,
     groups: Array.isArray(groups) && groups.length ? groups : undefined,
   };
 }
@@ -159,13 +162,38 @@ function mapElement(rec: RecordModel): PageElement {
     return { ...base, kind: 'photo', photo: (payload.photo as PhotoStyle) ?? 'sunset', caption: payload.caption as string | undefined };
   }
   if (kind === 'sticker') {
-    return { ...base, kind: 'sticker', icon: (payload.icon as 'heart' | 'star' | 'sparkle') ?? 'heart', color };
+    return {
+      ...base,
+      kind: 'sticker',
+      icon: (payload.icon as 'heart' | 'star' | 'sparkle') ?? 'heart',
+      color,
+      colors: payload.colors as Record<string, string> | undefined,
+    };
   }
   if (kind === 'image') {
-    return { ...base, kind: 'image', mediaId: (payload.mediaId as string) ?? '', caption: payload.caption as string | undefined };
+    return {
+      ...base,
+      kind: 'image',
+      mediaId: (payload.mediaId as string) ?? '',
+      caption: payload.caption as string | undefined,
+      frame: payload.frame as string | undefined,
+      frameColor: payload.frameColor as string | undefined,
+      frameColors: payload.frameColors as Record<string, string> | undefined,
+      zoom: payload.zoom as number | undefined,
+      focusX: payload.focusX as number | undefined,
+      focusY: payload.focusY as number | undefined,
+      preset: payload.preset as string | undefined,
+      effects: payload.effects as ImageEffects | undefined,
+    };
   }
   if (kind === 'tape') {
-    return { ...base, kind: 'tape', style: (payload.style as TapeStyle) ?? 'washi', color };
+    return {
+      ...base,
+      kind: 'tape',
+      style: (payload.style as TapeStyle) ?? 'washi',
+      color,
+      colors: payload.colors as Record<string, string> | undefined,
+    };
   }
   return { ...base, kind: 'note', text: (payload.text as string) ?? '', color };
 }
@@ -226,7 +254,13 @@ function nodeBody(node: ScrapNode): Record<string, unknown> {
   };
 }
 function pageBody(page: ScrapPage): Record<string, unknown> {
-  return { book: page.bookId, index: page.index, background: page.background ?? '', groups: page.groups ?? [] };
+  return {
+    book: page.bookId,
+    index: page.index,
+    background: page.background ?? '',
+    paperColors: page.paperColors ?? {},
+    groups: page.groups ?? [],
+  };
 }
 
 function mapPreset(rec: RecordModel): ImagePreset {
@@ -244,12 +278,23 @@ function elementBody(el: PageElement): Record<string, unknown> {
     el.kind === 'photo'
       ? { photo: el.photo, caption: el.caption }
       : el.kind === 'image'
-        ? { mediaId: el.mediaId, caption: el.caption }
+        ? {
+            mediaId: el.mediaId,
+            caption: el.caption,
+            frame: el.frame,
+            frameColor: el.frameColor,
+            frameColors: el.frameColors,
+            zoom: el.zoom,
+            focusX: el.focusX,
+            focusY: el.focusY,
+            preset: el.preset,
+            effects: el.effects,
+          }
         : el.kind === 'note'
           ? { text: el.text, color: el.color }
           : el.kind === 'tape'
-            ? { style: el.style, color: el.color }
-            : { icon: el.icon, color: el.color };
+            ? { style: el.style, color: el.color, colors: el.colors }
+            : { icon: el.icon, color: el.color, colors: el.colors };
   return {
     page: el.pageId,
     kind: el.kind,

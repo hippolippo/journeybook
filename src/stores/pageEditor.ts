@@ -13,6 +13,7 @@ function clamp(v: number, lo: number, hi: number) {
 
 interface PageDraft {
   background?: string;
+  paperColors?: Record<string, string>;
   elements: PageElement[];
   groups: PageGroup[];
 }
@@ -27,6 +28,8 @@ export interface PageElementPatch {
   z?: number;
   opacity?: number;
   color?: string;
+  colors?: Record<string, string>;
+  frameColors?: Record<string, string>;
   text?: string;
   caption?: string;
   mediaId?: string;
@@ -98,6 +101,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       s.editingNoteId && s.draft ? (s.draft.elements.find((e) => e.id === s.editingNoteId) ?? null) : null,
     groups: (s): PageGroup[] => s.draft?.groups ?? [],
     background: (s): string | undefined => s.draft?.background,
+    paperColors: (s): Record<string, string> => s.draft?.paperColors ?? {},
     canUndo: (s): boolean => s.history.length > 0,
     canRedo: (s): boolean => s.future.length > 0,
   },
@@ -136,7 +140,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
         aspectLocked: el.aspectLocked ?? true,
         groupId: el.groupId ?? defaultGroupId(el.kind),
       }));
-      this.draft = { background: page.background, elements, groups: ensureGroups(page.groups) };
+      this.draft = { background: page.background, paperColors: page.paperColors, elements, groups: ensureGroups(page.groups) };
       this.selectedId = null;
       this.editingImageId = null;
       this.editingNoteId = null;
@@ -162,7 +166,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
           if (!draftIds.has(existing.id)) app.removeElement(existing.id);
         }
         for (const el of this.draft.elements) app.putElement(el);
-        app.updatePage(this.pageId, { background: this.draft.background, groups: this.draft.groups });
+        app.updatePage(this.pageId, { background: this.draft.background, paperColors: this.draft.paperColors, groups: this.draft.groups });
       }
       this.finish();
     },
@@ -356,6 +360,30 @@ export const usePageEditorStore = defineStore('pageEditor', {
       el.frameColor = color;
       this.dirty = true;
     },
+    setFrameSlotColor(id: string, slotId: string, color: string) {
+      const el = this.draft?.elements.find((e) => e.id === id);
+      if (!el || el.kind !== 'image') return;
+      el.frameColors = { ...(el.frameColors ?? {}), [slotId]: color };
+      this.dirty = true;
+    },
+    applyFrameColors(id: string, colors: Record<string, string>) {
+      const el = this.draft?.elements.find((e) => e.id === id);
+      if (!el || el.kind !== 'image') return;
+      el.frameColors = { ...(el.frameColors ?? {}), ...colors };
+      this.dirty = true;
+    },
+    setElementSlotColor(id: string, slotId: string, color: string) {
+      const el = this.draft?.elements.find((e) => e.id === id);
+      if (!el || (el.kind !== 'sticker' && el.kind !== 'tape')) return;
+      el.colors = { ...(el.colors ?? {}), [slotId]: color };
+      this.dirty = true;
+    },
+    applyElementColors(id: string, colors: Record<string, string>) {
+      const el = this.draft?.elements.find((e) => e.id === id);
+      if (!el || (el.kind !== 'sticker' && el.kind !== 'tape')) return;
+      el.colors = { ...(el.colors ?? {}), ...colors };
+      this.dirty = true;
+    },
     setZoom(id: string, zoom: number) {
       const el = this.draft?.elements.find((e) => e.id === id);
       if (!el || el.kind !== 'image') return;
@@ -422,6 +450,17 @@ export const usePageEditorStore = defineStore('pageEditor', {
       if (!this.draft) return;
       this.snapshot();
       this.draft.background = id;
+      this.dirty = true;
+    },
+    setPaperColor(slotId: string, color: string) {
+      if (!this.draft) return;
+      this.draft.paperColors = { ...(this.draft.paperColors ?? {}), [slotId]: color };
+      this.dirty = true;
+    },
+    applyPaperColors(colors: Record<string, string>) {
+      if (!this.draft) return;
+      this.snapshot();
+      this.draft.paperColors = { ...(this.draft.paperColors ?? {}), ...colors };
       this.dirty = true;
     },
 

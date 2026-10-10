@@ -4,11 +4,13 @@ import { useAppStore } from '@/stores/app';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { useViewport } from '@/composables/useViewport';
 import { PAPERS, paperById, paperCss } from '@/scrapbook/paper';
-import { STICKER_COLORS, STICKERS, TAPES, TAPE_COLORS, stickerById } from '@/scrapbook/decor';
+import { STICKER_COLORS, STICKERS, TAPES, TAPE_COLORS, stickerById, tapeById } from '@/scrapbook/decor';
 import PageItemEditor from '@/scrapbook/PageItemEditor.vue';
 import LayersPane from '@/scrapbook/LayersPane.vue';
 import ImageEditor from '@/scrapbook/ImageEditor.vue';
 import NoteEditor from '@/scrapbook/NoteEditor.vue';
+import ColorSlotsEditor from '@/scrapbook/ColorSlotsEditor.vue';
+import PaperSurface from '@/scrapbook/PaperSurface.vue';
 
 const pe = usePageEditorStore();
 const app = useAppStore();
@@ -30,7 +32,16 @@ const stageStyle = computed(() => ({
   height: `${pageSize.value}px`,
   '--page-scale': String(pageSize.value / 480),
 }));
-const pageStyle = computed(() => paperCss(paperById(pe.background)));
+const pageStyle = computed(() => paperCss(paperById(pe.background), pe.paperColors));
+const paperDef = computed(() => paperById(pe.background));
+const paperSlots = computed(() => paperDef.value.colorSlots ?? []);
+const paperPresets = computed(() => paperDef.value.presets ?? []);
+function onPaperSlotColor(slotId: string, color: string) {
+  pe.setPaperColor(slotId, color);
+}
+function onPaperPresetColors(colors: Record<string, string>) {
+  pe.applyPaperColors(colors);
+}
 
 const album = computed(() => app.mediaFor(pe.bookId));
 watchEffect(() => {
@@ -41,12 +52,27 @@ const sel = computed(() => pe.selected);
 const selImage = computed(() => (sel.value && sel.value.kind === 'image' ? sel.value : null));
 const selNote = computed(() => (sel.value && sel.value.kind === 'note' ? sel.value : null));
 const selSticker = computed(() => (sel.value && sel.value.kind === 'sticker' ? stickerById(sel.value.icon) : null));
+const selTape = computed(() => (sel.value && sel.value.kind === 'tape' ? tapeById(sel.value.style) : null));
+const selSlots = computed(() => selSticker.value?.colorSlots ?? selTape.value?.colorSlots ?? []);
+const selPresets = computed(() => selSticker.value?.presets ?? selTape.value?.presets ?? []);
+const selColors = computed(() => {
+  const s = sel.value;
+  return s && (s.kind === 'sticker' || s.kind === 'tape') ? (s.colors ?? {}) : {};
+});
 const colorable = computed(() => {
   const k = sel.value?.kind;
   if (k === 'tape') return true;
   if (k === 'sticker') return !!selSticker.value?.tint;
   return false;
 });
+function onSlotColor(slotId: string, color: string) {
+  if (sel.value) pe.setElementSlotColor(sel.value.id, slotId, color);
+}
+function onPresetColors(colors: Record<string, string>) {
+  if (!sel.value) return;
+  pe.snapshot();
+  pe.applyElementColors(sel.value.id, colors);
+}
 const palette = computed(() => {
   const k = sel.value?.kind;
   if (k === 'tape') return TAPE_COLORS;
@@ -173,6 +199,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
         <div class="peditor-stage" :style="stageStyle">
           <div class="page-scaler">
             <div class="square-page" :style="pageStyle" @pointerdown.self="pe.select(null)">
+              <PaperSurface :paper="paperDef" />
               <PageItemEditor v-for="el in pe.elements" :key="el.id" :el="el" />
               <span class="square-page__num">{{ pe.index + 1 }}</span>
             </div>
@@ -204,6 +231,16 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                 @click="pe.setPaper(p.id)"
               ></button>
             </div>
+            <template v-if="paperSlots.length">
+              <label style="margin-top: 0.5rem">Paper colors</label>
+              <ColorSlotsEditor
+                :slots="paperSlots"
+                :presets="paperPresets"
+                :values="pe.paperColors"
+                @update="onPaperSlotColor"
+                @preset="onPaperPresetColors"
+              />
+            </template>
           </section>
 
           <section>
@@ -300,7 +337,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
               <input type="number" min="0" max="1" step="0.01" :value="sel.opacity" @change="pe.snapshot(); setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)" />
             </div>
 
-            <template v-if="colorable">
+            <template v-if="selSlots.length">
+              <label style="margin-top: 0.5rem">Colors</label>
+              <ColorSlotsEditor
+                :slots="selSlots"
+                :presets="selPresets"
+                :values="selColors"
+                @update="onSlotColor"
+                @preset="onPresetColors"
+              />
+            </template>
+            <template v-else-if="colorable">
               <label style="margin-top: 0.5rem">Color</label>
               <div class="swatches">
                 <button v-for="c in palette" :key="c" class="swatch" :style="{ background: c }" type="button" @click="setColor(c)"></button>

@@ -2,11 +2,13 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '@/stores/app';
+import { useAuthStore } from '@/stores/auth';
 import { togetherStatus } from '@/calendar/events';
 import pressedFlower from '@/assets/svg/pressed-flower.svg';
 
 const router = useRouter();
 const app = useAppStore();
+const auth = useAuthStore();
 
 const status = computed(() => togetherStatus(app.data.events, new Date()));
 const togetherText = computed(() => {
@@ -15,12 +17,15 @@ const togetherText = computed(() => {
   if (s.state === 'apart') return `${s.days} ${s.days === 1 ? 'day' : 'days'} until we're together`;
   return 'Plan our next visit';
 });
+const greeting = computed(() =>
+  auth.myName ? `Welcome back, ${auth.myName}` : 'Welcome back, you two',
+);
 </script>
 
 <template>
   <section class="home">
     <p class="tag">a little home just for two</p>
-    <h1 class="home__greeting">Welcome back, you two</h1>
+    <h1 class="home__greeting">{{ greeting }}</h1>
     <p class="home__tagline">what shall we remember today?</p>
     <div class="shelf">
       <button class="hero-book" type="button" @click="router.push({ name: 'organizer' })">

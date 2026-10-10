@@ -1,5 +1,8 @@
 export type CoverColor = 'rose' | 'sage' | 'mustard' | 'terracotta' | 'sky' | 'kraft';
 
+/** Which of the two accounts a person is. */
+export type UserRole = 'him' | 'her';
+
 export type NodeType = 'folder' | 'scrapbook';
 
 export interface ScrapNode {
@@ -73,6 +76,8 @@ export interface StickerElement extends ElementBase {
   kind: 'sticker';
   icon: string;
   color?: string;
+  /** Per-slot colours for multi-part recolourable stickers. */
+  colors?: Record<string, string>;
 }
 
 export interface ImageEffects {
@@ -91,6 +96,8 @@ export interface ImageElement extends ElementBase {
   caption?: string;
   frame?: string;
   frameColor?: string;
+  /** Per-slot colours for multi-part recolourable frames. */
+  frameColors?: Record<string, string>;
   zoom?: number;
   focusX?: number;
   focusY?: number;
@@ -102,6 +109,8 @@ export interface TapeElement extends ElementBase {
   kind: 'tape';
   style: TapeStyle;
   color?: string;
+  /** Per-slot colours for multi-part recolourable tape. */
+  colors?: Record<string, string>;
 }
 
 export type PageElement = PhotoElement | NoteElement | StickerElement | ImageElement | TapeElement;
@@ -126,6 +135,8 @@ export interface ScrapPage {
   index: number;
   /** Paper style id (see src/scrapbook/paper.ts). */
   background?: string;
+  /** Per-slot colours for the chosen paper's recolourable layers. */
+  paperColors?: Record<string, string>;
   /** Layer groups; ordered front-to-back. */
   groups?: PageGroup[];
 }
@@ -155,6 +166,10 @@ export interface Placement {
   scale: number;
   rotation: number;
   flip: boolean;
+  /** Host-relative position when attached: fraction across the host's box. */
+  ax?: number;
+  /** Host-relative position when attached: fraction from the host's top. */
+  ay?: number;
 }
 
 export interface RoomItem {

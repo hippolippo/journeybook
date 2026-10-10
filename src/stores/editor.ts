@@ -45,6 +45,10 @@ export const useEditorStore = defineStore('editor', {
       showExit: false,
       draft: null as Draft | null,
       layouts: [] as StoredLayout[],
+      /** Last click used to cycle through overlapping items. */
+      lastPick: null as { x: number; y: number; index: number } | null,
+      /** The item currently being dragged (renders a translucent preview on top). */
+      draggingId: null as string | null,
     };
   },
   getters: {
@@ -76,8 +80,22 @@ export const useEditorStore = defineStore('editor', {
     setViewport(viewport: Viewport) {
       this.viewport = viewport;
     },
+    setDragging(id: string | null) {
+      this.draggingId = id;
+    },
     select(id: string | null) {
       this.selectedId = id;
+    },
+    /**
+     * Select among overlapping items at a point. A repeated click at the same
+     * spot steps down through the stack (top-to-front order in `ids`).
+     */
+    pickAt(ids: string[], x: number, y: number) {
+      if (!ids.length) return;
+      const near = this.lastPick != null && Math.hypot(x - this.lastPick.x, y - this.lastPick.y) < 6;
+      const index = near && this.lastPick ? (this.lastPick.index + 1) % ids.length : 0;
+      this.lastPick = { x, y, index };
+      this.selectedId = ids[index];
     },
 
     async start() {
@@ -139,7 +157,7 @@ export const useEditorStore = defineStore('editor', {
     itemById(id: string): RoomItem | undefined {
       return this.draft?.items.find((i) => i.id === id);
     },
-    addItem(catalogId: string, at?: { x: number; y: number }): RoomItem | null {
+    addItem(catalogId: string, at?: { x?: number; y?: number; hostId?: string; ax?: number; ay?: number }): RoomItem | null {
       if (!this.draft) return null;
       const cat = getCatalogItem(catalogId);
       if (!cat) return null;
@@ -149,6 +167,7 @@ export const useEditorStore = defineStore('editor', {
         catalogId,
         layer: cat.layer,
         z,
+        attachTo: at?.hostId,
         color: {},
         desktop: {
           x: at?.x ?? 0.5,
@@ -156,6 +175,8 @@ export const useEditorStore = defineStore('editor', {
           scale: cat.defaultScale,
           rotation: cat.defaultRotation,
           flip: false,
+          ax: at?.ax,
+          ay: at?.ay,
         },
         locked: false,
       };
@@ -192,6 +213,20 @@ export const useEditorStore = defineStore('editor', {
         item.mobile = { ...current, ...patch };
       }
       this.dirty = true;
+    },
+    /** Attach an item to a host, storing host-relative coordinates. */
+    setAttach(id: string, viewport: Viewport, hostId: string, ax: number, ay: number) {
+      const item = this.itemById(id);
+      if (!item || item.locked) return;
+      item.attachTo = hostId;
+      this.updatePlacement(id, viewport, { ax, ay });
+    },
+    /** Detach an item, restoring absolute band coordinates. */
+    detach(id: string, viewport: Viewport, x: number, y: number) {
+      const item = this.itemById(id);
+      if (!item || item.locked) return;
+      item.attachTo = undefined;
+      this.updatePlacement(id, viewport, { x, y, ax: undefined, ay: undefined });
     },
     setColor(id: string, slotId: string, color: string) {
       const item = this.itemById(id);

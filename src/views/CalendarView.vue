@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import type { CalendarEvent } from '@/data/types';
 import { useAppStore } from '@/stores/app';
+import { useAuthStore } from '@/stores/auth';
 import {
   countdownLabel,
   occurrencesOnDay,
@@ -11,10 +12,16 @@ import {
   upcoming,
   type Occurrence,
 } from '@/calendar/events';
-import { KIND_META, DIRECTION_LABEL } from '@/calendar/meta';
+import { KIND_META, directionLabel } from '@/calendar/meta';
 import EventDialog from '@/calendar/EventDialog.vue';
 
 const app = useAppStore();
+const auth = useAuthStore();
+const directionCtx = computed(() => ({
+  myRole: auth.myRole,
+  myName: auth.myName,
+  partnerName: auth.partnerName,
+}));
 
 const now = ref(new Date());
 const cursor = ref(startOfMonth(new Date()));
@@ -187,13 +194,16 @@ const banner = computed(() => {
   }
   if (state.state === 'apart') {
     const days = state.days;
+    const who = auth.partnerName;
     return {
       tone: 'apart',
       icon: 'icon--plane',
       title:
         days === 0
           ? "You're together today"
-          : `${days} ${days === 1 ? 'day' : 'days'} until you're together`,
+          : who
+            ? `${days} ${days === 1 ? 'day' : 'days'} until you see ${who}`
+            : `${days} ${days === 1 ? 'day' : 'days'} until you're together`,
       sub: `${state.event.title} · ${dateFmt.format(state.start)} at ${timeFmt.format(state.start)}`,
     };
   }
@@ -294,7 +304,7 @@ const banner = computed(() => {
                 <span class="event-card__meta">
                   {{ KIND_META[occ.event.kind].label }}
                   <template v-if="occ.event.direction">
-                    · {{ DIRECTION_LABEL[occ.event.direction] }}</template
+                    · {{ directionLabel(occ.event.direction, directionCtx) }}</template
                   >
                   · {{ occurrenceWhen(occ) }}
                 </span>

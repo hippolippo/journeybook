@@ -17,6 +17,7 @@ import laptopArt from '@/assets/svg/laptop.svg';
 import scissorsArt from '@/assets/svg/scissors.svg';
 import owalaArt from '@/assets/svg/owala.svg';
 import plantArt from '@/assets/svg/potted-plant.svg';
+import zzzArt from '@/assets/svg/particle-zzz.svg';
 
 import beanbagRaw from '@/assets/svg/beanbag.svg?raw';
 import rugRaw from '@/assets/svg/rug.svg?raw';
@@ -87,6 +88,7 @@ const BUILTIN: CatalogItem[] = [
     defaultRotation: 0,
     art: { day: shelfArt },
     colorSlots: [],
+    host: true,
   },
   {
     id: 'corkboard',
@@ -124,6 +126,7 @@ const BUILTIN: CatalogItem[] = [
     defaultRotation: 0,
     art: { day: deskArt },
     colorSlots: [],
+    host: true,
   },
   {
     id: 'beanbag',
@@ -141,6 +144,7 @@ const BUILTIN: CatalogItem[] = [
       slot('seat', 'Seat', '#b06a4b'),
     ],
     raw: beanbagRaw,
+    host: true,
   },
   {
     id: 'rug',
@@ -172,6 +176,25 @@ const BUILTIN: CatalogItem[] = [
     art: { day: raccoonArt },
     colorSlots: [],
     attach: 'furniture',
+    particles: [
+      {
+        name: 'zzz',
+        count: 3,
+        duration: 4,
+        size: 9,
+        opacity: 0.85,
+        jitter: 0.5,
+        spawn: { x: 76, y: 14, spreadX: 5, spreadY: 4 },
+        shape: { kind: 'svg', svg: zzzArt, color: '#9dbfc9' },
+        motion: {
+          keyframes: [
+            { at: 0, opacity: 0, transform: 'translate(0, 0) scale(0.6)' },
+            { at: 20, opacity: 0.9 },
+            { at: 100, opacity: 0, transform: 'translate(35%, -120%) scale(1.25)' },
+          ],
+        },
+      },
+    ],
   },
   {
     id: 'mug',

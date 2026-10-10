@@ -5,11 +5,13 @@ migrate(
 
     const elements = app.findCollectionByNameOrId('elements');
     const ensureField = (collection, name, field) => {
+      let existing = null;
       try {
-        collection.fields.getByName(name);
+        existing = collection.fields.getByName(name);
       } catch (e) {
-        collection.fields.add(field);
+        existing = null;
       }
+      if (!existing) collection.fields.add(field);
     };
     ensureField(elements, 'locked', new BoolField({ name: 'locked' }));
     ensureField(elements, 'aspectLocked', new BoolField({ name: 'aspectLocked' }));

@@ -2,7 +2,8 @@
 import { computed, reactive } from 'vue';
 import type { CalendarEvent, EventKind, FlightLeg, Recurrence, VisitDirection } from '@/data/types';
 import { newId } from '@/utils/id';
-import { DIRECTION_LABEL, EVENT_KINDS, KIND_META, RECURRENCE_OPTIONS } from './meta';
+import { useAuthStore } from '@/stores/auth';
+import { EVENT_KINDS, KIND_META, RECURRENCE_OPTIONS, directionOptions } from './meta';
 
 const props = defineProps<{ event: CalendarEvent | null; day: Date }>();
 const emit = defineEmits<{
@@ -10,6 +11,11 @@ const emit = defineEmits<{
   remove: [id: string];
   close: [];
 }>();
+
+const auth = useAuthStore();
+const directions = computed(() =>
+  directionOptions({ myRole: auth.myRole, myName: auth.myName, partnerName: auth.partnerName }),
+);
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
@@ -165,8 +171,8 @@ function save() {
         <label>
           Direction
           <select v-model="form.direction">
-            <option v-for="(label, value) in DIRECTION_LABEL" :key="value" :value="value">
-              {{ label }}
+            <option v-for="opt in directions" :key="opt.value" :value="opt.value">
+              {{ opt.label }}
             </option>
           </select>
         </label>
