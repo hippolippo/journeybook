@@ -13,3 +13,4 @@ server/pocketbase
 server/pb_data/
 server/CHANGELOG.md
 server/LICENSE.md
+*.exe
