@@ -142,7 +142,26 @@ describe('room-decor-json skill: scaffold', () => {
 
 describe('room-decor-json skill: check', () => {
   it('passes the shipped room sidecars', () => {
-    for (const name of ['trailing-plant.json', 'paper-lantern.json', 'fairy-lights.json']) {
+    for (const name of [
+      'trailing-plant.json',
+      'paper-lantern.json',
+      'fairy-lights.json',
+      'window-cozy.json',
+      'curtain.json',
+      'string-lights.json',
+      'wall-shelf.json',
+      'corkboard.json',
+      'desk.json',
+      'beanbag.json',
+      'rug.json',
+      'raccoon-sleeping.json',
+      'mug-tea.json',
+      'pencil-cup.json',
+      'laptop.json',
+      'scissors.json',
+      'owala.json',
+      'potted-plant.json',
+    ]) {
       const { status, stdout } = run(['check', join(ASSETS, name), '--json']);
       expect(status, `${name} should have no errors`).toBe(0);
       expect(JSON.parse(stdout).ok).toBe(true);

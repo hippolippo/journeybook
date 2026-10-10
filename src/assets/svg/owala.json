@@ -1,0 +1,12 @@
+{
+  "kind": "room",
+  "id": "owala",
+  "label": "Owala bottle",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.413,
+  "defaultScale": 0.2,
+  "defaultRotation": -3,
+  "attach": "furniture"
+}

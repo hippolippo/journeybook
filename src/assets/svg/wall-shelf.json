@@ -1,0 +1,11 @@
+{
+  "kind": "room",
+  "id": "wall-shelf",
+  "label": "Wall shelf",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 1.647,
+  "defaultScale": 0.22,
+  "host": true
+}

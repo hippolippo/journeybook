@@ -1,0 +1,10 @@
+{
+  "kind": "room",
+  "id": "string-lights",
+  "label": "String lights",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 2.8,
+  "defaultScale": 0.22
+}

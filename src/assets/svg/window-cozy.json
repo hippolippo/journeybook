@@ -1,0 +1,11 @@
+{
+  "kind": "room",
+  "id": "window",
+  "label": "Window",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "art": { "day": "window-cozy.svg" },
+  "aspect": 0.765,
+  "defaultScale": 0.4
+}

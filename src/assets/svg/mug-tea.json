@@ -1,0 +1,13 @@
+{
+  "kind": "room",
+  "id": "mug",
+  "label": "Mug",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "art": { "day": "mug-tea.svg" },
+  "aspect": 1,
+  "defaultScale": 0.14,
+  "defaultRotation": -4,
+  "attach": "furniture"
+}

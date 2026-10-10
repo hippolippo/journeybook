@@ -1,0 +1,12 @@
+{
+  "kind": "room",
+  "id": "laptop",
+  "label": "Laptop",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.414,
+  "defaultScale": 0.22,
+  "defaultRotation": -2,
+  "attach": "furniture"
+}

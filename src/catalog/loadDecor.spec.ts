@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EffectDef } from './types';
+import { CATALOG } from './catalog';
 import { loadedFrames, loadedPapers, loadedRoomItems, loadedStickers } from './loadDecor';
 
 function firstEffect(effect: unknown): EffectDef | undefined {
@@ -64,6 +65,65 @@ describe('asset loader', () => {
     const shape = burst?.particles?.[0].shape?.svg ?? '';
     expect(shape).toBeTruthy();
     expect(shape).not.toBe('doodle-heart.svg');
+  });
+
+  it('gives the potted plants a pot recolour slot (plus flower for the bloom)', () => {
+    for (const id of ['potted-plant-2', 'potted-plant-4']) {
+      const plant = loadedRoomItems.find((i) => i.id === id);
+      expect(plant?.colorSlots.map((s) => s.id)).toEqual(['pot']);
+      expect(plant?.raw).toContain('--c-pot');
+    }
+    const bloom = loadedRoomItems.find((i) => i.id === 'potted-plant-3');
+    expect(bloom?.colorSlots.map((s) => s.id)).toEqual(['pot', 'flower']);
+    expect(bloom?.raw).toContain('--c-flower');
+    expect(bloom?.presets?.length).toBeGreaterThan(0);
+    const builtin = CATALOG.find((i) => i.id === 'plant');
+    expect(builtin?.colorSlots.map((s) => s.id)).toEqual(['pot']);
+    expect(builtin?.raw).toContain('--c-pot');
+  });
+
+  it('loads the former built-in room items from sidecars', () => {
+    const byId = new Map(loadedRoomItems.map((i) => [i.id, i]));
+    for (const id of [
+      'window',
+      'curtain',
+      'string-lights',
+      'wall-shelf',
+      'corkboard',
+      'desk',
+      'beanbag',
+      'rug',
+      'raccoon',
+      'mug',
+      'pencil-cup',
+      'laptop',
+      'scissors',
+      'owala',
+      'plant',
+    ]) {
+      expect(byId.get(id), `${id} should load from a sidecar`).toBeTruthy();
+    }
+    // The four whose file name differs from the item id still resolve to art
+    // (Vite inlines these as data URLs, so compare by distinctness).
+    const aliasedArts = ['window', 'mug', 'raccoon', 'plant'].map((id) => byId.get(id)?.art.day);
+    for (const art of aliasedArts) expect(art).toBeTruthy();
+    expect(new Set(aliasedArts).size).toBe(4);
+    // Multi-slot furniture keeps its slots, presets and inlined svg.
+    expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['body', 'trim', 'seat']);
+    expect(byId.get('beanbag')?.presets?.length).toBeGreaterThan(0);
+    expect(byId.get('beanbag')?.raw).toContain('--c-body');
+    expect(byId.get('beanbag')?.host).toBe(true);
+    expect(byId.get('rug')?.colorSlots.map((s) => s.id)).toEqual([
+      'band1',
+      'band2',
+      'band3',
+      'band4',
+    ]);
+    expect(byId.get('rug')?.raw).toContain('--c-band1');
+    // Particles survive the move to data.
+    expect(byId.get('raccoon')?.particles?.[0].name).toBe('zzz');
+    // The wall clock stays built-in so its live component still renders.
+    expect(CATALOG.find((i) => i.id === 'wall-clock')?.component).toBe('clock');
   });
 
   it('loads an asset-driven frame with recolour slots', () => {

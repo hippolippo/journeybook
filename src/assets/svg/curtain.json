@@ -1,0 +1,10 @@
+{
+  "kind": "room",
+  "id": "curtain",
+  "label": "Curtain",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 0.361,
+  "defaultScale": 0.56
+}

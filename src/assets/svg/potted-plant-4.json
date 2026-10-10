@@ -1,0 +1,19 @@
+{
+  "kind": "room",
+  "label": "Plant 3",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.75,
+  "defaultScale": 0.18,
+  "attach": "any",
+  "colorSlots": [
+    {
+      "id": "pot",
+      "label": "Pot",
+      "default": "#F5DAB9",
+      "palette": ["#c97b5a", "#e08868", "#d98c8c", "#e8b4af", "#9caf88", "#9dbfc9", "#d9a94e", "#e6b78a", "#f5dab9", "#4a3b2e"],
+      "allowCustom": true
+    }
+  ]
+}
