@@ -352,7 +352,7 @@ test('export a book to a file and import it back (with images)', async ({ page }
   await expect(page.locator('.square-page .frame__img')).toHaveCount(1);
 });
 
-test('room editor opens and closes via the leave dialog', async ({ page }) => {
+test('room editor: Done skips the save dialog when nothing changed', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
   await page.getByTitle('Edit room').click();
@@ -361,9 +361,58 @@ test('room editor opens and closes via the leave dialog', async ({ page }) => {
   await expect(page.locator('.editor--collapsed')).toBeVisible();
   await page.getByTitle('Expand').click();
   await page.getByRole('button', { name: 'Done', exact: true }).click();
+  // No changes -> closes immediately, no dialog.
+  await expect(page.locator('.editor')).toHaveCount(0);
+  await expect(page.locator('.dialog')).toHaveCount(0);
+});
+
+test('room editor: Done prompts to save when there are changes', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.editor .swatch').first().click(); // change the wall
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(page.locator('.dialog')).toBeVisible();
   await page.getByRole('button', { name: 'Discard' }).click();
   await expect(page.locator('.editor')).toHaveCount(0);
+});
+
+test('room editor: clear room removes every item (undoable)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await expect(page.locator('.room-item').first()).toBeVisible();
+  await page.getByRole('button', { name: 'Clear room' }).click();
+  await expect(page.locator('.room-item')).toHaveCount(0);
+  await page.keyboard.press('Meta+z');
+  await expect(page.locator('.room-item').first()).toBeVisible();
+});
+
+test('room editor: only left and right docks are offered', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await expect(page.locator('.editor__dock')).toHaveCount(2);
+  await expect(page.locator('.editor__dock[title="Dock left"]')).toHaveCount(1);
+  await expect(page.locator('.editor__dock[title="Dock right"]')).toHaveCount(1);
+  const text = await page.locator('.editor__docks').innerText();
+  expect(text.replace(/\s/g, '')).toBe('LR');
+});
+
+test('room editor: collapse arrow points away from the docked edge', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  // Docked right (default): expanded points right, collapsed points left.
+  await expect(page.getByTitle('Collapse')).toHaveText('›');
+  await page.getByTitle('Collapse').click();
+  await expect(page.getByTitle('Expand')).toHaveText('‹');
+  // Docked left: mirrored.
+  await page.getByTitle('Expand').click();
+  await page.getByTitle('Dock left').click();
+  await expect(page.getByTitle('Collapse')).toHaveText('‹');
+  await page.getByTitle('Collapse').click();
+  await expect(page.getByTitle('Expand')).toHaveText('›');
 });
 
 test('asset-defined decor: effects, presets and night glow', async ({ page }) => {
@@ -372,12 +421,16 @@ test('asset-defined decor: effects, presets and night glow', async ({ page }) =>
   await page.getByTitle('Edit room').click();
   await expect(page.locator('.palette__item', { hasText: 'Paper lantern' })).toBeVisible();
 
+  // Adding selects the item (which hides the catalog), so deselect to keep browsing.
   await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+  await page.mouse.click(30, 30);
   await page.locator('.palette__item', { hasText: 'Trailing plant' }).first().click();
+  await page.mouse.click(30, 30);
   await page.locator('.palette__item', { hasText: 'Chai cup' }).first().click();
   await expect(page.locator('.room-item[data-catalog=trailing-plant] .fx--sway')).toHaveCount(1);
   await expect(page.locator('.room-item[data-catalog=chai-cup] .fx-smoke')).toHaveCount(3);
 
+  await page.mouse.click(30, 30);
   await page.locator('.editor select').first().selectOption('night');
   await expect(page.locator('.room-item[data-catalog=paper-lantern] .fx--glow')).toHaveCount(1);
 
@@ -464,8 +517,8 @@ test('dragging an attached item off its host detaches it', async ({ page }) => {
   await page.goto('/');
   await page.getByTitle('Edit room').click();
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
-  const attachedLeft = await laptop.evaluate((el) => (el as HTMLElement).style.left);
-  expect(attachedLeft).toContain('calc');
+  // Attached children are nested inside their host so host transforms cascade.
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
   const before = (await laptop.boundingBox())!;
   const cx = before.x + before.width / 2;
   const cy = before.y + before.height / 2;
@@ -473,9 +526,8 @@ test('dragging an attached item off its host detaches it', async ({ page }) => {
   await page.mouse.down();
   await page.mouse.move(cx + 500, cy, { steps: 10 });
   await page.mouse.up();
-  // Detached: no longer positioned relative to a host.
-  const detachedLeft = await laptop.evaluate((el) => (el as HTMLElement).style.left);
-  expect(detachedLeft).not.toContain('calc');
+  // Detached: no longer nested inside the desk.
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
 });
 
 test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
@@ -485,17 +537,16 @@ test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   const shelf = page.locator('.room-item[data-catalog=wall-shelf]').first();
   const shelfBox = (await shelf.boundingBox())!;
   const mugPalette = page.locator('.palette__item[title="Mug"]').first();
+  await mugPalette.scrollIntoViewIfNeeded();
   const pbox = (await mugPalette.boundingBox())!;
   await page.mouse.move(pbox.x + pbox.width / 2, pbox.y + pbox.height / 2);
   await page.mouse.down();
   await page.mouse.move(shelfBox.x + shelfBox.width / 2, shelfBox.y + 8, { steps: 10 });
   await page.mouse.up();
 
-  const mugs = page.locator('.room-item[data-catalog=mug]');
-  const last = mugs.nth((await mugs.count()) - 1);
-  const left = await last.evaluate((el) => (el as HTMLElement).style.left);
-  expect(left).toContain('calc');
-  const mbox = (await last.boundingBox())!;
+  const mugOnShelf = page.locator('.room-item[data-catalog=wall-shelf] .room-item[data-catalog=mug]');
+  await expect(mugOnShelf).toHaveCount(1);
+  const mbox = (await mugOnShelf.boundingBox())!;
   const center = mbox.x + mbox.width / 2;
   expect(center).toBeGreaterThan(shelfBox.x - 5);
   expect(center).toBeLessThan(shelfBox.x + shelfBox.width + 5);
@@ -662,3 +713,397 @@ test('calendar: a visit in progress reads as together', async ({ page }) => {
   await page.locator('.event-dialog').getByRole('button', { name: 'Add', exact: true }).click();
   await expect(page.locator('.calendar__banner')).toContainText("You're together right now");
 });
+
+test('room editor: selected item shows scale and rotate handles, click away deselects', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  await expect(page.locator('.room-item--selected .pe-handle--br')).toHaveCount(1);
+  await expect(page.locator('.room-item--selected .pe-rot')).toHaveCount(1);
+  // Click empty wall space to deselect.
+  await page.mouse.click(600, 400);
+  await expect(page.locator('.room-item--selected')).toHaveCount(0);
+});
+
+test('room editor: on-canvas scale handle resizes while keeping the aspect ratio', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  // Use a mid-screen item so its bottom-right handle is on screen.
+  await page.locator('.item-list__row', { hasText: 'Wall clock' }).first().click();
+  const xField = page.locator('.editor .field', { hasText: 'X' }).locator('input[type=number]');
+  await xField.fill('0.5');
+  await xField.press('Enter');
+  const item = page.locator('.room-item[data-catalog=wall-clock]').first();
+  const before = (await item.boundingBox())!;
+  const handle = (await page.locator('.room-item--selected .pe-handle--br').boundingBox())!;
+  await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handle.x + 45, handle.y + 45, { steps: 6 });
+  await page.mouse.up();
+  const after = (await item.boundingBox())!;
+  expect(after.width).toBeGreaterThan(before.width + 10);
+  expect(Math.abs(after.width / after.height - before.width / before.height)).toBeLessThan(0.05);
+});
+
+test('room editor: attached items rotate and scale with their host', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const start = (await laptop.boundingBox())!;
+
+  const rotField = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rotField.fill('30');
+  await rotField.press('Enter');
+  const rotated = (await laptop.boundingBox())!;
+  // Rotating the host moves the attached child around the host.
+  expect(Math.abs(rotated.x - start.x) + Math.abs(rotated.y - start.y)).toBeGreaterThan(5);
+
+  const sizeField = page.locator('.editor .field', { hasText: 'Size' }).locator('input[type=number]');
+  await sizeField.fill('1.5');
+  await sizeField.press('Enter');
+  const scaled = (await laptop.boundingBox())!;
+  expect(scaled.height).toBeGreaterThan(rotated.height + 2);
+});
+
+test('room editor: depth list shows thumbnails and can be reordered', async ({ page }) => {  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const topRows = page.locator('ul.item-list:not(.item-list--children) > li > .item-list__row');
+  await expect(topRows.first().locator('.room-thumb')).toHaveCount(1);
+  const before = await topRows.locator('.item-list__label').allTextContents();
+  // Drag the wall shelf (row 3) up in front of the desk (row 1).
+  const shelf = page.locator('.item-list__row', { hasText: 'Wall shelf' }).first();
+  await shelf.scrollIntoViewIfNeeded();
+  const sbox = (await shelf.boundingBox())!;
+  const target = (await topRows.first().boundingBox())!;
+  await page.mouse.move(sbox.x + sbox.width / 2, sbox.y + sbox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(sbox.x + sbox.width / 2, target.y + 2, { steps: 8 });
+  await page.mouse.up();
+  const after = await topRows.locator('.item-list__label').allTextContents();
+  expect(after[0]).toBe('Wall shelf');
+  expect(after).not.toEqual(before);
+});
+
+test('room editor: delete, undo and keyboard nudge', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const before = await page.locator('.room-item').count();
+  await page.locator('.item-list__row', { hasText: 'Rug' }).first().click();
+  await page.keyboard.press('Delete');
+  await expect(page.locator('.room-item')).toHaveCount(before - 1);
+  await page.keyboard.press('Meta+z');
+  await expect(page.locator('.room-item')).toHaveCount(before);
+
+  const rug = page.locator('.room-item[data-catalog=rug]').first();
+  await page.locator('.item-list__row', { hasText: 'Rug' }).first().click();
+  const start = (await rug.boundingBox())!;
+  await page.keyboard.press('ArrowRight');
+  const nudged = (await rug.boundingBox())!;
+  expect(nudged.x).toBeGreaterThan(start.x);
+});
+
+test('room editor: environment hides on selection, the item list always shows', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const env = page.locator('.editor section', { hasText: 'Time of day' });
+  const list = page.getByText('Items (front to back)');
+  // The item list is always the first section in the panel.
+  await expect(page.locator('.editor__body > section').first()).toContainText('Items (front to back)');
+  await expect(env).toBeVisible();
+  await expect(list).toBeVisible();
+
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  await expect(env).toHaveCount(0);
+  await expect(page.getByText('Wall', { exact: true })).toHaveCount(0);
+  await expect(list).toBeVisible();
+  await expect(page.locator('.editor__body > section').first()).toContainText('Items (front to back)');
+  await expect(page.getByText('Selected: Desk')).toBeVisible();
+
+  await page.mouse.click(600, 400);
+  await expect(env).toBeVisible();
+});
+
+test('room editor: dragging an attached item tracks the screen and its preview lines up', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  // Rotate the desk, then pick its laptop up.
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('20');
+  await rot.press('Enter');
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const start = (await laptop.boundingBox())!;
+  const cx = start.x + start.width / 2;
+  const cy = start.y + start.height / 2;
+  const a = (20 * Math.PI) / 180;
+  const ax = Math.cos(a);
+  const ay = Math.sin(a);
+  await page.mouse.move(cx, cy);
+  await page.mouse.down();
+  // Move along the desk's axis: it stays attached, and the preview lines up.
+  await page.mouse.move(cx + 40 * ax, cy + 40 * ay, { steps: 8 });
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
+  let real = (await laptop.boundingBox())!;
+  let ghost = (await page.locator('.room-item--ghost').boundingBox())!;
+  expect(Math.abs(real.x - ghost.x)).toBeLessThan(3);
+  expect(Math.abs(real.y - ghost.y)).toBeLessThan(3);
+  // Pull it off the desk: it turns free mid-drag and the preview still lines up.
+  await page.mouse.move(cx + 40 * ax, cy + 40 * ay - 220, { steps: 10 });
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
+  real = (await laptop.boundingBox())!;
+  ghost = (await page.locator('.room-item--ghost').boundingBox())!;
+  expect(Math.abs(real.x - ghost.x)).toBeLessThan(3);
+  expect(Math.abs(real.y - ghost.y)).toBeLessThan(3);
+  await page.mouse.up();
+  // It moved with the pointer in screen space.
+  const end = (await laptop.boundingBox())!;
+  expect(Math.abs(end.x + end.width / 2 - cx - 40 * ax)).toBeLessThan(20);
+  expect(Math.abs(end.y + end.height / 2 - cy - (40 * ay - 220))).toBeLessThan(20);
+});
+
+test('room editor: dropping an item onto rotated furniture does not jump', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('30');
+  await rot.press('Enter');
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const start = (await laptop.boundingBox())!;
+  const sx = start.x + start.width / 2;
+  const sy = start.y + start.height / 2;
+  await page.mouse.move(sx, sy);
+  await page.mouse.down();
+  // Off the desk, then back onto its centre.
+  await page.mouse.move(sx, sy - 200, { steps: 8 });
+  await page.mouse.move(259, 783, { steps: 8 });
+  const before = (await laptop.boundingBox())!;
+  await page.mouse.up();
+  const after = (await laptop.boundingBox())!;
+  // It rotates to match the furniture, but its centre must not jump.
+  expect(Math.abs(after.x + after.width / 2 - (before.x + before.width / 2))).toBeLessThan(2);
+  expect(Math.abs(after.y + after.height / 2 - (before.y + before.height / 2))).toBeLessThan(2);
+});
+
+test('room editor: moving an attached item along its host does not jump', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('30');
+  await rot.press('Enter');
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const start = (await laptop.boundingBox())!;
+  const sx = start.x + start.width / 2;
+  const sy = start.y + start.height / 2;
+  const a = (30 * Math.PI) / 180;
+  await page.mouse.move(sx, sy);
+  await page.mouse.down();
+  // Slide along the desk's axis so it stays attached, then release on the desk.
+  await page.mouse.move(sx + 70 * Math.cos(a), sy + 70 * Math.sin(a), { steps: 8 });
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
+  const before = (await laptop.boundingBox())!;
+  await page.mouse.up();
+  const after = (await laptop.boundingBox())!;
+  expect(Math.abs(after.x + after.width / 2 - (before.x + before.width / 2))).toBeLessThan(2);
+  expect(Math.abs(after.y + after.height / 2 - (before.y + before.height / 2))).toBeLessThan(2);
+});
+
+test('room editor: re-placing an attached item does not compound its rotation', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('30');
+  await rot.press('Enter');
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const a = (30 * Math.PI) / 180;
+  await page.locator('.item-list__row', { hasText: 'Laptop' }).first().click();
+  const rotInput = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  const initial = await rotInput.inputValue();
+
+  for (let i = 0; i < 3; i++) {
+    const b = (await laptop.boundingBox())!;
+    const cx = b.x + b.width / 2;
+    const cy = b.y + b.height / 2;
+    await page.mouse.move(cx, cy);
+    await page.mouse.down();
+    await page.mouse.move(cx + 20 * Math.cos(a), cy + 20 * Math.sin(a), { steps: 5 });
+    await page.mouse.up();
+  }
+  await page.locator('.item-list__row', { hasText: 'Laptop' }).first().click();
+  expect(await rotInput.inputValue()).toBe(initial);
+});
+
+test('room editor: removing an item from rotated furniture restores its rotation', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('40');
+  await rot.press('Enter');
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  await page.locator('.item-list__row', { hasText: 'Laptop' }).first().click();
+  const rotInput = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  const stored = await rotInput.inputValue();
+  const start = (await laptop.boundingBox())!;
+  const sx = start.x + start.width / 2;
+  const sy = start.y + start.height / 2;
+  // Drag it off the desk and drop it, then it should keep its own rotation.
+  await page.mouse.move(sx, sy);
+  await page.mouse.down();
+  await page.mouse.move(sx, sy - 240, { steps: 10 });
+  await page.mouse.up();
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
+  await page.locator('.item-list__row', { hasText: 'Laptop' }).first().click();
+  expect(await rotInput.inputValue()).toBe(stored);
+});
+
+test('room editor: shows a live attach preview and a badge while over a host', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
+  await rot.fill('30');
+  await rot.press('Enter');
+  await page.mouse.click(30, 30); // deselect so the palette shows
+
+  // Place a loose mug away from the desk.
+  const palette = page.locator('.palette__item[title="Mug"]').first();
+  await palette.scrollIntoViewIfNeeded();
+  const pbox = (await palette.boundingBox())!;
+  await page.mouse.move(pbox.x + pbox.width / 2, pbox.y + pbox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(900, 300, { steps: 10 });
+  await page.mouse.up();
+
+  const mug = page.locator('.room-item[data-catalog=mug]').last();
+  const b = (await mug.boundingBox())!;
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(259, 783, { steps: 10 }); // over the desk centre
+  await expect(page.locator('.room-item__attach-badge')).toHaveCount(1);
+  // Previewed in its attached orientation: host 30° + mug's own -4°.
+  expect(await mug.evaluate((el) => (el as HTMLElement).style.transform)).toContain('rotate(26deg)');
+  await page.mouse.up();
+  expect(await mug.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
+});
+
+test('room editor: rotating a loose item pivots around its centre', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.item-list__row', { hasText: 'Wall clock' }).first().click();
+  const xField = page.locator('.editor .field', { hasText: 'X' }).locator('input[type=number]');
+  await xField.fill('0.5');
+  await xField.press('Enter');
+  const clock = page.locator('.room-item[data-catalog=wall-clock]').first();
+  const start = (await clock.boundingBox())!;
+  const c0 = { x: start.x + start.width / 2, y: start.y + start.height / 2 };
+  const rot = (await page.locator('.room-item--selected .pe-rot').boundingBox())!;
+  await page.mouse.move(rot.x + rot.width / 2, rot.y + rot.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(rot.x + rot.width / 2 + 70, rot.y + rot.height / 2 + 30, { steps: 8 });
+  await page.mouse.up();
+  const after = (await clock.boundingBox())!;
+  const c1 = { x: after.x + after.width / 2, y: after.y + after.height / 2 };
+  expect(Math.abs(c1.x - c0.x)).toBeLessThan(4);
+  expect(Math.abs(c1.y - c0.y)).toBeLessThan(4);
+});
+
+test('room editor: shows a minus badge while removing an item from furniture', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
+  const b = (await laptop.boundingBox())!;
+  const cx = b.x + b.width / 2;
+  const cy = b.y + b.height / 2;
+  await page.mouse.move(cx, cy);
+  await page.mouse.down();
+  await page.mouse.move(cx, cy - 220, { steps: 10 }); // pull it off the desk
+  await expect(page.locator('.room-item__remove-badge')).toHaveCount(1);
+  await expect(page.locator('.room-item__attach-badge')).toHaveCount(0);
+  await page.mouse.up();
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
+});
+
+test('room editor: attached items are draggable within their host in the list', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const deskLi = page
+    .locator('.item-list > li')
+    .filter({ has: page.locator('.item-list__row', { hasText: 'Desk' }) });
+  const kids = deskLi.locator('.item-list--children > li > .item-list__row');
+  const before = await kids.locator('.item-list__label').allTextContents();
+  expect(before.length).toBeGreaterThan(1);
+  const src = kids.nth(0);
+  const dst = kids.nth(1);
+  await src.scrollIntoViewIfNeeded();
+  const sb = (await src.boundingBox())!;
+  const db = (await dst.boundingBox())!;
+  await page.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2);
+  await page.mouse.down();
+  // Drop below the second child (its lower half) to place after it.
+  await page.mouse.move(db.x + db.width / 2, db.y + db.height - 2, { steps: 8 });
+  await page.mouse.up();
+  const after = await kids.locator('.item-list__label').allTextContents();
+  expect(after[0]).toBe(before[1]);
+  expect(after[1]).toBe(before[0]);
+});
+
+test('room editor: the item list has no horizontal scrollbar', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const overflow = await page
+    .locator('ul.item-list')
+    .first()
+    .evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('room editor: dragging a layer shows a floating preview and disables text selection', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const rows = page.locator('ul.item-list:not(.item-list--children) > li > .item-list__row');
+  const shelf = page.locator('.item-list__row', { hasText: 'Wall shelf' }).first();
+  await shelf.scrollIntoViewIfNeeded();
+  const sb = (await shelf.boundingBox())!;
+  const target = (await rows.first().boundingBox())!;
+  await page.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(sb.x + sb.width / 2, target.y + 2, { steps: 5 });
+  await expect(page.locator('.layer-drag-ghost')).toBeVisible();
+  await expect(page.locator('.layer-drag-ghost')).toContainText('Wall shelf');
+  await page.mouse.up();
+  await expect(page.locator('.layer-drag-ghost')).toHaveCount(0);
+  expect(await shelf.evaluate((el) => getComputedStyle(el).userSelect)).toBe('none');
+});
+
+test('room editor: the sidebar hides its scrollbars', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  expect(await page.locator('.editor__body').evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe('none');
+  expect(await page.locator('.item-list').first().evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe('none');
+});
+
+
+

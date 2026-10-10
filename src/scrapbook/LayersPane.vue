@@ -6,8 +6,9 @@ import { elementLabel } from '@/scrapbook/groups';
 
 const pe = usePageEditorStore();
 const newGroup = ref('');
-let draggedId: string | null = null;
+const draggedId = ref<string | null>(null);
 const dropRow = ref<string | null>(null);
+const dropAfter = ref(false);
 const dropGroup = ref<string | null>(null);
 const editingNameId = ref<string | null>(null);
 
@@ -26,21 +27,46 @@ function itemsOf(groupId: string): PageElement[] {
 }
 
 function onDragStart(id: string, e: DragEvent) {
-  draggedId = id;
+  draggedId.value = id;
   e.dataTransfer?.setData('text/plain', id);
   if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
 }
 function onDragEnd() {
-  draggedId = null;
+  draggedId.value = null;
   dropRow.value = null;
+  dropAfter.value = false;
   dropGroup.value = null;
 }
-function onDropBefore(targetId: string, groupId: string) {
-  if (draggedId && draggedId !== targetId) pe.placeElement(draggedId, groupId, targetId);
+function onDragOverRow(id: string, e: DragEvent) {
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+  dropAfter.value = e.clientY > rect.top + rect.height / 2;
+  dropRow.value = id;
+  dropGroup.value = null;
+}
+function onDragOverGroup(groupId: string) {
+  dropGroup.value = groupId;
+  dropRow.value = null;
+}
+function onDropAt(targetId: string, groupId: string) {
+  const id = draggedId.value;
+  if (!id || id === targetId) {
+    onDragEnd();
+    return;
+  }
+  if (!dropAfter.value) {
+    pe.placeElement(id, groupId, targetId);
+    onDragEnd();
+    return;
+  }
+  // Drop after the target: place it before the next sibling (or at the end).
+  const list = itemsOf(groupId).filter((e) => e.id !== id);
+  const i = list.findIndex((e) => e.id === targetId);
+  const next = i >= 0 ? list[i + 1] : undefined;
+  pe.placeElement(id, groupId, next ? next.id : null);
   onDragEnd();
 }
 function onDropGroup(groupId: string) {
-  if (draggedId) pe.placeElement(draggedId, groupId, null);
+  if (draggedId.value) pe.placeElement(draggedId.value, groupId, null);
   onDragEnd();
 }
 function addGroup() {
@@ -74,7 +100,7 @@ function commitRename(el: PageElement, value: string) {
         <div
           class="layer-group__head"
           :class="{ 'is-drop': dropGroup === g.id }"
-          @dragover.prevent="dropGroup = g.id"
+          @dragover.prevent="onDragOverGroup(g.id)"
           @drop.prevent="onDropGroup(g.id)"
         >
           <button class="layer-toggle" type="button" :title="g.collapsed ? 'Expand' : 'Collapse'" @click="pe.toggleGroup(g.id)">
@@ -101,12 +127,18 @@ function commitRename(el: PageElement, value: string) {
             v-for="el in itemsOf(g.id)"
             :key="el.id"
             class="layer-row"
-            :class="{ 'is-selected': pe.selectedId === el.id, 'is-locked': el.locked, 'is-drop-before': dropRow === el.id }"
+            :class="{
+              'is-selected': pe.selectedId === el.id,
+              'is-locked': el.locked,
+              'is-drop-before': dropRow === el.id && !dropAfter,
+              'is-drop-after': dropRow === el.id && dropAfter,
+              'is-dragging': draggedId === el.id,
+            }"
             draggable="true"
             @dragstart="onDragStart(el.id, $event)"
             @dragend="onDragEnd"
-            @dragover.prevent="dropRow = el.id"
-            @drop.prevent="onDropBefore(el.id, g.id)"
+            @dragover.prevent="onDragOverRow(el.id, $event)"
+            @drop.prevent="onDropAt(el.id, g.id)"
             @click="pe.select(el.id)"
           >
             <span class="icon icon--grip layer-row__grip" aria-hidden="true"></span>

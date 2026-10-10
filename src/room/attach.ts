@@ -31,13 +31,3 @@ export function hostAt(
   }
   return null;
 }
-
-/** Host-relative `(ax, ay)` for a viewport point within a host element's box. */
-export function hostOffset(x: number, y: number, hostEl: Element): { ax: number; ay: number } {
-  const r = hostEl.getBoundingClientRect();
-  const clamp = (v: number) => Math.min(1, Math.max(0, v));
-  return {
-    ax: clamp((x - r.left) / (r.width || 1)),
-    ay: clamp((y - r.top) / (r.height || 1)),
-  };
-}

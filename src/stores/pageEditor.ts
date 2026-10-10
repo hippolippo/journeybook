@@ -153,6 +153,11 @@ export const usePageEditorStore = defineStore('pageEditor', {
     },
 
     requestExit() {
+      // Nothing changed -> leave without the save dialog.
+      if (!this.dirty) {
+        this.finish();
+        return;
+      }
       this.showExit = true;
     },
     cancelExit() {
