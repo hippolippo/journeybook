@@ -1,0 +1,19 @@
+{
+  "kind": "frame",
+  "label": "Stitched",
+  "insets": { "l": 0.1, "r": 0.1, "t": 0.1, "b": 0.1 },
+  "colorSlots": [
+    {
+      "id": "stitch",
+      "label": "Border",
+      "default": "#fdf8ef",
+      "palette": ["#fdf8ef", "#f6e8a8", "#cfe3c5", "#e6dcf0", "#3b3a44"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "cream", "label": "Cream", "colors": { "stitch": "#fdf8ef" } },
+    { "id": "mint", "label": "Mint", "colors": { "stitch": "#cfe3c5" } },
+    { "id": "ink", "label": "Ink", "colors": { "stitch": "#3b3a44" } }
+  ]
+}

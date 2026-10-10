@@ -2,11 +2,13 @@
 migrate(
   (app) => {
     const elements = app.findCollectionByNameOrId('elements');
+    let existing = null;
     try {
-      elements.fields.getByName('name');
+      existing = elements.fields.getByName('name');
     } catch (e) {
-      elements.fields.add(new TextField({ name: 'name', max: 120 }));
+      existing = null;
     }
+    if (!existing) elements.fields.add(new TextField({ name: 'name', max: 120 }));
     app.save(elements);
   },
   () => {

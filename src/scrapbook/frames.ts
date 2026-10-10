@@ -1,3 +1,8 @@
+import type { ColorPreset, ColorSlot } from '@/catalog/types';
+import type { AnimationDef } from '@/catalog/animation';
+import type { ParticleDef } from '@/catalog/particles';
+import { loadedFrames } from '@/catalog/loadDecor';
+
 export interface FrameInsets {
   l: number;
   r: number;
@@ -21,11 +26,19 @@ export interface FrameDef {
   tape?: 'corners' | 'tabs' | 'mounts';
   ring?: boolean;
   shadow?: boolean;
+  /** Asset overlay drawn over the window (transparent window in the art). */
+  art?: string;
+  /** Inlined overlay SVG for multi-slot recolouring (`var(--c-<slot>, …)`). */
+  raw?: string;
+  colorSlots?: ColorSlot[];
+  presets?: ColorPreset[];
+  animations?: AnimationDef[];
+  particles?: ParticleDef[];
 }
 
 const noInset: FrameInsets = { l: 0, r: 0, t: 0, b: 0 };
 
-export const FRAMES: FrameDef[] = [
+export const BUILTIN_FRAMES: FrameDef[] = [
   { id: 'none', label: 'None', insets: noInset },
   { id: 'rounded', label: 'Rounded', insets: noInset, radius: 14 },
   { id: 'thin', label: 'Thin', insets: { l: 0.025, r: 0.025, t: 0.025, b: 0.025 }, radius: 3, bg: '#fdf8ef', colorable: true },
@@ -42,6 +55,9 @@ export const FRAMES: FrameDef[] = [
   { id: 'mount', label: 'Corner mounts', insets: noInset, tape: 'mounts' },
   { id: 'stack', label: 'Stack', insets: { l: 0.05, r: 0.05, t: 0.05, b: 0.05 }, radius: 2, bg: '#fdf8ef', colorable: true, stack: true },
 ];
+
+/** Built-in frames plus any loaded from artist asset definitions (`kind: "frame"`). */
+export const FRAMES: FrameDef[] = [...BUILTIN_FRAMES, ...loadedFrames];
 
 export function frameById(id?: string): FrameDef {
   return FRAMES.find((f) => f.id === id) ?? FRAMES[0];

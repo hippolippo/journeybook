@@ -7,6 +7,7 @@ import { useViewport } from '@/composables/useViewport';
 import { FRAMES, frameAspect, frameById } from '@/scrapbook/frames';
 import { EFFECT_SLIDERS, isBuiltinPreset, mergedPresets } from '@/scrapbook/effects';
 import PageElementContent from '@/scrapbook/PageElementContent.vue';
+import ColorSlotsEditor from '@/scrapbook/ColorSlotsEditor.vue';
 
 const pe = usePageEditorStore();
 const app = useAppStore();
@@ -24,8 +25,20 @@ const frameFixed = computed(() => !!frameAspect(frameDef.value));
 /** Frames whose background is visible (so it can be colored or made transparent). */
 const frameColorable = computed(() => {
   const f = frameDef.value;
+  if (f.colorSlots?.length) return false;
   return !!f.colorable || !!f.radius || !!f.clip;
 });
+const frameSlots = computed(() => frameDef.value.colorSlots ?? []);
+const framePresets = computed(() => frameDef.value.presets ?? []);
+const frameColors = computed(() => (el.value && el.value.kind === 'image' ? (el.value.frameColors ?? {}) : {}));
+function onFrameSlotColor(slotId: string, color: string) {
+  if (el.value) pe.setFrameSlotColor(el.value.id, slotId, color);
+}
+function onFramePresetColors(colors: Record<string, string>) {
+  if (!el.value) return;
+  pe.snapshot();
+  pe.applyFrameColors(el.value.id, colors);
+}
 
 // Render at the same 480px logical reference as the scrapbook (then scale), so
 // frame details (radii, tape, sprockets) look identical to the real page.
@@ -196,7 +209,16 @@ async function onFiles(e: Event) {
                 <span class="frame-chip__label">{{ f.label }}</span>
               </button>
             </div>
-            <div v-if="frameColorable" class="swatches" style="margin-top: 0.35rem">
+            <ColorSlotsEditor
+              v-if="frameSlots.length"
+              :slots="frameSlots"
+              :presets="framePresets"
+              :values="frameColors"
+              style="margin-top: 0.35rem"
+              @update="onFrameSlotColor"
+              @preset="onFramePresetColors"
+            />
+            <div v-else-if="frameColorable" class="swatches" style="margin-top: 0.35rem">
               <button
                 class="swatch swatch--transparent"
                 type="button"

@@ -1,0 +1,54 @@
+{
+  "kind": "paper",
+  "label": "Meadow",
+  "color": "#fdf8ef",
+  "lined": false,
+  "fill": {
+    "art": "paper-tile-dots.svg",
+    "scale": 0.1,
+    "colorSlots": [
+      {
+        "id": "dot",
+        "label": "Dots",
+        "default": "rgba(74,59,46,0.18)",
+        "palette": ["rgba(74,59,46,0.18)", "rgba(156,175,136,0.5)", "rgba(217,140,140,0.5)"],
+        "allowCustom": true
+      }
+    ]
+  },
+  "border": {
+    "art": "paper-border-stitch.svg",
+    "colorSlots": [
+      {
+        "id": "edge",
+        "label": "Edge",
+        "default": "#e8d3c0",
+        "palette": ["#e8d3c0", "#cfe3c5", "#e6dcf0", "#b99362"],
+        "allowCustom": true
+      }
+    ]
+  },
+  "corners": {
+    "art": "paper-corner-blossom.svg",
+    "colorSlots": [
+      {
+        "id": "leaf",
+        "label": "Leaves",
+        "default": "#9caf88",
+        "palette": ["#9caf88", "#7e8f6b", "#b7a44a"],
+        "allowCustom": true
+      },
+      {
+        "id": "blossom",
+        "label": "Blossoms",
+        "default": "#e8b4af",
+        "palette": ["#e8b4af", "#d98c8c", "#f6e8a8"],
+        "allowCustom": true
+      }
+    ],
+    "presets": [
+      { "id": "meadow", "label": "Meadow", "colors": { "edge": "#cfe3c5", "dot": "rgba(156,175,136,0.5)", "leaf": "#7e8f6b", "blossom": "#f6e8a8" } },
+      { "id": "rose", "label": "Rose", "colors": { "edge": "#e6dcf0", "dot": "rgba(217,140,140,0.5)", "leaf": "#b7a44a", "blossom": "#d98c8c" } }
+    ]
+  }
+}

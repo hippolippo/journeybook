@@ -188,7 +188,7 @@ function onPageTap(index: number, e: PointerEvent) {
       @dblclick="openZoom(index)"
     >
       <div class="page-scaler">
-        <PageCanvas :elements="elementsOf(pages[index].id)" :num="index + 1" :paper="pages[index].background" />
+        <PageCanvas :elements="elementsOf(pages[index].id)" :num="index + 1" :paper="pages[index].background" :paper-colors="pages[index].paperColors" />
       </div>
       <button
         v-if="!isMobile && !published"
@@ -236,7 +236,7 @@ function onPageTap(index: number, e: PointerEvent) {
           <div v-for="(p, idx) in pages" :key="p.id" class="pages-menu__row">
             <span class="pages-menu__thumb">
               <span class="page-scaler" style="--page-scale: 0.0833">
-                <PageCanvas :elements="elementsOf(p.id)" :num="idx + 1" :paper="p.background" />
+                <PageCanvas :elements="elementsOf(p.id)" :num="idx + 1" :paper="p.background" :paper-colors="p.paperColors" />
               </span>
             </span>
             <span class="pages-menu__label">Page {{ idx + 1 }}</span>
@@ -268,7 +268,7 @@ function onPageTap(index: number, e: PointerEvent) {
     >
       <div class="page-slot page-zoom__pan" :style="zoomStyle">
         <div class="page-scaler">
-          <PageCanvas :elements="elementsOf(pages[zoomIndex].id)" :num="zoomIndex + 1" :paper="pages[zoomIndex].background" />
+          <PageCanvas :elements="elementsOf(pages[zoomIndex].id)" :num="zoomIndex + 1" :paper="pages[zoomIndex].background" :paper-colors="pages[zoomIndex].paperColors" />
         </div>
       </div>
       <button

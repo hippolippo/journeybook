@@ -14,5 +14,31 @@
   "presets": [
     { "id": "sage", "label": "Sage", "colors": { "leaves": "#9caf88", "pot": "#e8d9c0" } },
     { "id": "autumn", "label": "Autumn", "colors": { "leaves": "#b7a44a", "pot": "#c97b5a" } }
-  ]
+  ],
+  "art": {
+    "night": {
+      "src": "trailing-plant.svg",
+      "particles": [
+        {
+          "name": "firefly",
+          "count": 5,
+          "duration": 5,
+          "size": 8,
+          "opacity": 0.9,
+          "jitter": 0.7,
+          "spawn": { "x": 50, "y": 62, "spreadX": 20, "spreadY": 18 },
+          "shape": { "kind": "svg", "svg": "particle-firefly.svg", "color": "#ffd76b" },
+          "motion": {
+            "keyframes": [
+              { "at": 0, "opacity": 0, "transform": "translate(0, 0) scale(0.5)" },
+              { "at": 30, "opacity": 0.9 },
+              { "at": 55, "opacity": 0.2 },
+              { "at": 80, "opacity": 0.9, "transform": "translate(4%, -8%) scale(1)" },
+              { "at": 100, "opacity": 0, "transform": "translate(-4%, -16%) scale(0.5)" }
+            ]
+          }
+        }
+      ]
+    }
+  }
 }

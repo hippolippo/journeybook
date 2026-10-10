@@ -1,0 +1,36 @@
+{
+  "kind": "sticker",
+  "label": "Dreamy moon",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Moon",
+      "default": "#e8d3b0",
+      "palette": ["#e8d3b0", "#f6e8a8", "#cfe0ea", "#f7c9c9"],
+      "allowCustom": true
+    },
+    {
+      "id": "crater",
+      "label": "Craters",
+      "default": "#d3b184",
+      "palette": ["#d3b184", "#b99362", "#9dbfc9", "#7e8f6b"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "honey", "label": "Honey", "colors": { "body": "#f6e8a8", "crater": "#d9a94e" } },
+    { "id": "midnight", "label": "Midnight", "colors": { "body": "#cfe0ea", "crater": "#9dbfc9" } }
+  ],
+  "animations": [
+    {
+      "name": "twinkle",
+      "duration": "3s",
+      "keyframes": [
+        { "at": 0, "opacity": 0.72 },
+        { "at": 50, "opacity": 1 },
+        { "at": 100, "opacity": 0.72 }
+      ]
+    }
+  ]
+}

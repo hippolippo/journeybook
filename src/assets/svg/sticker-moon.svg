@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <circle cx="32" cy="32" r="30" fill="var(--c-body, #e8d3b0)" stroke="rgba(74,59,46,0.25)" stroke-width="2" />
+  <circle cx="43" cy="23" r="22" fill="rgba(74,59,46,0.06)" />
+  <circle cx="23" cy="25" r="5" fill="var(--c-crater, #d3b184)" />
+  <circle cx="33" cy="42" r="7" fill="var(--c-crater, #d3b184)" />
+  <circle cx="45" cy="46" r="3.5" fill="var(--c-crater, #d3b184)" />
+</svg>

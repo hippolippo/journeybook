@@ -4,6 +4,7 @@ import type { Category } from '@/catalog/types';
 import { CATALOG, getCatalogItem } from '@/catalog/catalog';
 import { FLOORS, WALLS } from '@/catalog/options';
 import { bandFor } from '@/room/geometry';
+import { canHost, hostAt, hostOffset } from '@/room/attach';
 import { useEditorStore, type Dock } from '@/stores/editor';
 
 const editor = useEditorStore();
@@ -18,6 +19,10 @@ const DOCKS: Dock[] = ['top', 'bottom', 'left', 'right'];
 
 const selected = computed(() => editor.selected);
 const selectedCat = computed(() => (selected.value ? getCatalogItem(selected.value.catalogId) : undefined));
+const items = computed(() => [...editor.items].sort((a, b) => b.z - a.z));
+function itemLabel(catalogId: string): string {
+  return getCatalogItem(catalogId)?.label ?? catalogId;
+}
 const placement = computed(() => {
   const item = selected.value;
   if (!item) return null;
@@ -68,9 +73,20 @@ function startPlace(event: PointerEvent, catalogId: string, label: string) {
     ghost.value = null;
     const overPanel = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('.editor');
     if (overPanel) return;
-    const band = bandFor(cat.layer);
+    const band = bandFor(cat.layer === 'surface' ? 'both' : cat.band);
     const x = Math.min(0.98, Math.max(0.02, ev.clientX / window.innerWidth));
     const y = Math.min(1, Math.max(0, (ev.clientY / window.innerHeight - band.top) / band.height));
+    // Dropping a surface item onto a compatible host attaches it.
+    const hit = cat.layer === 'surface' ? hostAt(ev.clientX, ev.clientY, cat) : null;
+    const hitCat = hit ? getCatalogItem(hit.catalogId) : undefined;
+    if (hit && canHost(cat, hitCat)) {
+      const hostEl = document.querySelector(`[data-item-id="${hit.id}"]`);
+      if (hostEl) {
+        const { ax, ay } = hostOffset(ev.clientX, ev.clientY, hostEl);
+        editor.addItem(catalogId, { hostId: hit.id, ax, ay });
+        return;
+      }
+    }
     editor.addItem(catalogId, { x, y });
   };
   target.addEventListener('pointermove', move);
@@ -167,6 +183,23 @@ async function saveNamed() {
         </div>
       </section>
 
+      <section>
+        <label>Items (front to back)</label>
+        <ul class="item-list">
+          <li v-for="it in items" :key="it.id">
+            <button
+              type="button"
+              class="item-list__row"
+              :class="{ 'is-active': editor.selectedId === it.id }"
+              @click="editor.select(it.id)"
+            >
+              <span class="item-list__label">{{ itemLabel(it.catalogId) }}</span>
+              <span v-if="it.attachTo" class="item-list__tag" title="Attached to furniture">attached</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
       <section v-if="selected && selectedCat && placement">
         <label>Selected: {{ selectedCat.label }}</label>
 
@@ -192,8 +225,8 @@ async function saveNamed() {
         </div>
         <div class="field">
           <span>Depth</span>
-          <input type="range" min="0" max="20" step="1" :value="selected.z" @input="setZ(($event.target as HTMLInputElement).value)" />
-          <input type="number" min="0" max="20" step="1" :value="selected.z" @change="setZ(($event.target as HTMLInputElement).value)" />
+          <input type="range" min="0" max="60" step="1" :value="selected.z" @input="setZ(($event.target as HTMLInputElement).value)" />
+          <input type="number" min="0" max="60" step="1" :value="selected.z" @change="setZ(($event.target as HTMLInputElement).value)" />
         </div>
 
         <label><input type="checkbox" :checked="placement.flip" @change="setFlip(($event.target as HTMLInputElement).checked)" /> Flip horizontally</label>

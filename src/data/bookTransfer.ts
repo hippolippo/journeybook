@@ -16,6 +16,7 @@ interface BookFilePage {
   id: string;
   index: number;
   background?: string;
+  paperColors?: Record<string, string>;
   groups?: PageGroup[];
 }
 
@@ -69,7 +70,13 @@ export async function exportBookData(bookId: string): Promise<string> {
     version: BOOK_FILE_VERSION,
     exportedAt: new Date().toISOString(),
     book: { title: node.title, cover: node.cover },
-    pages: pages.map((p, i) => ({ id: p.id, index: i, background: p.background, groups: p.groups })),
+    pages: pages.map((p, i) => ({
+      id: p.id,
+      index: i,
+      background: p.background,
+      paperColors: p.paperColors,
+      groups: p.groups,
+    })),
     elements,
     media,
   };
@@ -102,7 +109,8 @@ export async function importBookData(json: string, parentId: string | null): Pro
   for (const p of sorted) {
     const page = app.addPage(node.id);
     pageMap.set(p.id, page.id);
-    if (p.background || p.groups) app.updatePage(page.id, { background: p.background, groups: p.groups });
+    if (p.background || p.groups || p.paperColors)
+      app.updatePage(page.id, { background: p.background, paperColors: p.paperColors, groups: p.groups });
   }
 
   for (const el of data.elements ?? []) {

@@ -146,8 +146,9 @@ export async function getMediaBlob(asset: MediaAsset): Promise<Blob | undefined>
 
 export function mediaUrl(asset: MediaAsset | undefined): string {
   if (!asset) return '';
-  if (isPbMedia()) {
-    return asset.fileName ? `${PB_URL}/api/files/media/${asset.id}/${encodeURIComponent(asset.fileName)}` : '';
+  if (isPbMedia() && pb) {
+    if (!asset.fileName) return '';
+    return pb.files.getURL({ id: asset.id, collectionName: 'media' }, asset.fileName);
   }
   return urls.get(asset.id) ?? '';
 }

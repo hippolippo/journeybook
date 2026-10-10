@@ -15,6 +15,10 @@ const sorted = computed(() => [...items.value].sort((a, b) => a.z - b.z));
 const wallClass = computed(() => wallById(room.value.wallId).className);
 const floorClass = computed(() => floorById(room.value.floorId).className);
 const night = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay) === 'night');
+const ghostItem = computed(() => {
+  if (!editor.isEditing || !editor.draggingId) return null;
+  return editor.items.find((i) => i.id === editor.draggingId) ?? null;
+});
 const motes = Array.from({ length: 8 }, (_, i) => i);
 </script>
 
@@ -30,6 +34,14 @@ const motes = Array.from({ length: 8 }, (_, i) => i);
         :item="item"
         :layout="props.layout"
         :editable="!!props.interactive"
+      />
+      <RoomItem
+        v-if="ghostItem"
+        :key="`ghost-${ghostItem.id}`"
+        :item="ghostItem"
+        :layout="props.layout"
+        :editable="!!props.interactive"
+        ghost
       />
     </div>
     <div v-if="!props.embedded" class="room__dust" aria-hidden="true">

@@ -1,0 +1,24 @@
+{
+  "kind": "sticker",
+  "label": "Heart burst",
+  "aspect": 1,
+  "particles": [
+    {
+      "name": "spark",
+      "count": 6,
+      "duration": 2.6,
+      "size": 18,
+      "opacity": 0.95,
+      "jitter": 0.9,
+      "spawn": { "x": 50, "y": 46, "spreadX": 26, "spreadY": 20 },
+      "shape": { "kind": "svg", "svg": "doodle-heart.svg", "color": "#d98c8c" },
+      "motion": {
+        "keyframes": [
+          { "at": 0, "opacity": 0, "transform": "translate(0, 0) scale(0.3)" },
+          { "at": 30, "opacity": 1 },
+          { "at": 100, "opacity": 0, "transform": "translate(0, -45%) scale(1)" }
+        ]
+      }
+    }
+  ]
+}

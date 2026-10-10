@@ -2,11 +2,13 @@
 migrate(
   (app) => {
     const elements = app.findCollectionByNameOrId('elements');
+    let existing = null;
     try {
-      elements.fields.getByName('scale');
+      existing = elements.fields.getByName('scale');
     } catch (e) {
-      elements.fields.add(new NumberField({ name: 'scale' }));
+      existing = null;
     }
+    if (!existing) elements.fields.add(new NumberField({ name: 'scale' }));
     app.save(elements);
   },
   () => {
