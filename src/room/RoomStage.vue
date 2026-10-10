@@ -12,6 +12,12 @@ const editor = useEditorStore();
 const room = computed(() => (editor.isEditing && editor.draftRoom ? editor.draftRoom : app.room));
 const items = computed(() => (editor.isEditing ? editor.items : app.roomItems));
 const sorted = computed(() => [...items.value].sort((a, b) => a.z - b.z));
+const ids = computed(() => new Set(items.value.map((i) => i.id)));
+// Attached children render inside their host so host transforms cascade.
+const topLevel = computed(() => sorted.value.filter((i) => !i.attachTo || !ids.value.has(i.attachTo)));
+function childrenOf(hostId: string) {
+  return sorted.value.filter((i) => i.attachTo === hostId);
+}
 const wallClass = computed(() => wallById(room.value.wallId).className);
 const floorClass = computed(() => floorById(room.value.floorId).className);
 const night = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay) === 'night');
@@ -29,12 +35,20 @@ const motes = Array.from({ length: 8 }, (_, i) => i);
     <div class="room__baseboard"></div>
     <div class="room__decor">
       <RoomItem
-        v-for="item in sorted"
+        v-for="item in topLevel"
         :key="item.id"
         :item="item"
         :layout="props.layout"
         :editable="!!props.interactive"
-      />
+      >
+        <RoomItem
+          v-for="child in childrenOf(item.id)"
+          :key="child.id"
+          :item="child"
+          :layout="props.layout"
+          :editable="!!props.interactive"
+        />
+      </RoomItem>
       <RoomItem
         v-if="ghostItem"
         :key="`ghost-${ghostItem.id}`"
