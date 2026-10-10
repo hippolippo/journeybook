@@ -7,7 +7,7 @@
   "band": "floor",
   "art": { "day": "raccoon-sleeping.svg" },
   "aspect": 1.381,
-  "defaultScale": 0.4,
+  "defaultScale": 0.8,
   "attach": "furniture",
   "particles": [
     {

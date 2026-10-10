@@ -6,7 +6,27 @@
   "layer": "surface",
   "band": "floor",
   "aspect": 0.805,
-  "defaultScale": 0.12,
+  "defaultScale": 0.32,
   "defaultRotation": 12,
-  "attach": "furniture"
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Handles",
+      "default": "#7e8f6b",
+      "palette": [
+        "#c97b5a",
+        "#d98c8c",
+        "#e8b4af",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#6f97bb",
+        "#d3b184",
+        "#fce7ca"
+      ],
+      "allowCustom": true
+    }
+  ]
 }

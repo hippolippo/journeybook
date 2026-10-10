@@ -6,7 +6,28 @@
   "layer": "surface",
   "band": "floor",
   "aspect": 0.413,
-  "defaultScale": 0.2,
+  "defaultScale": 0.64,
   "defaultRotation": -3,
-  "attach": "furniture"
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Bottle",
+      "default": "#6f97bb",
+      "palette": [
+        "#c97b5a",
+        "#d98c8c",
+        "#e8b4af",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#6f97bb",
+        "#d3b184",
+        "#fce7ca",
+        "#cbc5c3"
+      ],
+      "allowCustom": true
+    }
+  ]
 }

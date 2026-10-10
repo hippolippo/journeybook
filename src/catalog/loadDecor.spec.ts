@@ -18,7 +18,7 @@ describe('asset loader', () => {
     expect(plant?.raw).toContain('--c-leaves');
   });
 
-  it('reads embedded SVG metadata', () => {
+  it('loads the chai cup (smoke effect) from a sidecar', () => {
     const chai = loadedRoomItems.find((i) => i.id === 'chai-cup');
     expect(chai).toBeTruthy();
     expect(firstEffect(chai?.effect)?.type).toBe('smoke');
@@ -94,7 +94,7 @@ describe('asset loader', () => {
       'beanbag',
       'rug',
       'raccoon',
-      'mug',
+      'coffee-cup',
       'pencil-cup',
       'laptop',
       'scissors',
@@ -105,9 +105,9 @@ describe('asset loader', () => {
     }
     // The four whose file name differs from the item id still resolve to art
     // (Vite inlines these as data URLs, so compare by distinctness).
-    const aliasedArts = ['window', 'mug', 'raccoon', 'plant'].map((id) => byId.get(id)?.art.day);
+    const aliasedArts = ['window', 'raccoon', 'plant'].map((id) => byId.get(id)?.art.day);
     for (const art of aliasedArts) expect(art).toBeTruthy();
-    expect(new Set(aliasedArts).size).toBe(4);
+    expect(new Set(aliasedArts).size).toBe(3);
     // Multi-slot furniture keeps its slots, presets and inlined svg.
     expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['body', 'trim', 'seat']);
     expect(byId.get('beanbag')?.presets?.length).toBeGreaterThan(0);

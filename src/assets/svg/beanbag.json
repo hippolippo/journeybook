@@ -23,8 +23,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     },
@@ -42,8 +41,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     },
@@ -61,8 +59,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     }
@@ -71,27 +68,38 @@
     {
       "id": "blush",
       "label": "Blush",
-      "colors": { "body": "#e8b4af", "trim": "#d98c8c", "seat": "#f7c9c9" }
+      "colors": {
+        "body": "#e8b4af",
+        "trim": "#d98c8c",
+        "seat": "#f7c9c9"
+      }
     },
     {
       "id": "sage",
       "label": "Sage",
-      "colors": { "body": "#9caf88", "trim": "#7e8f6b", "seat": "#cfe3c5" }
+      "colors": {
+        "body": "#9caf88",
+        "trim": "#7e8f6b",
+        "seat": "#cfe3c5"
+      }
     },
     {
       "id": "honey",
       "label": "Honey",
-      "colors": { "body": "#f6e8a8", "trim": "#d9a94e", "seat": "#d3b184" }
+      "colors": {
+        "body": "#f6e8a8",
+        "trim": "#d9a94e",
+        "seat": "#d3b184"
+      }
     },
     {
       "id": "sky",
       "label": "Sky",
-      "colors": { "body": "#9dbfc9", "trim": "#cfe0ea", "seat": "#fcf7ec" }
-    },
-    {
-      "id": "cocoa",
-      "label": "Cocoa",
-      "colors": { "body": "#4a3b2e", "trim": "#b99362", "seat": "#d3b184" }
+      "colors": {
+        "body": "#9dbfc9",
+        "trim": "#cfe0ea",
+        "seat": "#fcf7ec"
+      }
     }
   ]
 }

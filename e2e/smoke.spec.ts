@@ -484,14 +484,14 @@ test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   await page.getByTitle('Edit room').click();
   const shelf = page.locator('.room-item[data-catalog=wall-shelf]').first();
   const shelfBox = (await shelf.boundingBox())!;
-  const mugPalette = page.locator('.palette__item[title="Mug"]').first();
+  const mugPalette = page.locator('.palette__item[title="Coffee cup"]').first();
   const pbox = (await mugPalette.boundingBox())!;
   await page.mouse.move(pbox.x + pbox.width / 2, pbox.y + pbox.height / 2);
   await page.mouse.down();
   await page.mouse.move(shelfBox.x + shelfBox.width / 2, shelfBox.y + 8, { steps: 10 });
   await page.mouse.up();
 
-  const mugs = page.locator('.room-item[data-catalog=mug]');
+  const mugs = page.locator('.room-item[data-catalog=coffee-cup]');
   const last = mugs.nth((await mugs.count()) - 1);
   const left = await last.evaluate((el) => (el as HTMLElement).style.left);
   expect(left).toContain('calc');
@@ -505,8 +505,8 @@ test('surface items can be dragged from the floor up onto the wall', async ({ pa
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await page.getByTitle('Edit room').click();
-  await page.locator('.palette__item[title="Mug"]').first().click();
-  const mug = page.locator('.room-item[data-catalog=mug]').last();
+  await page.locator('.palette__item[title="Coffee cup"]').first().click();
+  const mug = page.locator('.room-item[data-catalog=coffee-cup]').last();
   const before = (await mug.boundingBox())!;
   const cx = before.x + before.width / 2;
   const cy = before.y + before.height / 2;
@@ -528,31 +528,31 @@ test('item depth is one absolute scale from the wall to the floor', async ({ pag
   const zOf = (sel: string) => page.locator(sel).first().evaluate((el) => Number(getComputedStyle(el).zIndex));
   const wall = await zOf('.room-item[data-catalog=wall-shelf]');
   const desk = await zOf('.room-item[data-catalog=desk]');
-  const mug = await zOf('.room-item[data-catalog=mug]');
+  const mug = await zOf('.room-item[data-catalog=coffee-cup]');
   expect(wall).toBeLessThan(desk);
   expect(desk).toBeLessThan(mug);
 
   // A surface item can be pushed all the way behind the wall items.
-  await page.locator('.room-item[data-catalog=mug]').first().click();
+  await page.locator('.room-item[data-catalog=coffee-cup]').first().click();
   const depth = page.locator('.editor .field', { hasText: 'Depth' }).locator('input[type=number]');
   await depth.fill('4');
   await depth.press('Enter');
   // Select something else so the mug isn't lifted by the editor.
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
-  expect(await zOf('.room-item[data-catalog=mug]')).toBe(4);
+  expect(await zOf('.room-item[data-catalog=coffee-cup]')).toBe(4);
 });
 
 test('a buried item can be picked from the item list without leaving its depth', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await page.getByTitle('Edit room').click();
-  await page.locator('.room-item[data-catalog=mug]').first().click();
+  await page.locator('.room-item[data-catalog=coffee-cup]').first().click();
   const depth = page.locator('.editor .field', { hasText: 'Depth' }).locator('input[type=number]');
   await depth.fill('4');
   await depth.press('Enter');
 
-  await page.locator('.item-list__row', { hasText: 'Mug' }).first().click();
-  const sel = page.locator('.room-item[data-catalog=mug].room-item--selected');
+  await page.locator('.item-list__row', { hasText: 'Coffee cup' }).first().click();
+  const sel = page.locator('.room-item[data-catalog=coffee-cup].room-item--selected');
   await expect(sel).toHaveCount(1);
   // Selecting does not lift the item off its own depth.
   const z = await sel.evaluate((el) => Number(getComputedStyle(el).zIndex));
@@ -563,12 +563,12 @@ test('dragging shows a translucent preview while the item keeps its own depth', 
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await page.getByTitle('Edit room').click();
-  await page.locator('.room-item[data-catalog=mug]').first().click();
+  await page.locator('.room-item[data-catalog=coffee-cup]').first().click();
   const depth = page.locator('.editor .field', { hasText: 'Depth' }).locator('input[type=number]');
   await depth.fill('4');
   await depth.press('Enter');
 
-  const mug = page.locator('.room-item[data-catalog=mug]').first();
+  const mug = page.locator('.room-item[data-catalog=coffee-cup]').first();
   const box = (await mug.boundingBox())!;
   const cx = box.x + box.width / 2;
   const cy = box.y + box.height / 2;

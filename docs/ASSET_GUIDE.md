@@ -36,7 +36,7 @@ and the **art** defaults to `<id>.svg`.
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | `trailing-plant.{svg,json}`                                                    | sway animation, 2 color slots, presets, **night-only firefly particles** |
 | `paper-lantern.{svg,json}` + `paper-lantern-night.svg`                         | day/night variants, night glow + flicker                                 |
-| `chai-cup.svg`                                                                 | **embedded** metadata, smoke (particle)                                  |
+| `chai-cup.{svg,json}`                                                           | smoke (particle)                                                        |
 | `fairy-lights.{svg,json}`                                                      | **repeating** texture across the wall, recolour presets                  |
 | `sticker-moon.{svg,json}`                                                      | **sticker** with 2 slots, presets, twinkle animation                     |
 | `sticker-heart-burst.{svg,json}`                                               | **sticker** with a particle system (heart sparks)                        |

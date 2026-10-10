@@ -1,0 +1,33 @@
+{
+  "kind": "room",
+  "id": "coffee-cup",
+  "label": "Coffee cup",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.159,
+  "defaultScale": 0.24,
+  "defaultRotation": -4,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Cup",
+      "default": "#DC855F",
+      "palette": [
+        "#c97b5a",
+        "#d98c8c",
+        "#e8b4af",
+        "#d9a94e",
+        "#9caf88",
+        "#7e8f6b",
+        "#9dbfc9",
+        "#6f97bb",
+        "#d3b184",
+        "#fce7ca"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "effect": { "type": "smoke", "color": "#ffffff", "count": 3, "duration": 3.6 }
+}

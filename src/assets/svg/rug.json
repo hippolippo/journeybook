@@ -22,8 +22,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     },
@@ -41,8 +40,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     },
@@ -60,8 +58,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     },
@@ -79,8 +76,7 @@
         "#9dbfc9",
         "#d3b184",
         "#b99362",
-        "#fcf7ec",
-        "#4a3b2e"
+        "#fcf7ec"
       ],
       "allowCustom": true
     }
@@ -89,27 +85,42 @@
     {
       "id": "blush",
       "label": "Blush",
-      "colors": { "band1": "#e8b4af", "band2": "#d98c8c", "band3": "#f7c9c9", "band4": "#c97b5a" }
+      "colors": {
+        "band1": "#e8b4af",
+        "band2": "#d98c8c",
+        "band3": "#f7c9c9",
+        "band4": "#c97b5a"
+      }
     },
     {
       "id": "sage",
       "label": "Sage",
-      "colors": { "band1": "#9caf88", "band2": "#7e8f6b", "band3": "#cfe3c5", "band4": "#e8d9c0" }
+      "colors": {
+        "band1": "#9caf88",
+        "band2": "#7e8f6b",
+        "band3": "#cfe3c5",
+        "band4": "#e8d9c0"
+      }
     },
     {
       "id": "honey",
       "label": "Honey",
-      "colors": { "band1": "#f6e8a8", "band2": "#d9a94e", "band3": "#d3b184", "band4": "#b99362" }
+      "colors": {
+        "band1": "#f6e8a8",
+        "band2": "#d9a94e",
+        "band3": "#d3b184",
+        "band4": "#b99362"
+      }
     },
     {
       "id": "sky",
       "label": "Sky",
-      "colors": { "band1": "#9dbfc9", "band2": "#cfe0ea", "band3": "#fcf7ec", "band4": "#7e8f6b" }
-    },
-    {
-      "id": "cocoa",
-      "label": "Cocoa",
-      "colors": { "band1": "#4a3b2e", "band2": "#b99362", "band3": "#d3b184", "band4": "#fcf7ec" }
+      "colors": {
+        "band1": "#9dbfc9",
+        "band2": "#cfe0ea",
+        "band3": "#fcf7ec",
+        "band4": "#7e8f6b"
+      }
     }
   ]
 }
