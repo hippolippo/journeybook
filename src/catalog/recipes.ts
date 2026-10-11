@@ -84,13 +84,16 @@ function twinkle(e: EffectDef): AnimationDef {
 }
 
 function glow(e: EffectDef): AnimationDef {
+  // A `slot` makes the light follow a colour slot, so recolouring the item
+  // (via presets or the slot editor) recolours the light it casts too.
+  const color = e.slot ? `var(--c-${e.slot})` : (e.color ?? '#ffd88a');
   return {
     name: 'glow',
     nightOnly: true,
     bloom: true,
     duration: secs(e.duration, 3),
     delay: e.delay != null ? secs(e.delay, 0) : undefined,
-    vars: { '--fx-color': e.color ?? '#ffd88a' },
+    vars: { '--fx-color': color },
     keyframes: [
       { at: 0, opacity: 0.6 },
       { at: 50, opacity: 1 },

@@ -161,7 +161,7 @@ test('note editor: write, pen, paper and effects', async ({ page }) => {
 
   // the preview uses the real note renderer, defaults centred horizontally
   const centred = await page
-    .locator('.noteedit .note__text')
+    .locator('.noteedit .note__input')
     .evaluate((el) => getComputedStyle(el).textAlign);
   expect(centred).toBe('center');
 
@@ -169,7 +169,7 @@ test('note editor: write, pen, paper and effects', async ({ page }) => {
   await page.locator('.noteedit .pen-chip', { hasText: 'Marker' }).click();
   await page.locator('.noteedit .chip--wide', { hasText: 'Lined' }).click();
 
-  const style = await page.locator('.noteedit .note__text').evaluate((el) => {
+  const style = await page.locator('.noteedit .note__input').evaluate((el) => {
     const s = getComputedStyle(el);
     return {
       family: s.fontFamily,
@@ -194,7 +194,7 @@ test('note editor: height, scale and font are independent', async ({ page }) => 
   const box = () => page.locator('.noteedit .note-box').boundingBox();
   const font = () =>
     page
-      .locator('.noteedit .note__text')
+      .locator('.noteedit .note__input')
       .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
   const start = (await box())!;
   const startFont = await font();
@@ -225,6 +225,50 @@ test('note editor: height, scale and font are independent', async ({ page }) => 
   await page.locator('.noteedit input[type=number]').first().fill('40');
   await page.locator('.noteedit input[type=number]').first().dispatchEvent('change');
   expect(await font()).toBe(40);
+});
+
+test('note editor: types directly on the note, synced with the side box', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/book/b4');
+  await page.locator('.page-slot__edit').first().click();
+  await page.getByRole('button', { name: 'Note', exact: true }).click();
+  await page.getByRole('button', { name: /Edit note/ }).click();
+  const inline = page.locator('.noteedit .note__input');
+  await inline.click();
+  await inline.fill('Typed inline');
+  await expect(page.locator('.noteedit .text-input')).toHaveValue('Typed inline');
+  await page.locator('.noteedit').getByRole('button', { name: 'Done' }).click();
+  await expect(page.locator('.peditor .note__text')).toContainText('Typed inline');
+});
+
+test('page editor: dragging a sticker out of the panel places it where dropped', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/book/b4');
+  await page.locator('.page-slot__edit').first().click();
+  const before = await page.locator('.square-page .el').count();
+  const chip = page.locator('.peditor .chip[title="Sticker: Heart"]').first();
+  const pageBox = (await page.locator('.peditor .square-page').boundingBox())!;
+  const cbox = (await chip.boundingBox())!;
+  await page.mouse.move(cbox.x + cbox.width / 2, cbox.y + cbox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(pageBox.x + pageBox.width * 0.3, pageBox.y + pageBox.height * 0.7, { steps: 8 });
+  const ghost = page.locator('.drag-ghost__shape');
+  await expect(ghost).toBeVisible();
+  expect(await ghost.evaluate((n) => n.tagName)).toBe('IMG');
+  await page.mouse.up();
+  await expect(page.locator('.drag-ghost')).toHaveCount(0);
+  await expect(page.locator('.square-page .el')).toHaveCount(before + 1);
+});
+
+test('page editor: drop shadow toggle applies a filter', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/book/b4');
+  await page.locator('.page-slot__edit').first().click();
+  await page.locator('.layer-row').first().click();
+  const el = page.locator('.peditor .el--selected');
+  expect(await el.evaluate((n) => getComputedStyle(n).filter)).toBe('none');
+  await page.getByText('Drop shadow').click();
+  expect(await el.evaluate((n) => getComputedStyle(n).filter)).toContain('drop-shadow');
 });
 
 test('layers pane: rename an item and use no emoji', async ({ page }) => {
@@ -436,11 +480,86 @@ test('asset-defined decor: effects, presets and night glow', async ({ page }) =>
 
   await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
   await page.locator('.editor .btn', { hasText: 'Rose' }).first().click();
-  const glass = await page
-    .locator('.room-item[data-catalog=paper-lantern]')
-    .last()
-    .evaluate((el) => getComputedStyle(el).getPropertyValue('--c-glass').trim());
-  expect(glass).toBe('#e88f9f');
+  await expect
+    .poll(() =>
+      page
+        .locator('.room-item[data-catalog=paper-lantern]')
+        .last()
+        .evaluate((el) => getComputedStyle(el).getPropertyValue('--c-glass').trim()),
+    )
+    .toBe('#e88f9f');
+});
+
+test('room lighting: canvas lightmap darkens night and lights the lamp', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+  await page.mouse.click(30, 30);
+
+  const dark = page.locator('.room__darkness');
+  const glow = page.locator('.room__glow');
+  await expect(dark).toBeAttached();
+  await expect(glow).toBeAttached();
+
+  const sample = (sel: string, x: number, y: number) =>
+    page.locator(sel).evaluate((el, [px, py]) => {
+      const c = el as HTMLCanvasElement;
+      const d = c.getContext('2d')?.getImageData(px, py, 1, 1).data;
+      return d ? Array.from(d) : [];
+    }, [x, y]);
+
+  // Day: no darkness painted.
+  expect((await sample('.room__darkness', 20, 20))[3] ?? 0).toBe(0);
+
+  await page.locator('.editor select').first().selectOption('night');
+  await page.waitForTimeout(900);
+
+  // Night: far corner is darkened, and the lamp's centre is lit (hole carved out).
+  const corner = await sample('.room__darkness', 20, 20);
+  expect(corner[3]).toBeGreaterThan(80);
+  const lampX = Math.round(1400 * 0.5);
+  const lampY = Math.round(900 * (0 + 0.5 * 0.74 - (0.34 * 0.74) / 2));
+  const center = await sample('.room__darkness', lampX, lampY);
+  expect(center[3]).toBeLessThan(corner[3]);
+});
+
+test('room lighting: performance mode falls back to the CSS night layer', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.addInitScript(() => localStorage.setItem('journeybook:performance', '1'));
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+  await page.mouse.click(30, 30);
+  await page.locator('.editor select').first().selectOption('night');
+
+  await expect(page.locator('.room__night')).toBeAttached();
+  await expect(page.locator('.room__lights .room-light__glow')).toHaveCount(1);
+  await expect(page.locator('.room__darkness')).toHaveCount(0);
+});
+
+test('room lighting: the brightness slider scales a light', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+
+  const field = page.locator('.editor .field', { hasText: 'Light' });
+  await expect(field).toBeVisible();
+  const slider = field.locator('input[type=range]');
+  await expect(slider).toHaveValue('1');
+  await slider.fill('0.3');
+  await expect(field.locator('input[type=number]')).toHaveValue('0.3');
+});
+
+test('room lighting: fireflies emit light at night', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  await page.locator('.palette__item', { hasText: 'Trailing plant' }).first().click();
+  await page.mouse.click(30, 30);
+  await page.locator('.editor select').first().selectOption('night');
+  await expect(page.locator('.fx-particle--light').first()).toBeAttached();
 });
 
 test('repeating decor tiles across the wall and recolours', async ({ page }) => {
@@ -471,6 +590,23 @@ test('places a catalog item and locks it', async ({ page }) => {
   await expect(page.locator('.room-item')).toHaveCount(before + 1);
   await page.getByLabel('Lock in place').check();
   await expect(page.locator('.room-item--locked')).toHaveCount(1);
+});
+
+test('room editor: dragging a palette item previews its shape, not text', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const item = page.locator('.palette__item[title="Coffee cup"]').first();
+  await item.scrollIntoViewIfNeeded();
+  const box = (await item.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(600, 400, { steps: 6 });
+  const ghost = page.locator('.drag-ghost__shape');
+  await expect(ghost).toBeVisible();
+  expect(await ghost.evaluate((n) => n.tagName)).toBe('IMG');
+  await page.mouse.up();
+  await expect(page.locator('.drag-ghost')).toHaveCount(0);
 });
 
 test('surface items attach to furniture and follow it', async ({ page }) => {

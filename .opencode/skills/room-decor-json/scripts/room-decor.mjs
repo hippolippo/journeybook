@@ -18,6 +18,8 @@ const BANDS = ['wall', 'floor', 'both'];
 const ATTACH = ['furniture', 'shelf', 'any'];
 const REPEATS = ['x', 'y', 'both'];
 const EFFECT_TYPES = ['sway', 'glow', 'smoke', 'float', 'flicker', 'twinkle'];
+const LIGHT_TYPES = ['lamp', 'candle', 'firefly', 'string', 'window', 'screen', 'moon'];
+const DISTRIBUTIONS = ['point', 'semi', 'diffuse', 'spot', 'wash', 'ambient'];
 
 /** Shared Journeybook palette (mirrors src/catalog/catalog.ts). */
 const PALETTE = [
@@ -451,6 +453,35 @@ function checkMotion(def, log, label) {
   }
 }
 
+function checkLights(def, log, label) {
+  const lights = def.lights;
+  if (lights === undefined) return;
+  if (!Array.isArray(lights)) {
+    log.err(`${label} "lights" must be an array`);
+    return;
+  }
+  const slotIds = new Set((def.colorSlots ?? []).map((s) => s?.id).filter(Boolean));
+  lights.forEach((light, i) => {
+    const name = light?.id ?? i + 1;
+    if (!light || typeof light !== 'object') {
+      log.err(`${label} light #${name} must be an object`);
+      return;
+    }
+    if (light.type !== undefined && !LIGHT_TYPES.includes(light.type))
+      log.err(`${label} light "${name}" has unknown type "${light.type}"`);
+    if (light.distribution !== undefined && !DISTRIBUTIONS.includes(light.distribution))
+      log.err(`${label} light "${name}" has unknown distribution "${light.distribution}"`);
+    if (light.repeat !== undefined && !REPEATS.includes(light.repeat))
+      log.err(`${label} light "${name}" invalid repeat "${light.repeat}"`);
+    for (const field of ['x', 'y', 'radius', 'intensity', 'angle', 'direction', 'penumbra']) {
+      if (light[field] !== undefined && typeof light[field] !== 'number')
+        log.err(`${label} light "${name}" "${field}" must be a number`);
+    }
+    if (light.slot !== undefined && !slotIds.has(light.slot))
+      log.warn(`${label} light "${name}" references unknown slot "${light.slot}"`);
+  });
+}
+
 function checkEntry(def, ctx) {
   const errors = [];
   const warnings = [];
@@ -616,6 +647,7 @@ function checkEntry(def, ctx) {
 
   // Motion (item-level, then per-variant)
   checkMotion(def, log, 'item');
+  checkLights(def, log, 'item');
   for (const which of ['day', 'night']) {
     const variant = def.art?.[which];
     if (variant && typeof variant === 'object') checkMotion(variant, log, `${which} variant`);

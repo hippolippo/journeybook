@@ -1,0 +1,11 @@
+{
+  "kind": "notePaper",
+  "id": "sticky-sky",
+  "label": "Sticky Sky",
+  "color": "#cfe0ea",
+  "radius": 3,
+  "shadow": true,
+  "colorable": false,
+  "sheen": true,
+  "order": 22
+}

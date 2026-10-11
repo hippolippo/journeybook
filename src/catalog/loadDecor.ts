@@ -1,10 +1,11 @@
-import type { ArtVariantVisuals, Band, CatalogItem, Category, ColorPreset, ColorSlot, EffectDef } from './types';
+import type { ArtVariantVisuals, Band, CatalogItem, Category, ColorPreset, ColorSlot, EffectDef, LightDef } from './types';
 import type { AnimationDef } from './animation';
 import type { ParticleDef } from './particles';
 import type { Layer } from '@/data/types';
 import type { StickerDef, TapeDef } from '@/scrapbook/decor';
 import type { FrameDef, FrameInsets } from '@/scrapbook/frames';
 import type { Paper, PaperLayer } from '@/scrapbook/paper';
+import type { NotePaper, NotePaperLines } from '@/scrapbook/notes';
 
 /** One time-of-day art variant: a source file plus optional visuals. */
 export interface ArtVariantDef {
@@ -30,7 +31,7 @@ export interface PaperLayerDef {
  * `<metadata>{ … }</metadata>` block. No application code needs changing.
  */
 export interface AssetDefinition {
-  kind?: 'room' | 'sticker' | 'tape' | 'frame' | 'paper';
+  kind?: 'room' | 'sticker' | 'tape' | 'frame' | 'paper' | 'notePaper';
   id?: string;
   label?: string;
   category?: Category;
@@ -56,6 +57,8 @@ export interface AssetDefinition {
   raw?: boolean;
   /** room: tile the art across the band — "x" | "y" | "both". */
   repeat?: 'x' | 'y' | 'both';
+  /** room: emissive light sources this item casts. */
+  lights?: LightDef[];
   /** tape opacity (0–1). */
   opacity?: number;
   /** frame: crop-window insets as fractions of the element box (0–1). */
@@ -74,6 +77,16 @@ export interface AssetDefinition {
   fill?: PaperLayerDef;
   border?: PaperLayerDef;
   corners?: PaperLayerDef;
+  /** notePaper: ruled pattern, tint palette and styling. */
+  lines?: NotePaperLines;
+  shadow?: boolean;
+  sheen?: boolean;
+  texture?: string;
+  margin?: string;
+  lineColor?: string;
+  spacing?: number;
+  palette?: string[];
+  order?: number;
 }
 
 const urls = import.meta.glob('/src/assets/svg/*.svg', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -194,6 +207,7 @@ function toCatalogItem(def: AssetDefinition): CatalogItem | null {
     particles: mapParticles(def.particles),
     artVariants: hasVariants ? { day: dayVisuals, night: nightVisuals } : undefined,
     repeat: def.repeat,
+    lights: def.lights,
     raw,
   };
 }
@@ -301,6 +315,26 @@ function toPaper(def: AssetDefinition): Paper | null {
   };
 }
 
+function toNotePaper(def: AssetDefinition): NotePaper | null {
+  if (!def.id) return null;
+  return {
+    id: def.id,
+    label: def.label ?? def.id,
+    bg: def.color ?? '#ffffff',
+    radius: def.radius ?? 3,
+    shadow: def.shadow ?? true,
+    lines: def.lines,
+    colorable: def.colorable ?? false,
+    sheen: def.sheen ?? false,
+    texture: def.texture ? (resolveSvgRef(def.texture) ?? def.texture) : undefined,
+    margin: def.margin,
+    lineColor: def.lineColor,
+    spacing: def.spacing,
+    palette: def.palette,
+    order: def.order,
+  };
+}
+
 const defs = collect();
 
 export const loadedRoomItems: CatalogItem[] = defs
@@ -327,3 +361,8 @@ export const loadedPapers: Paper[] = defs
   .filter((d) => d.kind === 'paper')
   .map(toPaper)
   .filter((d): d is Paper => !!d);
+
+export const loadedNotePapers: NotePaper[] = defs
+  .filter((d) => d.kind === 'notePaper')
+  .map(toNotePaper)
+  .filter((d): d is NotePaper => !!d);

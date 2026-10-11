@@ -48,6 +48,14 @@ export interface PageElementPatch {
   shadow?: boolean;
   name?: string;
   scale?: number;
+  dropShadow?: boolean;
+  shadowStrength?: number;
+}
+
+/** Optional drop position (page fractions) for palette drag-and-drop. */
+export interface DropPoint {
+  x: number;
+  y: number;
 }
 
 const UI_KEY = 'journeybook:page-editor-ui:v1';
@@ -234,7 +242,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       this.dirty = true;
       return el;
     },
-    addImage(mediaId: string) {
+    addImage(mediaId: string, at?: DropPoint) {
       const aspect = frameAspect(frameById('polaroid')) ?? 1;
       const w = 0.44;
       return this.addElement({
@@ -247,14 +255,14 @@ export const usePageEditorStore = defineStore('pageEditor', {
         focusY: 0.5,
         preset: 'custom',
         effects: {},
-        x: 0.5,
-        y: 0.47,
+        x: at?.x ?? 0.5,
+        y: at?.y ?? 0.47,
         w,
         h: w / aspect,
         rotation: -2,
       });
     },
-    addNote() {
+    addNote(at?: DropPoint) {
       return this.addElement({
         kind: 'note',
         text: 'Write something sweet…',
@@ -266,25 +274,33 @@ export const usePageEditorStore = defineStore('pageEditor', {
         align: 'center',
         valign: 'middle',
         lineHeight: 1.3,
-        x: 0.5,
-        y: 0.5,
+        x: at?.x ?? 0.5,
+        y: at?.y ?? 0.5,
         w: 0.5,
         h: 0.22,
         rotation: 2,
       });
     },
-    addSticker(icon: string) {
+    addSticker(icon: string, at?: DropPoint) {
       const def = stickerById(icon);
-      return this.addElement({ kind: 'sticker', icon, x: 0.5, y: 0.5, w: 0.18, h: 0.18 / def.aspect, rotation: -6 });
+      return this.addElement({
+        kind: 'sticker',
+        icon,
+        x: at?.x ?? 0.5,
+        y: at?.y ?? 0.5,
+        w: 0.18,
+        h: 0.18 / def.aspect,
+        rotation: -6,
+      });
     },
-    addTape(style: TapeStyle) {
+    addTape(style: TapeStyle, at?: DropPoint) {
       const def = tapeById(style);
       return this.addElement({
         kind: 'tape',
         style,
         color: def.defaultColor,
-        x: 0.5,
-        y: 0.5,
+        x: at?.x ?? 0.5,
+        y: at?.y ?? 0.5,
         w: 0.42,
         h: 0.42 / def.aspect,
         rotation: -4,

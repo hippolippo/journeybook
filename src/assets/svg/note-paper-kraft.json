@@ -1,0 +1,19 @@
+{
+  "kind": "notePaper",
+  "id": "kraft",
+  "label": "Kraft",
+  "color": "#e0cca6",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "texture": "paper-grain.svg",
+  "order": 5,
+  "palette": [
+    "#e0cca6",
+    "#d8c3a0",
+    "#cbb289",
+    "#e8d9c0",
+    "#f0e4cc",
+    "#c9a86f"
+  ]
+}

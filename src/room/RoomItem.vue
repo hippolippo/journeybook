@@ -33,7 +33,7 @@ import { useEditorStore } from '@/stores/editor';
 import WallClock from './WallClock.vue';
 import FxLayer from './FxLayer.vue';
 
-const props = defineProps<{ item: RoomItem; layout: Viewport; editable?: boolean; ghost?: boolean }>();
+const props = defineProps<{ item: RoomItem; layout: Viewport; editable?: boolean; ghost?: boolean; light?: boolean }>();
 const rootEl = ref<HTMLElement | null>(null);
 const app = useAppStore();
 const editor = useEditorStore();
@@ -80,7 +80,7 @@ const previewHostPlacement = computed<Placement | null>(() => {
   return h.desktop;
 });
 
-const canEdit = computed(() => !props.ghost && !!props.editable && editor.isEditing);
+const canEdit = computed(() => !props.ghost && !props.light && !!props.editable && editor.isEditing);
 const colorVars = computed(() => {
   const vars: Record<string, string> = {};
   for (const slot of cat.value?.colorSlots ?? []) {
@@ -88,7 +88,7 @@ const colorVars = computed(() => {
   }
   return vars;
 });
-const selected = computed(() => !props.ghost && editor.isEditing && editor.selectedId === props.item.id);
+const selected = computed(() => !props.ghost && !props.light && editor.isEditing && editor.selectedId === props.item.id);
 
 const positionBand = computed<Band>(() =>
   cat.value?.layer === 'surface' ? 'both' : (cat.value?.band ?? 'floor'),
@@ -190,6 +190,14 @@ const art = computed(() => {
 
 // ---- effects (configured on the asset, no code change) ----
 const visuals = computed(() => (!props.ghost && cat.value ? resolveVisuals(cat.value, night.value) : EMPTY_VISUALS));
+
+// The emissive bloom of a light-emitting item, surfaced in the lights layer
+// that renders above the night overlay so its light is not swallowed.
+const bloom = computed(() => visuals.value.animations.find((a) => a.bloom));
+const lightStyle = computed<Record<string, string>>(() => ({
+  '--fx-color': bloom.value?.vars?.['--fx-color'] ?? '#ffd88a',
+  '--fx-dur': bloom.value?.duration ?? '3.5s',
+}));
 
 // --- robust pointer dragging / scaling / rotating ---
 type Mode = 'move' | 'resize' | 'rotate';
@@ -452,39 +460,55 @@ function onUp(event: PointerEvent) {
   <div
     v-if="cat && placement"
     ref="rootEl"
-    class="room-item"
-    :class="{
-      'room-item--editable': canEdit,
-      'room-item--selected': selected,
-      'room-item--dragging': dragging,
-      'room-item--ghost': props.ghost,
-      'room-item--locked': props.item.locked,
-      'room-item--hidden-mobile': hiddenHere,
-      'room-item--repeat': !!cat.repeat,
-      'room-item--attached': attached && !props.ghost,
-    }"
+    :class="
+      props.light
+        ? 'room-light'
+        : [
+            'room-item',
+            {
+              'room-item--editable': canEdit,
+              'room-item--selected': selected,
+              'room-item--dragging': dragging,
+              'room-item--ghost': props.ghost,
+              'room-item--locked': props.item.locked,
+              'room-item--hidden-mobile': hiddenHere,
+              'room-item--repeat': !!cat.repeat,
+              'room-item--attached': attached && !props.ghost,
+            },
+          ]
+    "
     :style="style"
-    :data-catalog="props.item.catalogId"
-    :data-item-id="props.ghost ? undefined : props.item.id"
+    :data-catalog="props.ghost || props.light ? undefined : props.item.catalogId"
+    :data-item-id="props.ghost || props.light ? undefined : props.item.id"
     draggable="false"
     @pointerdown="onDown"
     @dragstart.prevent
   >
-    <span class="room-item__art">
-      <FxLayer :animations="visuals.animations" :particles="visuals.particles" :seed="props.item.id">
-        <span v-if="cat.repeat" class="room-item__repeat" :style="repeatStyle"></span>
-        <WallClock v-else-if="cat.component === 'clock'" />
-        <span v-else-if="cat.raw" class="room-item__svg" v-html="cat.raw"></span>
-        <img v-else :src="art" alt="" draggable="false" />
-      </FxLayer>
-    </span>
-    <slot />
-    <span v-if="canEdit && props.item.locked" class="room-item__lock icon icon--lock" aria-hidden="true"></span>
-    <span v-if="preview && !props.ghost" class="room-item__attach-badge" aria-hidden="true"></span>
-    <span v-if="removePreview" class="room-item__remove-badge" aria-hidden="true"></span>
-    <template v-if="selected && canEdit && !props.item.locked">
-      <span class="pe-handle pe-handle--br" title="Scale" @pointerdown="onResizeDown"></span>
-      <span class="pe-rot" title="Rotate" @pointerdown="onRotateDown"></span>
+    <template v-if="props.light">
+      <span v-if="bloom" class="room-light__glow" :style="lightStyle" aria-hidden="true"></span>
+      <span v-if="bloom" class="room-light__body" aria-hidden="true">
+        <span v-if="cat.raw" class="room-item__svg" v-html="cat.raw"></span>
+        <img v-else-if="!cat.repeat && !cat.component" :src="art" alt="" draggable="false" />
+      </span>
+      <slot />
+    </template>
+    <template v-else>
+      <span class="room-item__art">
+        <FxLayer :animations="visuals.animations" :particles="visuals.particles" :seed="props.item.id" :light-level="props.item.lightLevel ?? 1">
+          <span v-if="cat.repeat" class="room-item__repeat" :style="repeatStyle"></span>
+          <WallClock v-else-if="cat.component === 'clock'" />
+          <span v-else-if="cat.raw" class="room-item__svg" v-html="cat.raw"></span>
+          <img v-else :src="art" alt="" draggable="false" />
+        </FxLayer>
+      </span>
+      <slot />
+      <span v-if="canEdit && props.item.locked" class="room-item__lock icon icon--lock" aria-hidden="true"></span>
+      <span v-if="preview && !props.ghost" class="room-item__attach-badge" aria-hidden="true"></span>
+      <span v-if="removePreview" class="room-item__remove-badge" aria-hidden="true"></span>
+      <template v-if="selected && canEdit && !props.item.locked">
+        <span class="pe-handle pe-handle--br" title="Scale" @pointerdown="onResizeDown"></span>
+        <span class="pe-rot" title="Rotate" @pointerdown="onRotateDown"></span>
+      </template>
     </template>
   </div>
 </template>

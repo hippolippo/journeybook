@@ -7,6 +7,7 @@ import { bandFor, deriveMobile } from '@/room/geometry';
 import { hostFrame, screenToHostLocal } from '@/room/transform';
 import { canHost, hostAt } from '@/room/attach';
 import { useEditorStore, type Dock } from '@/stores/editor';
+import { emitsLight } from '@/room/lights/registry';
 import RoomThumb from '@/room/RoomThumb.vue';
 
 const editor = useEditorStore();
@@ -28,6 +29,7 @@ const collapseArrow = computed(() => {
 
 const selected = computed(() => editor.selected);
 const selectedCat = computed(() => (selected.value ? getCatalogItem(selected.value.catalogId) : undefined));
+const selectedEmitsLight = computed(() => !!selectedCat.value && emitsLight(selectedCat.value));
 const items = computed(() => [...editor.items].sort((a, b) => b.z - a.z));
 const topLevel = computed(() => items.value.filter((i) => !i.attachTo || !editor.itemById(i.attachTo)));
 const night = computed(() => editor.timeOfDay === 'night');
@@ -61,6 +63,9 @@ function toggleHide(value: boolean) {
 }
 function toggleLock(value: boolean) {
   if (selected.value) editor.setLocked(selected.value.id, value);
+}
+function setLightLevel(value: string) {
+  if (selected.value) editor.setLightLevel(selected.value.id, num(value));
 }
 
 // ---- reorder the depth list (pointer-based so it works on touch too) ----
@@ -189,45 +194,52 @@ onMounted(() => window.addEventListener('keydown', onKey));
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 
 // ---- drag a catalog item out into the room ----
-const ghost = ref<{ x: number; y: number; label: string } | null>(null);
-function startPlace(event: PointerEvent, catalogId: string, label: string) {
+const ghost = ref<{ x: number; y: number; art: string } | null>(null);
+function startPlace(event: PointerEvent, catalogId: string) {
   if (event.button !== 0) return;
   event.preventDefault();
   const cat = getCatalogItem(catalogId);
   if (!cat) return;
-  const target = event.currentTarget as HTMLElement;
-  try {
-    target.setPointerCapture(event.pointerId);
-  } catch {
-    /* ignore */
-  }
-  ghost.value = { x: event.clientX, y: event.clientY, label };
+  const item = cat;
+  const art = night.value && cat.art.night ? cat.art.night : cat.art.day;
+  const pointerId = event.pointerId;
   let moved = false;
-  const move = (ev: PointerEvent) => {
+  ghost.value = { x: event.clientX, y: event.clientY, art };
+
+  function teardown() {
+    window.removeEventListener('pointermove', move, true);
+    window.removeEventListener('pointerup', up, true);
+    window.removeEventListener('pointercancel', cancel, true);
+    window.removeEventListener('blur', cancel);
+    ghost.value = null;
+  }
+  function move(ev: PointerEvent) {
+    if (ev.pointerId !== pointerId) return;
     moved = true;
     if (ghost.value) ghost.value = { ...ghost.value, x: ev.clientX, y: ev.clientY };
-  };
-  const up = (ev: PointerEvent) => {
-    target.removeEventListener('pointermove', move);
-    target.removeEventListener('pointerup', up);
-    target.removeEventListener('pointercancel', up);
-    ghost.value = null;
+  }
+  function up(ev: PointerEvent) {
+    if (ev.pointerId !== pointerId) return;
+    const wasMoved = moved;
+    const clientX = ev.clientX;
+    const clientY = ev.clientY;
+    teardown();
     // A click (no drag) just drops the item at its default place.
-    if (!moved) {
+    if (!wasMoved) {
       editor.addItem(catalogId);
       return;
     }
-    const overPanel = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('.editor');
+    const overPanel = document.elementFromPoint(clientX, clientY)?.closest('.editor');
     if (overPanel) return;
-    const band = bandFor(cat.layer === 'surface' ? 'both' : cat.band);
-    const x = Math.min(0.98, Math.max(0.02, ev.clientX / window.innerWidth));
-    const y = Math.min(1, Math.max(0, (ev.clientY / window.innerHeight - band.top) / band.height));
+    const band = bandFor(item.layer === 'surface' ? 'both' : item.band);
+    const x = Math.min(0.98, Math.max(0.02, clientX / window.innerWidth));
+    const y = Math.min(1, Math.max(0, (clientY / window.innerHeight - band.top) / band.height));
     // Dropping a surface item onto a compatible host attaches it.
-    const hit = cat.layer === 'surface' ? hostAt(ev.clientX, ev.clientY, cat) : null;
+    const hit = item.layer === 'surface' ? hostAt(clientX, clientY, item) : null;
     const hitCat = hit ? getCatalogItem(hit.catalogId) : undefined;
-    if (hit && canHost(cat, hitCat)) {
+    if (hit && canHost(item, hitCat)) {
       const hostItem = editor.items.find((i) => i.id === hit.id);
-      const stageEl = document.elementFromPoint(ev.clientX, ev.clientY)?.closest('.room') as HTMLElement | null;
+      const stageEl = document.elementFromPoint(clientX, clientY)?.closest('.room') as HTMLElement | null;
       const stageRect = stageEl?.getBoundingClientRect();
       if (hostItem && hitCat && stageRect) {
         const hostPlacement =
@@ -240,7 +252,7 @@ function startPlace(event: PointerEvent, catalogId: string, label: string) {
         });
         // Place the dropped item's base-centre at the pointer, in the host's
         // (possibly rotated) frame so it lands where it was dropped.
-        const local = screenToHostLocal(ev.clientX - frame.pivot.x, ev.clientY - frame.pivot.y, frame);
+        const local = screenToHostLocal(clientX - frame.pivot.x, clientY - frame.pivot.y, frame);
         const ax = Math.min(1, Math.max(0, local.x / frame.widthPx + 0.5));
         const ay = Math.min(1, Math.max(0, local.y / frame.heightPx + 0.5));
         editor.addItem(catalogId, { hostId: hit.id, ax, ay });
@@ -248,10 +260,14 @@ function startPlace(event: PointerEvent, catalogId: string, label: string) {
       }
     }
     editor.addItem(catalogId, { x, y });
-  };
-  target.addEventListener('pointermove', move);
-  target.addEventListener('pointerup', up);
-  target.addEventListener('pointercancel', up);
+  }
+  function cancel() {
+    teardown();
+  }
+  window.addEventListener('pointermove', move, true);
+  window.addEventListener('pointerup', up, true);
+  window.addEventListener('pointercancel', cancel, true);
+  window.addEventListener('blur', cancel);
 }
 
 // ---- named layouts ----
@@ -382,7 +398,7 @@ async function saveNamed() {
               class="palette__item"
               type="button"
               :title="cat.label"
-              @pointerdown="startPlace($event, cat.id, cat.label)"
+              @pointerdown="startPlace($event, cat.id)"
               @keydown.enter.prevent="editor.addItem(cat.id)"
               @keydown.space.prevent="editor.addItem(cat.id)"
             >
@@ -420,6 +436,11 @@ async function saveNamed() {
           <span>Depth</span>
           <input type="range" min="0" max="60" step="1" :value="selected.z" @pointerdown="editor.snapshot()" @input="setZ(($event.target as HTMLInputElement).value)" />
           <input type="number" min="0" max="60" step="1" :value="selected.z" @change="editor.snapshot(); setZ(($event.target as HTMLInputElement).value)" />
+        </div>
+        <div v-if="selectedEmitsLight" class="field">
+          <span>Light</span>
+          <input type="range" min="0" max="2" step="0.05" :value="selected.lightLevel ?? 1" @pointerdown="editor.snapshot()" @input="setLightLevel(($event.target as HTMLInputElement).value)" />
+          <input type="number" min="0" max="2" step="0.05" :value="selected.lightLevel ?? 1" @change="editor.snapshot(); setLightLevel(($event.target as HTMLInputElement).value)" />
         </div>
 
         <label><input type="checkbox" :checked="placement.flip" @change="editor.snapshot(); setFlip(($event.target as HTMLInputElement).checked)" /> Flip horizontally</label>
@@ -487,8 +508,8 @@ async function saveNamed() {
     </div>
   </aside>
 
-  <div v-if="ghost" class="drag-ghost" :style="{ left: `${ghost.x}px`, top: `${ghost.y}px` }">
-    {{ ghost.label }}
+  <div v-if="ghost" class="drag-ghost drag-ghost--shape" :style="{ left: `${ghost.x}px`, top: `${ghost.y}px` }" aria-hidden="true">
+    <img v-if="ghost.art" class="drag-ghost__shape" :src="ghost.art" alt="" draggable="false" />
   </div>
 
   <div

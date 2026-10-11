@@ -7,12 +7,80 @@
   "aspect": 2.66,
   "defaultScale": 0.14,
   "repeat": "x",
-  "effect": { "type": "twinkle", "duration": 3.2 },
+  "effect": {
+    "type": "twinkle",
+    "duration": 3.2
+  },
+  "lights": [
+    {
+      "type": "string",
+      "slot": "bulbs",
+      "repeat": "x",
+      "x": 10,
+      "y": 40,
+      "radius": 50
+    },
+    {
+      "type": "string",
+      "slot": "bulbs",
+      "repeat": "x",
+      "x": 30,
+      "y": 36.7,
+      "radius": 50
+    },
+    {
+      "type": "string",
+      "slot": "bulbs",
+      "repeat": "x",
+      "x": 50,
+      "y": 35,
+      "radius": 50
+    },
+    {
+      "type": "string",
+      "slot": "bulbs",
+      "repeat": "x",
+      "x": 70,
+      "y": 38.3,
+      "radius": 50
+    },
+    {
+      "type": "string",
+      "slot": "bulbs",
+      "repeat": "x",
+      "x": 90,
+      "y": 33.3,
+      "radius": 50
+    }
+  ],
   "colorSlots": [
-    { "id": "bulbs", "label": "Bulbs", "default": "#f2b25c", "palette": ["#f2b25c", "#e88f9f", "#9dbfc9", "#cfe3c5"], "allowCustom": true }
+    {
+      "id": "bulbs",
+      "label": "Bulbs",
+      "default": "#f2b25c",
+      "palette": [
+        "#f2b25c",
+        "#e88f9f",
+        "#9dbfc9",
+        "#cfe3c5"
+      ],
+      "allowCustom": true
+    }
   ],
   "presets": [
-    { "id": "warm", "label": "Warm", "colors": { "bulbs": "#f2b25c" } },
-    { "id": "candy", "label": "Candy", "colors": { "bulbs": "#e88f9f" } }
+    {
+      "id": "warm",
+      "label": "Warm",
+      "colors": {
+        "bulbs": "#f2b25c"
+      }
+    },
+    {
+      "id": "candy",
+      "label": "Candy",
+      "colors": {
+        "bulbs": "#e88f9f"
+      }
+    }
   ]
 }

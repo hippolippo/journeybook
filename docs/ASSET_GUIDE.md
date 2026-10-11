@@ -42,6 +42,7 @@ and the **art** defaults to `<id>.svg`.
 | `sticker-heart-burst.{svg,json}`                                               | **sticker** with a particle system (heart sparks)                        |
 | `frame-stitched.{svg,json}`                                                    | **frame** overlay with a recolourable border                             |
 | `paper-meadow.{svg,json}` + `paper-tile-dots/border-stitch/corner-blossom.svg` | **paper** with fill tile + edge border + corner motifs, 4 slots          |
+| `demo-light-*.{svg,json}`                                                      | **lights**: one simple lamp per `distribution` (demo/reference, §10)     |
 
 ---
 
@@ -111,6 +112,7 @@ That's it. No code changes.
 | `effect`          | object \| array \| null                                                       | Shortcut recipes, see §7.1.                                                                                                |
 | `animations`      | array                                                                         | Generic animations, see §7.                                                                                                |
 | `particles`       | array                                                                         | Generic particle systems, see §8.                                                                                          |
+| `lights`          | array                                                                         | Emissive light sources, see §10.                                                                                           |
 | `colorSlots`      | array                                                                         | See §6.                                                                                                                    |
 | `presets`         | array                                                                         | See §6.3.                                                                                                                  |
 | `art`             | `{ day, night }`                                                              | See §5.                                                                                                                    |
@@ -453,7 +455,121 @@ See `fairy-lights.{svg,json}`.
 
 ---
 
-## 10. Stickers
+## 10. Lights (room; emissive fixtures)
+
+Room items can **cast light** into the scene. At night the room renders a
+lightmap: lit areas keep the real art and coloured light pools are added on top,
+mixing where they meet. Lights are fully data-driven — no code changes.
+
+Declare one or more lights in the definition:
+
+```json
+"lights": [
+  { "type": "lamp", "distribution": "spot", "slot": "bulb",
+    "x": 50, "y": 20, "radius": 320,
+    "angle": 60, "direction": 90, "penumbra": 0.4, "intensity": 1 }
+]
+```
+
+- `x` / `y` — the light's centre, **% of the item box** (default `50 / 50`).
+- `radius` — reach, **% of the item height** (default from the type).
+- `color` (literal) or `slot` (a `colorSlots` id) — the emitted colour. Using a
+  slot means presets and recolouring change the light too.
+- `intensity` — multiplier on the type default (default `1`).
+- `flicker` — `true` for a strong flicker (candles/fireflies default to a mild one).
+
+The editor shows a **Light** brightness slider for any item that casts light.
+
+### 10.1 Fixture `type` (defaults)
+
+`type` sets sensible defaults for reach / brightness / colour / flicker and a
+default `distribution`:
+
+| `type`    | default distribution | feel                            |
+| --------- | -------------------- | ------------------------------- |
+| `lamp`    | `semi`               | a shaded household lamp         |
+| `candle`  | `point`              | small warm flickering flame     |
+| `firefly` | `point`              | tiny cool spark                 |
+| `string`  | `point`              | fairy / string bulb             |
+| `window`  | `ambient`            | soft moonlight through a window |
+| `screen`  | `diffuse`            | monitor glow                    |
+| `moon`    | `ambient`            | broad cool fill                 |
+
+### 10.2 `distribution` (how the light spreads)
+
+Override the shape/character per light:
+
+| `distribution` | physics                            | reads as                 | extra fields                     |
+| -------------- | ---------------------------------- | ------------------------ | -------------------------------- |
+| `point`        | omni, hot core, steep falloff      | crisp sparkle            | —                                |
+| `semi`         | omni with a gentle hotspot         | shaded lamp              | —                                |
+| `diffuse`      | omni area emitter, broad, low peak | soft even pool           | —                                |
+| `spot`         | directional cone, hard-ish edge    | aimed beam / downlight   | `angle`, `direction`, `penumbra` |
+| `wash`         | wide directional flood             | wall-wash / flood        | `angle`, `direction`, `penumbra` |
+| `ambient`      | flat, distance-independent fill    | moonlight / screen fill  | —                                |
+
+Directional fields (only for `spot` / `wash`):
+
+- `angle` — cone **full** angle in degrees (defaults: `spot` 55, `wash` 150).
+- `direction` — `0` = right, `90` = down, `180` = left, `270` = up.
+- `penumbra` — edge softness, `0` (hard) – `1` (very soft).
+
+A hard "beam" is `spot` with a small `angle` and `penumbra: 0`; a soft "Fresnel"
+is `spot` with a high `penumbra`.
+
+### 10.3 Repeating lights
+
+If the item is a `repeat` strip (fairy lights), give a light `"repeat": "x"` (or
+`"y"` / `"both"`) so its pattern tiles with the art; `x`/`y` are then positions
+**within one tile**:
+
+```json
+"lights": [
+  { "type": "string", "slot": "bulbs", "repeat": "x", "x": 10, "y": 40, "radius": 50 }
+]
+```
+
+### 10.4 Particles that glow
+
+Add `"light": true` to a particle system to make each particle emit light
+(fireflies). The light follows the particle's live position; `shape.color` is the
+light colour:
+
+```json
+"particles": [
+  { "name": "firefly", "count": 5, "duration": 5, "size": 8, "light": true,
+    "shape": { "kind": "svg", "svg": "particle-firefly.svg", "color": "#ffd76b" } }
+]
+```
+
+### 10.5 Demo items
+
+All demos are labelled **`DEMO · …`** and are for experimenting: drop them in the
+room, switch **Time of day → Night**, and tune their JSON.
+
+**Distribution demos** — one simple lamp per `distribution`:
+`demo-light-point`, `demo-light-semi`, `demo-light-diffuse`, `demo-light-spot`,
+`demo-light-wash`, `demo-light-ambient`.
+
+**Parameter recipes** — realistic fixtures, each showing what to tune and why:
+
+| Demo                   | Key parameters                                                            | What it shows                     |
+| ---------------------- | ------------------------------------------------------------------------- | --------------------------------- |
+| `demo-light-reading`   | `distribution: "spot"`, `angle: 28`, `direction: 90`, `penumbra: 0.12`     | a tight, aimed task-light pool    |
+| `demo-light-street`    | `distribution: "spot"`, `angle: 100`, `penumbra: 0.55`                     | a wide, soft downlight wash       |
+| `demo-light-beacon`    | `distribution: "spot"`, `angle: 16`, `penumbra: 0`, `intensity: 1.8`       | a hard, narrow stage beam         |
+| `demo-light-uplight`   | `distribution: "wash"`, `direction: 270`                                   | light aimed **up** (grazing wash) |
+| `demo-light-candle`    | `type: "candle"`, `distribution: "point"`, `flicker: true`, small `radius` | a tight flickering point source   |
+| `demo-light-chandelier`| three `"point"` lights in one asset                                       | **several sources** on one item   |
+| `demo-light-neon`      | six `"point"` lights sharing one `slot`                                   | many small coloured sources       |
+| `demo-light-moonlight` | `type: "window"`, `distribution: "wash"`, cool `color`, `angle: 150`      | a broad, cool fill                |
+| `demo-light-screen`    | `type: "screen"`, `distribution: "diffuse"`                                | a soft, even area glow            |
+
+Copy any of them as a starting point for a new fixture.
+
+---
+
+## 11. Stickers
 
 Stickers live on scrapbook pages. They support full recolouring (one or many
 slots), presets, animations and particles — same engine as room items.
@@ -517,7 +633,7 @@ slots), presets, animations and particles — same engine as room items.
 
 ---
 
-## 11. Tape
+## 12. Tape
 
 Tape is a strip placed on a page. By default the SVG is used as a **mask** filled
 with one colour — design a solid silhouette (alpha matters; ink colour is ignored).
@@ -537,7 +653,7 @@ and `particles` exactly like stickers.
 
 ---
 
-## 12. Frames
+## 13. Frames
 
 A frame is an **overlay SVG** drawn on top of a photo. Design it at any viewBox:
 the overlay is stretched to the element's box, and the region that should show the
@@ -579,7 +695,7 @@ photo must be **transparent** (a hole). `insets` tell the app where that window 
 
 ---
 
-## 13. Papers
+## 14. Papers
 
 A **paper** is the page background. It is a base colour plus any of three optional
 layers, all defined with your own SVGs:
@@ -682,7 +798,7 @@ Notes:
 
 ---
 
-## 14. Embedding the definition in the SVG (advanced)
+## 15. Embedding the definition in the SVG (advanced)
 
 Instead of (or on top of) a sidecar JSON, put a JSON `<metadata>` block in the
 SVG. This keeps art + config in one file:
@@ -698,7 +814,7 @@ If both exist, the **sidecar JSON wins** for the fields it sets (they are merged
 
 ---
 
-## 15. SVG authoring guidelines
+## 16. SVG authoring guidelines
 
 - Set a `viewBox` and **omit** fixed `width`/`height` so the art scales cleanly
   (e.g. `<svg viewBox="0 0 120 200">`). The `aspect` = viewBox width ÷ height.
@@ -711,7 +827,7 @@ If both exist, the **sidecar JSON wins** for the fields it sets (they are merged
 
 ---
 
-## 16. Icons (UI glyphs)
+## 17. Icons (UI glyphs)
 
 Small UI icons (buttons, layer rows) live in `src/assets/svg/icon-*.svg` and are
 worn as CSS masks using a colour, so draw them as **single-colour silhouettes**.
@@ -724,16 +840,19 @@ Wiring one up requires one tiny CSS line, e.g.:
 ```
 
 Then use `<span class="icon icon--basket"></span>`. (Decor, stickers, tape,
-frames and papers do not need this — they are data-driven via §2–§13.)
+frames and papers do not need this — they are data-driven via §2–§14.)
 
 ---
 
-## 17. Testing your art
+## 18. Testing your art
 
 1. `pnpm dev` and open the app.
 2. Room editor: click the pencil (desktop) → your item is in its category.
    - Toggle **Time of day** between _Day_ and _Night_ to check variants, glow and
      night-only particles.
+   - For a **light** (§10), switch to **Night** and try the `demo-light-*` items to
+     compare distributions; tune `radius`/`angle`/`direction`/`penumbra` and watch
+     the pool change.
    - Select it to see colour slots and presets; watch the animation/particles.
    - For a `surface` item, drop it onto a host (a desk/shelf with `"host": true`)
      to attach it, and drag it off to detach; a loose one can go anywhere on the
@@ -747,7 +866,7 @@ frames and papers do not need this — they are data-driven via §2–§13.)
 
 ---
 
-## 18. Definition reference (all fields)
+## 19. Definition reference (all fields)
 
 ```jsonc
 {
@@ -833,6 +952,25 @@ frames and papers do not need this — they are data-driven via §2–§13.)
           { "at": 100, "opacity": 0, "transform": "translateY(-40%) scale(1)" },
         ],
       },
+    },
+  ],
+
+  // lights (room; §10)
+  "lights": [
+    {
+      "id": "bulb", // optional
+      "type": "lamp", // lamp | candle | firefly | string | window | screen | moon
+      "distribution": "spot", // point | semi | diffuse | spot | wash | ambient
+      "slot": "body", // or "color": "#ffcf6b"
+      "x": 50,
+      "y": 20,
+      "radius": 320,
+      "intensity": 1,
+      "flicker": false,
+      "repeat": "x", // tile with a repeat item (optional)
+      "angle": 60, // spot / wash only
+      "direction": 90, // spot / wash only (0=right, 90=down)
+      "penumbra": 0.4, // spot / wash only (0 hard – 1 soft)
     },
   ],
 }

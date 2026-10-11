@@ -1,4 +1,5 @@
 import type { NoteElement } from '@/data/types';
+import { loadedNotePapers } from '@/catalog/loadDecor';
 
 export interface Pen {
   id: string;
@@ -26,27 +27,52 @@ export function penById(id?: string): Pen {
   return PENS.find((p) => p.id === id) ?? PENS[0];
 }
 
+export type NotePaperLines = 'lined' | 'grid' | 'dots';
+
 export interface NotePaper {
   id: string;
   label: string;
   bg: string;
   radius: number;
   shadow: boolean;
-  lines?: 'lined' | 'grid' | 'dots';
+  lines?: NotePaperLines;
   colorable: boolean;
+  /** Soft diagonal highlight, for sticky notes. */
+  sheen?: boolean;
+  /** Repeating texture overlay (resolved SVG url), e.g. paper fibre. */
+  texture?: string;
+  /** Colour of a vertical margin rule (index cards). */
+  margin?: string;
+  /** Override for the ruled-line colour. */
+  lineColor?: string;
+  /** Line-spacing multiplier (1 = exactly one line per text line). */
+  spacing?: number;
+  /** Tint palette shown for colorable papers. */
+  palette?: string[];
+  /** Sort order in the paper picker. */
+  order?: number;
 }
 
-export const NOTE_PAPERS: NotePaper[] = [
-  { id: 'sticky', label: 'Sticky note', bg: '#f6e8a8', radius: 3, shadow: true, colorable: true },
-  { id: 'lined', label: 'Lined', bg: '#fdf8ef', radius: 3, shadow: true, lines: 'lined', colorable: false },
-  { id: 'grid', label: 'Grid', bg: '#ffffff', radius: 3, shadow: true, lines: 'grid', colorable: false },
-  { id: 'dots', label: 'Dot grid', bg: '#ffffff', radius: 3, shadow: true, lines: 'dots', colorable: false },
-  { id: 'kraft', label: 'Kraft', bg: '#e8d9c0', radius: 3, shadow: true, colorable: true },
-  { id: 'none', label: 'No paper', bg: 'transparent', radius: 0, shadow: false, colorable: false },
-];
+/**
+ * The "no paper" option is a functional sentinel (a bare note), not artwork, so
+ * it stays in code. Every real paper is defined by an asset JSON file.
+ */
+export const NONE_NOTE_PAPER: NotePaper = {
+  id: 'none',
+  label: 'No paper',
+  bg: 'transparent',
+  radius: 0,
+  shadow: false,
+  colorable: false,
+};
+
+/** Artist-defined papers (`kind: "notePaper"`), ordered for the picker. */
+export const NOTE_PAPERS: NotePaper[] = [...loadedNotePapers]
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.label.localeCompare(b.label))
+  .concat(NONE_NOTE_PAPER);
 
 export function notePaperById(id?: string): NotePaper {
-  return NOTE_PAPERS.find((p) => p.id === id) ?? NOTE_PAPERS[0];
+  return NOTE_PAPERS.find((p) => p.id === id) ?? NOTE_PAPERS.find((p) => p.id === 'sticky') ?? NONE_NOTE_PAPER;
 }
 
 export const INK_COLORS = ['#4a3b2e', '#2f3134', '#8a3b3b', '#3b5c8a', '#3b6b4f', '#7a4a8a', '#b06a2c', '#f4efe6'];
@@ -130,8 +156,17 @@ function countLines(text: string, font: string, maxWidth: number): number {
   return result;
 }
 
-/** Ruled lines for lined paper, positioned so they sit on the text baselines. */
-export function noteLinedStyle(el: NoteElement): Record<string, string> {
+/** Baseline geometry shared by every ruled/grid/dot note paper. */
+interface NotePattern {
+  lineHeightPx: number;
+  padX: number;
+  padY: number;
+  firstBaseline: number;
+}
+
+const RULE = 'rgba(74,59,46,0.16)';
+
+function notePattern(el: NoteElement): NotePattern {
   const size = el.size ?? 18;
   const lh = el.lineHeight ?? 1.3;
   const lineHeightPx = size * lh;
@@ -146,37 +181,108 @@ export function noteLinedStyle(el: NoteElement): Record<string, string> {
   const valign = el.valign ?? 'middle';
   const topOffset = valign === 'top' ? 0 : valign === 'bottom' ? contentH - blockH : (contentH - blockH) / 2;
   const firstBaseline = padY + topOffset + halfLeading + ascent;
-  const color = 'rgba(74, 59, 46, 0.18)';
+  return { lineHeightPx, padX, padY, firstBaseline };
+}
+
+/** Ruled lines positioned so they sit on the text baselines. */
+export function noteLinedStyle(el: NoteElement, lineColor = 'rgba(74,59,46,0.18)', multiplier = 1): Record<string, string> {
+  const { lineHeightPx, firstBaseline } = notePattern(el);
+  const spacing = lineHeightPx * multiplier;
   return {
-    backgroundImage: `repeating-linear-gradient(to bottom, ${color} 0, ${color} 1px, transparent 1px, transparent ${lineHeightPx}px)`,
-    backgroundSize: `100% ${lineHeightPx}px`,
+    backgroundImage: `repeating-linear-gradient(to bottom, ${lineColor} 0, ${lineColor} 1px, transparent 1px, transparent ${spacing}px)`,
+    backgroundSize: `100% ${spacing}px`,
     backgroundPosition: `0 ${firstBaseline.toFixed(2)}px`,
+    backgroundRepeat: 'repeat',
+  };
+}
+
+/** Square grid whose rules fall on the text baselines and the left text edge. */
+export function noteGridStyle(el: NoteElement, lineColor = RULE, multiplier = 1): Record<string, string> {
+  const { lineHeightPx, firstBaseline, padX } = notePattern(el);
+  const cell = lineHeightPx * multiplier;
+  return {
+    backgroundImage: `linear-gradient(${lineColor} 1px, transparent 1px), linear-gradient(90deg, ${lineColor} 1px, transparent 1px)`,
+    backgroundSize: `${cell}px ${cell}px, ${cell}px ${cell}px`,
+    backgroundPosition: `${padX}px ${firstBaseline.toFixed(2)}px, ${padX}px ${firstBaseline.toFixed(2)}px`,
+    backgroundRepeat: 'repeat, repeat',
+  };
+}
+
+/** Dot grid with a dot centred on each text baseline at the left text edge. */
+export function noteDotsStyle(el: NoteElement, lineColor = 'rgba(74,59,46,0.22)', multiplier = 1): Record<string, string> {
+  const { lineHeightPx, firstBaseline, padX } = notePattern(el);
+  const cell = lineHeightPx * multiplier;
+  const half = cell / 2;
+  return {
+    backgroundImage: `radial-gradient(${lineColor} 1.2px, transparent 1.4px)`,
+    backgroundSize: `${cell}px ${cell}px`,
+    backgroundPosition: `${(padX - half).toFixed(2)}px ${(firstBaseline - half).toFixed(2)}px`,
     backgroundRepeat: 'repeat',
   };
 }
 
 export function noteInnerStyle(el: NoteElement): Record<string, string> {
   const paper = notePaperById(el.paper ?? 'sticky');
+  const bare = paper.id === 'none';
   const size = el.size ?? 18;
-  const lh = el.lineHeight ?? 1.3;
-  const spacing = Math.max(12, Math.round(size * lh));
-  const lineColor = paper.id === 'kraft' ? 'rgba(74,59,46,0.2)' : 'rgba(74,59,46,0.16)';
-  const paperBg = paper.bg === 'transparent' ? 'transparent' : paper.colorable ? (el.color ?? paper.bg) : paper.bg;
+  const paperBg = bare ? 'transparent' : paper.colorable ? (el.color ?? paper.bg) : paper.bg;
   const style: Record<string, string> = {
     background: paperBg,
     borderRadius: `${paper.radius}px`,
     boxShadow: paper.shadow ? 'var(--shadow-sm)' : 'none',
-    padding: paper.id === 'none' ? '0' : `${Math.round(size * 0.45)}px ${Math.round(size * 0.6)}px`,
+    padding: bare ? '0' : `${Math.round(size * 0.45)}px ${Math.round(size * 0.6)}px`,
     justifyContent: el.valign === 'top' ? 'flex-start' : el.valign === 'bottom' ? 'flex-end' : 'center',
   };
-  if (paper.lines === 'lined') {
-    Object.assign(style, noteLinedStyle(el));
-  } else if (paper.lines === 'grid') {
-    style.backgroundImage = `linear-gradient(${lineColor} 1px, transparent 1px), linear-gradient(90deg, ${lineColor} 1px, transparent 1px)`;
-    style.backgroundSize = `${spacing}px ${spacing}px, ${spacing}px ${spacing}px`;
-  } else if (paper.lines === 'dots') {
-    style.backgroundImage = `radial-gradient(${lineColor} 1.2px, transparent 1.4px)`;
-    style.backgroundSize = `${Math.round(spacing * 0.8)}px ${Math.round(spacing * 0.8)}px`;
+  if (bare) return style;
+
+  const images: string[] = [];
+  const sizes: string[] = [];
+  const positions: string[] = [];
+  const repeats: string[] = [];
+  const layer = (image: string, size: string, position: string, repeat: string) => {
+    images.push(image);
+    sizes.push(size);
+    positions.push(position);
+    repeats.push(repeat);
+  };
+
+  if (paper.sheen) {
+    layer('linear-gradient(135deg, rgba(255,255,255,0.42), rgba(255,255,255,0) 46%)', '100% 100%', '0 0', 'no-repeat');
+  }
+
+  const color = paper.lineColor ?? RULE;
+  const multiplier = paper.spacing ?? 1;
+  const pattern =
+    paper.lines === 'lined'
+      ? noteLinedStyle(el, color, multiplier)
+      : paper.lines === 'grid'
+        ? noteGridStyle(el, color, multiplier)
+        : paper.lines === 'dots'
+          ? noteDotsStyle(el, color, multiplier)
+          : null;
+  if (pattern) {
+    layer(pattern.backgroundImage, pattern.backgroundSize, pattern.backgroundPosition, pattern.backgroundRepeat);
+  }
+
+  if (paper.margin) {
+    const x = Math.max(3, Math.round(size * 0.6) - 4);
+    layer(
+      `linear-gradient(90deg, transparent ${x}px, ${paper.margin} ${x}px, ${paper.margin} ${x + 1}px, transparent ${x + 1}px)`,
+      '100% 100%',
+      '0 0',
+      'no-repeat',
+    );
+  }
+
+  if (paper.texture) {
+    layer(`url("${paper.texture}")`, '140px 140px', '0 0', 'repeat');
+  }
+
+  if (images.length) {
+    style.backgroundImage = images.join(', ');
+    style.backgroundSize = sizes.join(', ');
+    style.backgroundPosition = positions.join(', ');
+    style.backgroundRepeat = repeats.join(', ');
   }
   return style;
 }

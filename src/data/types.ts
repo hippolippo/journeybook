@@ -42,6 +42,10 @@ interface ElementBase {
   name?: string;
   /** Overall visual zoom of the element (1 = default). */
   scale?: number;
+  /** Cast a soft drop shadow around the element's silhouette. */
+  dropShadow?: boolean;
+  /** Drop-shadow strength (0–1); defaults to 0.5 when dropShadow is on. */
+  shadowStrength?: number;
 }
 
 export interface PhotoElement extends ElementBase {
@@ -183,6 +187,8 @@ export interface RoomItem {
   mobile?: Placement;
   hideMobile?: boolean;
   locked?: boolean;
+  /** Brightness multiplier for the light this item casts (default 1). */
+  lightLevel?: number;
 }
 
 /** A saved, named snapshot of the room, loadable from the editor. */

@@ -47,6 +47,7 @@ reference the skill generates against.
 | `effect`          | object \| array                 | Shortcut motion recipes (§7.2 of the guide).            |
 | `animations`      | array                           | Data-defined whole-object animation.                    |
 | `particles`       | array                           | Data-defined particle systems.                          |
+| `lights`          | array                           | Emissive light sources (see Lights below).              |
 | `raw`             | boolean                         | Auto-on when `colorSlots` exist; rarely needed.         |
 
 ## Day / night
@@ -130,3 +131,33 @@ Particle system (`particles`):
 
 Particle/tile shapes drawn for masking should be solid; commit them as their own
 SVG under `src/assets/svg/` (kebab-case) and reference them by bare file name.
+
+## Lights (room only)
+
+Emit light from the item at night. Full semantics: `docs/ASSET_GUIDE.md` §10.
+
+```json
+"lights": [
+  { "type": "lamp", "distribution": "spot", "slot": "bulb",
+    "x": 50, "y": 20, "radius": 320, "angle": 60, "direction": 90, "penumbra": 0.4 }
+]
+```
+
+| Field          | Type                                                         | Notes                                                    |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| `id`           | string                                                       | Optional stable key.                                     |
+| `type`         | `lamp` \| `candle` \| `firefly` \| `string` \| `window` \| `screen` \| `moon` | Fixture defaults + default distribution. |
+| `distribution` | `point` \| `semi` \| `diffuse` \| `spot` \| `wash` \| `ambient` | How it spreads (overrides the type default).            |
+| `x` / `y`      | number                                                       | Centre, % of the item box (default 50).                  |
+| `radius`       | number                                                       | Reach, % of the item height (default from type).         |
+| `intensity`    | number                                                       | Multiplier on the type default (default 1).              |
+| `color`        | string                                                       | Literal colour (used when `slot` is absent).             |
+| `slot`         | string                                                       | A `colorSlots` id — makes the light follow recolouring.  |
+| `flicker`      | boolean                                                      | Strong flicker (types already set a mild default).       |
+| `repeat`       | `"x"` \| `"y"` \| `"both"`                                   | Tile the light with a `repeat` item's art.               |
+| `angle`        | number                                                       | `spot`/`wash`: cone full angle in degrees.               |
+| `direction`    | number                                                       | `spot`/`wash`: aim (0=right, 90=down, 180=left, 270=up). |
+| `penumbra`     | number                                                       | `spot`/`wash`: edge softness 0 (hard) – 1 (soft).        |
+
+Make a particle emit light with `"light": true` on its `particles` entry.
+

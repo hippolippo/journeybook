@@ -23,7 +23,13 @@ export function elementStyle(el: PageElement): Record<string, string> {
     zIndex: String(el.z),
     '--el-opacity': String(el.opacity),
   };
-  if (el.kind === 'note') s.background = el.color ?? '';
+  if (el.dropShadow) {
+    const strength = el.shadowStrength ?? 0.5;
+    const y = 3 + Math.round(strength * 8);
+    const blur = 5 + Math.round(strength * 12);
+    const alpha = (0.16 + strength * 0.34).toFixed(2);
+    s.filter = `drop-shadow(0 ${y}px ${blur}px rgba(63, 48, 36, ${alpha}))`;
+  }
   if (el.kind === 'sticker') {
     const def = stickerById(el.icon);
     if (def.raw && def.colorSlots?.length) {

@@ -7,11 +7,15 @@ import { particleInstances } from '@/catalog/particles';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import FxChain from './FxChain.vue';
 
-const props = defineProps<{
-  animations?: AnimationDef[];
-  particles?: ParticleDef[];
-  seed: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    animations?: AnimationDef[];
+    particles?: ParticleDef[];
+    seed: string;
+    lightLevel?: number;
+  }>(),
+  { lightLevel: 1 },
+);
 
 const reduced = useReducedMotion();
 const active = computed(() => !reduced.value);
@@ -41,8 +45,11 @@ const particles = computed<ParticleInstance[]>(() =>
       v-for="(p, i) in particles"
       :key="i"
       class="fx-particle"
-      :class="p.cls"
+      :class="[p.cls, { 'fx-particle--light': p.light }]"
       :style="p.style"
+      :data-light="p.light ? p.light.color : undefined"
+      :data-light-level="p.light ? props.lightLevel : undefined"
+      :data-pid="p.light ? `${props.seed}-${i}` : undefined"
       aria-hidden="true"
     >
       <span class="fx-particle__shape" :style="p.shapeStyle"></span>

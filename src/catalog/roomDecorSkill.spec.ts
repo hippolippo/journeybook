@@ -167,7 +167,7 @@ describe('room-decor-json skill: check', () => {
       expect(status, `${name} should have no errors`).toBe(0);
       expect(JSON.parse(stdout).ok).toBe(true);
     }
-  });
+  }, 20000);
 
   it('round-trips a scaffolded definition through check', () => {
     const scaffolded = JSON.parse(

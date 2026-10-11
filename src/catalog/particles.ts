@@ -52,12 +52,16 @@ export interface ParticleDef {
   opacity?: number;
   /** Optional CSS mix-blend-mode. */
   blend?: string;
+  /** The particle emits light (e.g. fireflies); the lightmap reads its position. */
+  light?: boolean;
 }
 
 export interface ParticleInstance {
   cls: string;
   style: Record<string, string>;
   shapeStyle: Record<string, string>;
+  /** Set when the particle emits light (colour drives the lightmap). */
+  light?: { color: string };
 }
 
 /** The default motion: rise, fade in, grow, fade out (a generic "puff"). */
@@ -147,6 +151,7 @@ export function particleInstances(defs: ParticleDef[], seed: string): ParticleIn
         cls: def.name ? `fx-${def.name}` : '',
         style,
         shapeStyle: shapeStyle(def.shape, def.opacity),
+        light: def.light ? { color: def.shape?.color ?? '#ffd76b' } : undefined,
       });
     }
   });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import type { ImageElement, PageElement } from '@/data/types';
 import { useAssetUrl } from '@/composables/useAssetUrl';
 import { stickerById, tapeById } from '@/scrapbook/decor';
@@ -10,7 +10,8 @@ import { slotVars } from '@/scrapbook/elementStyle';
 import FxLayer from '@/room/FxLayer.vue';
 import grainArt from '@/assets/svg/film-grain.svg';
 
-const props = defineProps<{ el: PageElement }>();
+const props = withDefaults(defineProps<{ el: PageElement; editable?: boolean }>(), { editable: false });
+const emit = defineEmits<{ text: [value: string] }>();
 
 const sticker = computed(() => (props.el.kind === 'sticker' ? stickerById(props.el.icon) : null));
 const tape = computed(() => (props.el.kind === 'tape' ? tapeById(props.el.style) : null));
@@ -105,6 +106,23 @@ const noteInner = computed(() => (props.el.kind === 'note' ? noteInnerStyle(prop
 const noteText = computed(() => (props.el.kind === 'note' ? noteTextStyle(props.el) : null));
 const innerStyle = computed(() => noteInner.value ?? frameVars.value);
 
+const noteInput = ref<HTMLTextAreaElement | null>(null);
+function growNoteInput() {
+  const t = noteInput.value;
+  if (!t) return;
+  t.style.height = 'auto';
+  t.style.height = `${t.scrollHeight}px`;
+}
+function onNoteInput(e: Event) {
+  emit('text', (e.target as HTMLTextAreaElement).value);
+  growNoteInput();
+}
+watch(
+  () => (props.el.kind === 'note' ? props.el.text : undefined),
+  () => nextTick(growNoteInput),
+);
+onMounted(() => nextTick(growNoteInput));
+
 const fade = computed(() => (props.el.kind === 'image' ? (props.el.effects?.fade ?? 0) : 0));
 const vignette = computed(() => (props.el.kind === 'image' ? (props.el.effects?.vignette ?? 0) : 0));
 const grain = computed(() => (props.el.kind === 'image' ? (props.el.effects?.grain ?? 0) : 0));
@@ -155,7 +173,17 @@ const grainUri = computed(() => `url("${grainArt}")`);
     </FxLayer>
 
     <template v-else-if="el.kind === 'note'">
-      <span class="note__text" :style="noteText ?? {}">{{ el.text }}</span>
+      <textarea
+        v-if="editable"
+        ref="noteInput"
+        class="note__input"
+        :value="el.text"
+        :style="noteText ?? {}"
+        spellcheck="false"
+        aria-label="Note text"
+        @input="onNoteInput"
+      ></textarea>
+      <span v-else class="note__text" :style="noteText ?? {}">{{ el.text }}</span>
     </template>
 
     <FxLayer
