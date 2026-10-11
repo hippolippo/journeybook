@@ -34,6 +34,20 @@ function newId(): string {
 
 let refreshTimer: number | undefined;
 
+const PERF_KEY = 'journeybook:performance';
+
+/** Hidden performance mode (canvas lighting -> CSS fallback). No UI toggle yet. */
+function initialPerformance(): boolean {
+  try {
+    const q = new URLSearchParams(window.location.search).get('perf');
+    if (q === '1') return true;
+    if (q === '0') return false;
+    return localStorage.getItem(PERF_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export type Viewport = 'desktop' | 'mobile';
 
 export const useAppStore = defineStore('app', {
@@ -43,6 +57,8 @@ export const useAppStore = defineStore('app', {
     /** Bumped when album URLs change so dependent renders refresh. */
     mediaVersion: 0,
     imagePresets: [] as ImagePreset[],
+    /** When true, room lighting falls back to the CSS layer (cheaper). */
+    performanceMode: initialPerformance(),
   }),
   getters: {
     room: (s) => s.data.room,
@@ -66,6 +82,15 @@ export const useAppStore = defineStore('app', {
   actions: {
     save() {
       backend.persistLocal(this.data);
+    },
+    /** Toggle performance mode (no UI yet); persisted for the browser. */
+    setPerformanceMode(value: boolean) {
+      this.performanceMode = value;
+      try {
+        localStorage.setItem(PERF_KEY, value ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
     },
     reset() {
       clearData();

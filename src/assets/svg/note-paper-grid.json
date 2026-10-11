@@ -1,0 +1,19 @@
+{
+  "kind": "notePaper",
+  "id": "grid",
+  "label": "Grid",
+  "color": "#ffffff",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "lines": "grid",
+  "order": 3,
+  "palette": [
+    "#ffffff",
+    "#fdf8ef",
+    "#f7e6e2",
+    "#e6efe4",
+    "#e4eef4",
+    "#ebe3f1"
+  ]
+}

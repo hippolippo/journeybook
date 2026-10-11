@@ -1,0 +1,21 @@
+{
+  "kind": "notePaper",
+  "id": "sticky",
+  "label": "Sticky note",
+  "color": "#f6e8a8",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "sheen": true,
+  "order": 1,
+  "palette": [
+    "#f6e8a8",
+    "#f7c9c9",
+    "#cfe3c5",
+    "#cfe0ea",
+    "#e6dcf0",
+    "#fdf8ef",
+    "#e8d3b0",
+    "#d9e6c9"
+  ]
+}

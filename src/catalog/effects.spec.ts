@@ -23,6 +23,15 @@ describe('effect recipes', () => {
     expect(night[0].bloom).toBe(true);
   });
 
+  it('binds the glow colour to a slot when given, otherwise a literal', () => {
+    expect(resolveRecipes([{ type: 'glow', slot: 'glass' }], true).animations[0].vars?.['--fx-color']).toBe(
+      'var(--c-glass)',
+    );
+    expect(resolveRecipes([{ type: 'glow', color: '#123456' }], true).animations[0].vars?.['--fx-color']).toBe(
+      '#123456',
+    );
+  });
+
   it('turns smoke into a generic particle system with a stable class', () => {
     const { particles } = resolveRecipes([{ type: 'smoke', count: 99 }], false);
     expect(particles).toHaveLength(1);

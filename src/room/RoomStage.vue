@@ -4,6 +4,7 @@ import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { floorById, wallById } from '@/catalog/options';
 import RoomItem from './RoomItem.vue';
+import RoomLights from './RoomLights.vue';
 
 const props = defineProps<{ layout: Viewport; embedded?: boolean; interactive?: boolean }>();
 const app = useAppStore();
@@ -62,6 +63,20 @@ const motes = Array.from({ length: 8 }, (_, i) => i);
       <span v-for="n in motes" :key="n" class="mote"></span>
     </div>
     <div class="room__vignette"></div>
-    <div class="room__night" :style="{ opacity: night ? 1 : 0 }"></div>
+    <template v-if="app.performanceMode">
+      <div class="room__night" :style="{ opacity: night ? 1 : 0 }"></div>
+      <div class="room__lights" aria-hidden="true">
+        <RoomItem v-for="item in topLevel" :key="`light-${item.id}`" :item="item" :layout="props.layout" light>
+          <RoomItem
+            v-for="child in childrenOf(item.id)"
+            :key="`light-${child.id}`"
+            :item="child"
+            :layout="props.layout"
+            light
+          />
+        </RoomItem>
+      </div>
+    </template>
+    <RoomLights v-else :layout="props.layout" :night="night" :animated="!props.embedded" />
   </div>
 </template>

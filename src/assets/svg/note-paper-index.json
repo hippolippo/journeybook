@@ -1,0 +1,19 @@
+{
+  "kind": "notePaper",
+  "id": "index",
+  "label": "Index card",
+  "color": "#fdf8ef",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "lines": "lined",
+  "margin": "#d98c8c",
+  "order": 6,
+  "palette": [
+    "#fdf8ef",
+    "#ffffff",
+    "#f7e6e2",
+    "#e4eef4",
+    "#e6efe4"
+  ]
+}

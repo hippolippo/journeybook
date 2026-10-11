@@ -5,6 +5,7 @@ import { usePageEditorStore } from '@/stores/pageEditor';
 import { useViewport } from '@/composables/useViewport';
 import { paperById } from '@/scrapbook/paper';
 import { INK_COLORS, NOTE_PAPER_COLORS, NOTE_PAPERS, PENS, notePaperById } from '@/scrapbook/notes';
+import type { NotePaper } from '@/scrapbook/notes';
 import PageElementContent from '@/scrapbook/PageElementContent.vue';
 
 const pe = usePageEditorStore();
@@ -16,6 +17,14 @@ const el = computed<NoteElement | null>(() => {
 });
 const paper = computed(() => notePaperById(el.value?.paper ?? 'sticky'));
 const bare = computed(() => (el.value?.paper ?? 'sticky') === 'none');
+const paperPalette = computed(() => paper.value.palette ?? NOTE_PAPER_COLORS);
+
+function selectPaper(p: NotePaper) {
+  set({ paper: p.id, color: p.colorable ? p.bg : undefined });
+}
+function onNoteText(value: string) {
+  if (el.value) pe.updateElement(el.value.id, { text: value });
+}
 
 function rgba(hex: string, a: number): string {
   const h = hex.replace('#', '');
@@ -135,9 +144,9 @@ function onInput(e: Event) {
         @pointerup="onPointerUp"
         @pointercancel="onPointerUp"
       >
-        <div class="note-box" :style="boxStyle">
+        <div class="note-box" :style="boxStyle" @focusin="pe.snapshot()">
           <div class="el el--static" :class="{ 'el--note-bare': bare }">
-            <PageElementContent :el="el" />
+            <PageElementContent :el="el" editable @text="onNoteText" />
           </div>
           <span v-if="!bare" class="note-handle" title="Drag to resize height" @pointerdown="onResizeDown"></span>
         </div>
@@ -210,13 +219,13 @@ function onInput(e: Event) {
                 class="chip chip--wide"
                 :class="{ 'is-active': (el.paper ?? 'sticky') === p.id }"
                 type="button"
-                @click="set({ paper: p.id })"
+                @click="selectPaper(p)"
               >
                 {{ p.label }}
               </button>
             </div>
             <div v-if="paper.colorable" class="swatches" style="margin-top: 0.35rem">
-              <button v-for="c in NOTE_PAPER_COLORS" :key="c" class="swatch" :style="{ background: c }" type="button" @click="set({ color: c })"></button>
+              <button v-for="c in paperPalette" :key="c" class="swatch" :style="{ background: c }" type="button" @click="set({ color: c })"></button>
               <input type="color" :value="el.color ?? paper.bg" @input="pe.updateElement(el.id, { color: ($event.target as HTMLInputElement).value })" />
             </div>
           </section>

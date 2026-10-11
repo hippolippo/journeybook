@@ -127,6 +127,15 @@ function setZ(value: string) {
 function setColor(color: string) {
   if (sel.value) pe.updateElement(sel.value.id, { color });
 }
+function toggleShadow() {
+  if (!sel.value) return;
+  pe.snapshot();
+  pe.updateElement(sel.value.id, { dropShadow: !sel.value.dropShadow });
+}
+function setShadowStrength(value: string) {
+  if (!sel.value) return;
+  pe.updateElement(sel.value.id, { shadowStrength: Math.min(1, Math.max(0, num(value))) });
+}
 function toggleLock() {
   if (sel.value) pe.setLocked(sel.value.id, !sel.value.locked);
 }
@@ -158,6 +167,65 @@ function useMedia(id: string) {
 }
 async function deleteMedia(id: string) {
   await app.removeMedia(id);
+}
+
+/* ---------------- drag items out of the panel onto the page ---------------- */
+/** What a drag preview looks like: the element's real shape, not a text label. */
+interface DragPreview {
+  /** Sticker / photo art url. */
+  img?: string;
+  /** Tape silhouette mask url (drawn with `color`). */
+  mask?: string;
+  color?: string;
+  /** Draw a small paper square. */
+  note?: boolean;
+}
+const dragGhost = ref<({ x: number; y: number } & DragPreview) | null>(null);
+
+function pageFraction(clientX: number, clientY: number): { x: number; y: number } | null {
+  const rect = document.querySelector('.peditor .square-page')?.getBoundingClientRect();
+  if (!rect) return null;
+  if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return null;
+  return {
+    x: Math.min(0.98, Math.max(0.02, (clientX - rect.left) / rect.width)),
+    y: Math.min(0.98, Math.max(0.02, (clientY - rect.top) / rect.height)),
+  };
+}
+/** Drag a palette item out; a plain click is handled by the button's own @click. */
+function startPlace(event: PointerEvent, preview: DragPreview, add: (at?: { x: number; y: number }) => void) {
+  if (event.button !== 0) return;
+  const pointerId = event.pointerId;
+  const startX = event.clientX;
+  const startY = event.clientY;
+  let moved = false;
+
+  function teardown() {
+    window.removeEventListener('pointermove', move, true);
+    window.removeEventListener('pointerup', up, true);
+    window.removeEventListener('pointercancel', cancel, true);
+    window.removeEventListener('blur', cancel);
+    dragGhost.value = null;
+  }
+  function move(ev: PointerEvent) {
+    if (ev.pointerId !== pointerId) return;
+    if (!moved && Math.hypot(ev.clientX - startX, ev.clientY - startY) < 4) return;
+    moved = true;
+    dragGhost.value = { ...preview, x: ev.clientX, y: ev.clientY };
+  }
+  function up(ev: PointerEvent) {
+    if (ev.pointerId !== pointerId) return;
+    const wasMoved = moved;
+    const at = pageFraction(ev.clientX, ev.clientY);
+    teardown();
+    if (wasMoved && at) add(at);
+  }
+  function cancel() {
+    teardown();
+  }
+  window.addEventListener('pointermove', move, true);
+  window.addEventListener('pointerup', up, true);
+  window.addEventListener('pointercancel', cancel, true);
+  window.addEventListener('blur', cancel);
 }
 
 /* ---------------- keyboard ---------------- */
@@ -258,7 +326,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             </div>
             <div v-if="album.length" class="album">
               <div v-for="m in album" :key="m.id" class="album__item">
-                <button class="album__thumb" type="button" :title="m.name" @click="useMedia(m.id)">
+                <button
+                  class="album__thumb"
+                  type="button"
+                  :title="m.name"
+                  @click="useMedia(m.id)"
+                  @pointerdown="startPlace($event, { img: app.assetUrl(m.id) }, (at) => pe.addImage(m.id, at))"
+                >
                   <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" />
                 </button>
                 <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)">×</button>
@@ -271,11 +345,19 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
           <section>
             <label>Add to page</label>
             <div class="editor__row">
-              <button class="btn btn--small" type="button" @click="pe.addNote()">Note</button>
+              <button class="btn btn--small" type="button" @click="pe.addNote()" @pointerdown="startPlace($event, { note: true }, (at) => pe.addNote(at))">Note</button>
               <button class="btn btn--small" type="button" @click="fileInput?.click()">Photo</button>
             </div>
             <div class="chip-row">
-              <button v-for="s in STICKERS" :key="s.id" class="chip" type="button" :title="`Sticker: ${s.label}`" @click="pe.addSticker(s.id)">
+              <button
+                v-for="s in STICKERS"
+                :key="s.id"
+                class="chip"
+                type="button"
+                :title="`Sticker: ${s.label}`"
+                @click="pe.addSticker(s.id)"
+                @pointerdown="startPlace($event, { img: s.art }, (at) => pe.addSticker(s.id, at))"
+              >
                 <img :src="s.art" alt="" draggable="false" />
               </button>
             </div>
@@ -287,6 +369,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                 type="button"
                 :title="`Tape: ${t.label}`"
                 @click="pe.addTape(t.id)"
+                @pointerdown="startPlace($event, { mask: t.mask, color: t.defaultColor }, (at) => pe.addTape(t.id, at))"
               >
                 <span :style="{ background: t.defaultColor, maskImage: `url('${t.mask}')`, WebkitMaskImage: `url('${t.mask}')` }"></span>
               </button>
@@ -335,6 +418,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
               <span>Opacity</span>
               <input type="range" min="0" max="1" step="0.01" :value="sel.opacity" @pointerdown="pe.snapshot()" @input="setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)" />
               <input type="number" min="0" max="1" step="0.01" :value="sel.opacity" @change="pe.snapshot(); setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)" />
+            </div>
+
+            <label style="margin-top: 0.5rem"><input type="checkbox" :checked="!!sel.dropShadow" @change="toggleShadow" /> Drop shadow</label>
+            <div v-if="sel.dropShadow" class="field">
+              <span>Shadow</span>
+              <input type="range" min="0" max="1" step="0.05" :value="sel.shadowStrength ?? 0.5" @pointerdown="pe.snapshot()" @input="setShadowStrength(($event.target as HTMLInputElement).value)" />
             </div>
 
             <template v-if="selSlots.length">
@@ -393,6 +482,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             <button class="btn btn--ghost" type="button" @click="pe.cancelExit()">Cancel</button>
           </div>
         </div>
+      </div>
+
+      <div v-if="dragGhost" class="drag-ghost drag-ghost--shape" :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }" aria-hidden="true">
+        <span
+          v-if="dragGhost.mask"
+          class="drag-ghost__shape drag-ghost__shape--tape"
+          :style="{ background: dragGhost.color, maskImage: `url('${dragGhost.mask}')`, WebkitMaskImage: `url('${dragGhost.mask}')` }"
+        ></span>
+        <span v-else-if="dragGhost.note" class="drag-ghost__shape drag-ghost__shape--note"></span>
+        <img v-else-if="dragGhost.img" class="drag-ghost__shape" :src="dragGhost.img" alt="" draggable="false" />
+        <span v-else class="drag-ghost__shape drag-ghost__shape--note"></span>
       </div>
     </div>
   </Teleport>

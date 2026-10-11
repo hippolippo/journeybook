@@ -6,6 +6,61 @@ export type Category = 'wallpaper' | 'flooring' | 'furniture' | 'wallDecor' | 't
 /** Which band an item's position is measured in. `both` = the whole stage. */
 export type Band = 'wall' | 'floor' | 'both';
 
+/**
+ * Physical character of a light source. Each type carries sensible defaults
+ * (reach, brightness, falloff, flicker) so a candle and a window feel different
+ * without per-asset tuning — assets only override what they need.
+ */
+export type LightType = 'lamp' | 'candle' | 'firefly' | 'string' | 'window' | 'screen' | 'moon';
+
+/**
+ * How a light spreads through space (its photometric character), independent of
+ * the fixture `type`:
+ *  - `point`   — bare point source: omni, hot core, steep falloff
+ *  - `semi`    — semi-diffuse: omni with a gentle hotspot (shaded lamp)
+ *  - `diffuse` — soft area emitter: omni, broad, low peak, no hotspot
+ *  - `spot`    — directional cone (angle + soft edge)
+ *  - `wash`    — wide directional flood / wall-wash
+ *  - `ambient` — flat, distance-independent fill (moonlight, screen)
+ */
+export type LightDistribution = 'point' | 'semi' | 'diffuse' | 'spot' | 'wash' | 'ambient';
+
+/**
+ * A light source declared by an asset. Position and radius are percentages of
+ * the asset's own box, so an asset can have several lights and only light up
+ * the parts it wants. `slot` binds the emitted colour to a recolourable slot.
+ */
+export interface LightDef {
+  id?: string;
+  type?: LightType;
+  /** How the light spreads (default from the fixture type). */
+  distribution?: LightDistribution;
+  /** Centre, % of the item box (default 50 / 50). */
+  x?: number;
+  y?: number;
+  /** Reach, % of the item box height (default from the type). */
+  radius?: number;
+  /** Multiplier on the type's default brightness (default 1). */
+  intensity?: number;
+  /** Literal colour (used when `slot` is absent). */
+  color?: string;
+  /** Recolour slot whose value drives the emitted colour. */
+  slot?: string;
+  /** Override the type's flicker amount (0–1). */
+  flicker?: boolean;
+  /**
+   * Tile this light with the art of a `repeat` item, along the given axis.
+   * `x`/`y` are then positions within one tile rather than the whole item.
+   */
+  repeat?: 'x' | 'y' | 'both';
+  /** Directional types (`spot`/`wash`): cone full angle in degrees. */
+  angle?: number;
+  /** Directional types: aim in degrees (0 = right, 90 = down, 180 = left, 270 = up). */
+  direction?: number;
+  /** Directional types: edge softness, 0 (hard) – 1 (very soft). */
+  penumbra?: number;
+}
+
 export interface ColorSlot {
   id: string;
   label: string;
@@ -27,7 +82,8 @@ export interface EffectDef {
   delay?: number;
   /** glow / smoke colour. */
   color?: string;
-  /** smoke: number of puffs. */
+  /** Use a colour slot's value as the effect colour (e.g. the lit glass). */
+  slot?: string;
   count?: number;
   /** sway origin. */
   origin?: 'top' | 'bottom';
@@ -72,4 +128,6 @@ export interface CatalogItem {
   artVariants?: { day?: ArtVariantVisuals; night?: ArtVariantVisuals };
   /** Tile the art across the band instead of drawing a single instance. */
   repeat?: 'x' | 'y' | 'both';
+  /** Emissive light sources this item casts. */
+  lights?: LightDef[];
 }

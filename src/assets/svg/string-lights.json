@@ -6,5 +6,12 @@
   "layer": "wall",
   "band": "wall",
   "aspect": 2.8,
-  "defaultScale": 0.22
+  "defaultScale": 0.22,
+  "lights": [
+    { "type": "string", "x": 13.81, "y": 53.3, "radius": 45, "color": "#f0c46a" },
+    { "type": "string", "x": 31.43, "y": 58.7, "radius": 45, "color": "#e8a06a" },
+    { "type": "string", "x": 50.48, "y": 48.7, "radius": 45, "color": "#f0c46a" },
+    { "type": "string", "x": 69.52, "y": 35.3, "radius": 45, "color": "#e8a06a" },
+    { "type": "string", "x": 85.71, "y": 42, "radius": 45, "color": "#f0c46a" }
+  ]
 }

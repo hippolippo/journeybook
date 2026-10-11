@@ -7,7 +7,7 @@
   "aspect": 0.72,
   "defaultScale": 0.34,
   "effect": [
-    { "type": "glow", "color": "#ffcf6b", "duration": 3.5 },
+    { "type": "glow", "slot": "glass", "duration": 3.5 },
     { "type": "flicker", "duration": 2.8 }
   ],
   "colorSlots": [

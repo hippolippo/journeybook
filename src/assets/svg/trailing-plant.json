@@ -25,6 +25,7 @@
           "duration": 5,
           "size": 8,
           "opacity": 0.9,
+          "light": true,
           "jitter": 0.7,
           "spawn": { "x": 50, "y": 62, "spreadX": 20, "spreadY": 18 },
           "shape": { "kind": "svg", "svg": "particle-firefly.svg", "color": "#ffd76b" },

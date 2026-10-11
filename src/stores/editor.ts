@@ -311,6 +311,12 @@ export const useEditorStore = defineStore('editor', {
       item.hideMobile = value;
       this.dirty = true;
     },
+    setLightLevel(id: string, value: number) {
+      const item = this.itemById(id);
+      if (!item) return;
+      item.lightLevel = Math.min(2, Math.max(0, value));
+      this.dirty = true;
+    },
     setZ(id: string, z: number) {
       const item = this.itemById(id);
       if (!item) return;

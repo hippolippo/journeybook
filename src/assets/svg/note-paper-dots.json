@@ -1,0 +1,19 @@
+{
+  "kind": "notePaper",
+  "id": "dots",
+  "label": "Dot grid",
+  "color": "#ffffff",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "lines": "dots",
+  "order": 4,
+  "palette": [
+    "#ffffff",
+    "#fdf8ef",
+    "#f7e6e2",
+    "#e6efe4",
+    "#e4eef4",
+    "#ebe3f1"
+  ]
+}
