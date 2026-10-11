@@ -108,6 +108,8 @@ describe('asset loader', () => {
     const aliasedArts = ['window', 'raccoon', 'plant'].map((id) => byId.get(id)?.art.day);
     for (const art of aliasedArts) expect(art).toBeTruthy();
     expect(new Set(aliasedArts).size).toBe(3);
+    // The window has a day/night pair (window-day / window-night).
+    expect(byId.get('window')?.art.night).toBeTruthy();
     // Multi-slot furniture keeps its slots, presets and inlined svg.
     expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['body', 'trim', 'seat']);
     expect(byId.get('beanbag')?.presets?.length).toBeGreaterThan(0);

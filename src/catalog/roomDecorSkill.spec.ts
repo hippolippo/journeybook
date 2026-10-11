@@ -147,7 +147,7 @@ describe('room-decor-json skill: check', () => {
       'paper-lantern.json',
       'fairy-lights.json',
       'chai-cup.json',
-      'window-cozy.json',
+      'window-day.json',
       'curtain.json',
       'string-lights.json',
       'wall-shelf.json',

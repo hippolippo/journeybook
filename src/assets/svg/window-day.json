@@ -5,7 +5,7 @@
   "category": "wallDecor",
   "layer": "wall",
   "band": "wall",
-  "art": { "day": "window-cozy.svg" },
-  "aspect": 0.765,
+  "art": { "day": "window-day.svg", "night": "window-night.svg" },
+  "aspect": 0.925,
   "defaultScale": 0.4
 }
