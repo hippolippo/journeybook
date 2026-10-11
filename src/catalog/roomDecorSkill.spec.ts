@@ -162,6 +162,21 @@ describe('room-decor-json skill: check', () => {
       'scissors.json',
       'owala.json',
       'potted-plant.json',
+      'demo-light-point.json',
+      'demo-light-semi.json',
+      'demo-light-diffuse.json',
+      'demo-light-spot.json',
+      'demo-light-wash.json',
+      'demo-light-ambient.json',
+      'demo-light-reading.json',
+      'demo-light-street.json',
+      'demo-light-beacon.json',
+      'demo-light-uplight.json',
+      'demo-light-candle.json',
+      'demo-light-chandelier.json',
+      'demo-light-neon.json',
+      'demo-light-moonlight.json',
+      'demo-light-screen.json',
     ]) {
       const { status, stdout } = run(['check', join(ASSETS, name), '--json']);
       expect(status, `${name} should have no errors`).toBe(0);

@@ -1,0 +1,48 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-candle",
+  "label": "DEMO · Candle (point + flicker)",
+  "aspect": 0.6,
+  "defaultScale": 0.16,
+  "art": {
+    "day": "demo-light-candle.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "wax",
+      "label": "Wax",
+      "default": "#e8d3b0",
+      "palette": [
+        "#e8d3b0",
+        "#f4efe6",
+        "#d9a94e"
+      ],
+      "allowCustom": true
+    },
+    {
+      "id": "flame",
+      "label": "Flame",
+      "default": "#ffb066",
+      "palette": [
+        "#ffb066",
+        "#ffd76b",
+        "#fff2c9"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "candle",
+      "distribution": "point",
+      "slot": "flame",
+      "x": 50,
+      "y": 30,
+      "radius": 130,
+      "flicker": true
+    }
+  ]
+}

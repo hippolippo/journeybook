@@ -1,0 +1,38 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-screen",
+  "label": "DEMO · Screen glow (diffuse)",
+  "aspect": 1.444,
+  "defaultScale": 0.2,
+  "art": {
+    "day": "demo-light-screen.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "screen",
+      "label": "Screen",
+      "default": "#bfe3ff",
+      "palette": [
+        "#bfe3ff",
+        "#9dbfc9",
+        "#fdf8ef",
+        "#2c3448"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "screen",
+      "distribution": "diffuse",
+      "slot": "screen",
+      "x": 50,
+      "y": 44,
+      "radius": 300,
+      "flicker": true
+    }
+  ]
+}

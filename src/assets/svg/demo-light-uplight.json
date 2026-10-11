@@ -1,0 +1,40 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-uplight",
+  "label": "DEMO · Uplight (wash upward)",
+  "aspect": 0.667,
+  "defaultScale": 0.16,
+  "art": {
+    "day": "demo-lamp.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "glass",
+      "label": "Glass",
+      "default": "#f2b25c",
+      "palette": [
+        "#f2b25c",
+        "#e88f9f",
+        "#9dbfc9",
+        "#fdf8ef"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "lamp",
+      "distribution": "wash",
+      "slot": "glass",
+      "x": 50,
+      "y": 40,
+      "radius": 400,
+      "angle": 90,
+      "direction": 270,
+      "penumbra": 0.85
+    }
+  ]
+}

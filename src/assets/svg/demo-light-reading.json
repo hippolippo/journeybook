@@ -1,0 +1,52 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-reading",
+  "label": "DEMO · Reading lamp (tight spot)",
+  "aspect": 1.222,
+  "defaultScale": 0.16,
+  "art": {
+    "day": "demo-light-reading.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "shade",
+      "label": "Shade",
+      "default": "#b99362",
+      "palette": [
+        "#b99362",
+        "#6b5744",
+        "#e8d9c0"
+      ],
+      "allowCustom": true
+    },
+    {
+      "id": "glass",
+      "label": "Glass",
+      "default": "#f2b25c",
+      "palette": [
+        "#f2b25c",
+        "#e88f9f",
+        "#9dbfc9",
+        "#fdf8ef"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "id": "beam",
+      "type": "lamp",
+      "distribution": "spot",
+      "slot": "glass",
+      "x": 64,
+      "y": 44,
+      "radius": 320,
+      "angle": 28,
+      "direction": 90,
+      "penumbra": 0.12
+    }
+  ]
+}

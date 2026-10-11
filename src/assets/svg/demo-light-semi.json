@@ -1,0 +1,37 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 0.667,
+  "defaultScale": 0.16,
+  "art": {
+    "day": "demo-lamp.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "glass",
+      "label": "Glass",
+      "default": "#f2b25c",
+      "palette": [
+        "#f2b25c",
+        "#e88f9f",
+        "#9dbfc9",
+        "#cfe3c5"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "id": "demo-light-semi",
+  "label": "DEMO · Semi-diffuse",
+  "lights": [
+    {
+      "type": "lamp",
+      "distribution": "semi",
+      "slot": "glass",
+      "x": 50,
+      "y": 60,
+      "radius": 240
+    }
+  ]
+}

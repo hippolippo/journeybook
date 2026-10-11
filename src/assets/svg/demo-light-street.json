@@ -1,0 +1,39 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-street",
+  "label": "DEMO · Street lamp (soft downlight)",
+  "aspect": 0.529,
+  "defaultScale": 0.34,
+  "art": {
+    "day": "demo-light-street.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "bulb",
+      "label": "Bulb",
+      "default": "#ffd88a",
+      "palette": [
+        "#ffd88a",
+        "#f2b25c",
+        "#fdf8ef"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "lamp",
+      "distribution": "spot",
+      "slot": "bulb",
+      "x": 50,
+      "y": 22,
+      "radius": 440,
+      "angle": 100,
+      "direction": 90,
+      "penumbra": 0.55
+    }
+  ]
+}

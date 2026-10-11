@@ -1,0 +1,41 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-beacon",
+  "label": "DEMO · Stage beam (hard, narrow)",
+  "aspect": 1,
+  "defaultScale": 0.16,
+  "art": {
+    "day": "demo-light-beacon.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "lens",
+      "label": "Lens",
+      "default": "#cfe0ff",
+      "palette": [
+        "#cfe0ff",
+        "#fdf8ef",
+        "#f2b25c",
+        "#e88f9f"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "lamp",
+      "distribution": "spot",
+      "slot": "lens",
+      "x": 50,
+      "y": 67,
+      "radius": 560,
+      "angle": 16,
+      "direction": 90,
+      "penumbra": 0,
+      "intensity": 1.8
+    }
+  ]
+}

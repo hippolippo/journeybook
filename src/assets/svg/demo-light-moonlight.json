@@ -1,0 +1,40 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-moonlight",
+  "label": "DEMO · Moonlight (cool wash)",
+  "aspect": 0.833,
+  "defaultScale": 0.28,
+  "art": {
+    "day": "demo-light-window.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "glass",
+      "label": "Panes",
+      "default": "#2c3448",
+      "palette": [
+        "#2c3448",
+        "#3f4a63",
+        "#5b6b8a"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "window",
+      "distribution": "wash",
+      "color": "#cfe0ff",
+      "x": 50,
+      "y": 50,
+      "radius": 520,
+      "angle": 150,
+      "direction": 90,
+      "penumbra": 0.9,
+      "intensity": 0.9
+    }
+  ]
+}

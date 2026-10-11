@@ -1,0 +1,55 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-chandelier",
+  "label": "DEMO · Chandelier (several lamps)",
+  "aspect": 1.091,
+  "defaultScale": 0.2,
+  "art": {
+    "day": "demo-light-chandelier.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "bulb",
+      "label": "Bulbs",
+      "default": "#ffd88a",
+      "palette": [
+        "#ffd88a",
+        "#f2b25c",
+        "#fdf8ef"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "lamp",
+      "distribution": "point",
+      "slot": "bulb",
+      "x": 25,
+      "y": 51,
+      "radius": 170,
+      "intensity": 1
+    },
+    {
+      "type": "lamp",
+      "distribution": "point",
+      "slot": "bulb",
+      "x": 50,
+      "y": 51,
+      "radius": 170,
+      "intensity": 1
+    },
+    {
+      "type": "lamp",
+      "distribution": "point",
+      "slot": "bulb",
+      "x": 75,
+      "y": 51,
+      "radius": 170,
+      "intensity": 1
+    }
+  ]
+}

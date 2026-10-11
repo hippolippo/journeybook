@@ -1,0 +1,83 @@
+{
+  "kind": "room",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "id": "demo-light-neon",
+  "label": "DEMO · Neon sign (many point lights)",
+  "aspect": 2,
+  "defaultScale": 0.22,
+  "art": {
+    "day": "demo-light-neon.svg"
+  },
+  "colorSlots": [
+    {
+      "id": "neon",
+      "label": "Neon",
+      "default": "#e88f9f",
+      "palette": [
+        "#e88f9f",
+        "#9dbfc9",
+        "#f6e8a8",
+        "#cfe3c5"
+      ],
+      "allowCustom": true
+    }
+  ],
+  "lights": [
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 16.7,
+      "y": 20,
+      "radius": 110,
+      "intensity": 1.2
+    },
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 50,
+      "y": 15,
+      "radius": 110,
+      "intensity": 1.2
+    },
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 83.3,
+      "y": 20,
+      "radius": 110,
+      "intensity": 1.2
+    },
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 16.7,
+      "y": 80,
+      "radius": 110,
+      "intensity": 1.2
+    },
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 50,
+      "y": 85,
+      "radius": 110,
+      "intensity": 1.2
+    },
+    {
+      "type": "string",
+      "distribution": "point",
+      "slot": "neon",
+      "x": 83.3,
+      "y": 80,
+      "radius": 110,
+      "intensity": 1.2
+    }
+  ]
+}
