@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
+import Icon from '@/components/Icon.vue';
 import type { CalendarEvent, EventKind, FlightLeg, Recurrence, VisitDirection } from '@/data/types';
 import { newId } from '@/utils/id';
 import { useAuthStore } from '@/stores/auth';
@@ -226,12 +227,12 @@ function save() {
                 <input v-model="leg.tz" type="text" placeholder="e.g. America/New_York" />
               </label>
               <button class="btn btn--small" type="button" @click="removeLeg(index)">
-                <span class="icon icon--trash"></span> Remove leg
+                <Icon name="trash" /> Remove leg
               </button>
             </div>
           </div>
           <button class="btn btn--small" type="button" @click="addLeg">
-            <span class="icon icon--plus"></span> Add flight leg
+            <Icon name="plus" /> Add flight leg
           </button>
         </fieldset>
       </template>
@@ -277,7 +278,7 @@ function save() {
           type="button"
           @click="emit('remove', props.event.id)"
         >
-          <span class="icon icon--trash"></span> Delete
+          <Icon name="trash" /> Delete
         </button>
       </div>
     </form>

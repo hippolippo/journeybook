@@ -1,5 +1,12 @@
 import { readFileSync } from 'node:fs';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+/** Open the profile menu, go to Settings, and start the room editor (desktop). */
+async function openRoomEditor(page: Page) {
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByRole('button', { name: 'Edit room' }).click();
+}
 
 test('home loads and opens the scrapbooks organizer', async ({ page }) => {
   await page.goto('/');
@@ -322,6 +329,134 @@ test('page editing is not available on mobile', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Add page' })).toHaveCount(0);
 });
 
+test('mobile organizer is read-only', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/scrapbooks');
+  await expect(page.locator('.tile').first()).toBeVisible();
+  // write controls are gone
+  await expect(page.locator('.toolbar')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'New folder' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'New scrapbook' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Import book' })).toHaveCount(0);
+  await expect(page.locator('.tile-menu')).toHaveCount(0);
+  // navigation still works
+  await page.locator('.tile').first().click();
+  await expect(page).not.toHaveURL(/\/scrapbooks$/);
+});
+
+test('mobile room editor entry is hidden', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.locator('.roombar')).toBeVisible();
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Auto', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Edit room' })).toHaveCount(0);
+});
+
+test('profile menu works without accounts and settings toggle night mode', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await expect(page.locator('.settings__title')).toHaveText('Settings');
+  await expect(page.getByRole('button', { name: 'Edit room' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Performance lighting' })).toBeVisible();
+  await page.getByRole('button', { name: 'Night', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Night', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+});
+
+test('mobile header stays on a single row', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const bar = page.locator('.roombar');
+  await expect(bar).toBeVisible();
+  const box = (await bar.boundingBox())!;
+  expect(box.height).toBeLessThan(64);
+  const brand = (await page.locator('.roombar__brand').boundingBox())!;
+  const right = (await page.locator('.roombar__right').boundingBox())!;
+  expect(Math.abs(brand.y - right.y)).toBeLessThan(24);
+  const overflow = await bar.evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('mobile calendar slides between month, day and upcoming', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/calendar');
+  await expect(page.locator('.calendar__tag')).toHaveText('Our Calendar');
+  const overflow = await page
+    .locator('.calendar')
+    .evaluate((el) => el.scrollHeight - el.clientHeight);
+  expect(overflow).toBeLessThanOrEqual(1);
+
+  const body = page.locator('.calendar__body');
+  const toggle = page.locator('.calendar__switch');
+  await expect(toggle).toBeVisible();
+  await expect(body).toHaveClass(/screen-month/);
+
+  // Tapping a day slides the grid away to that day's details.
+  await page.locator('.cal-day').nth(20).click();
+  await expect(body).toHaveClass(/screen-day/);
+  await expect(page.locator('.calendar__back')).toBeVisible();
+  await page.locator('.calendar__back').click();
+  await expect(body).toHaveClass(/screen-month/);
+
+  // Icon toggle switches to the upcoming list.
+  await page.getByRole('tab', { name: 'Upcoming events' }).click();
+  await expect(body).toHaveClass(/screen-upcoming/);
+  await expect(page.locator('.calendar__side-pane--upcoming')).toBeVisible();
+});
+
+test('mobile routes never scroll the page vertically', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of ['/', '/scrapbooks', '/book/b4', '/calendar']) {
+    await page.goto(path);
+    await page.evaluate(() => window.scrollTo(0, 500));
+    const y = await page.evaluate(() => window.scrollY);
+    expect(y, `${path} should not scroll`).toBe(0);
+  }
+});
+
+test.describe('landscape phone', () => {
+  test.use({ viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true });
+
+  test('asks to rotate the phone', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.rotate-gate')).toBeVisible();
+    await expect(page.getByText('Please rotate your phone')).toBeVisible();
+    await expect(page.locator('.app-shell')).toHaveCount(0);
+  });
+
+  test('portrait is not gated', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await expect(page.locator('.rotate-gate')).toHaveCount(0);
+    await expect(page.locator('.app-shell')).toBeVisible();
+  });
+});
+
+test('mobile organizer shelf bleeds to the screen edge with cards inset', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/scrapbooks');
+  const tiles = (await page.locator('.tiles').boundingBox())!;
+  expect(tiles.x).toBeLessThanOrEqual(1);
+  expect(tiles.x + tiles.width).toBeGreaterThanOrEqual(389);
+  const tile = (await page.locator('.tile').first().boundingBox())!;
+  expect(tile.x).toBeGreaterThan(4);
+});
+
+test('app text is not selectable outside editable fields', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/calendar');
+  expect(await page.locator('body').evaluate((el) => getComputedStyle(el).userSelect)).toBe('none');
+  await page.locator('.calendar__head').getByRole('button', { name: 'Add' }).click();
+  const input = page.locator('.event-dialog input[type=text]').first();
+  expect(await input.evaluate((el) => getComputedStyle(el).userSelect)).toBe('text');
+});
+
 test('book view: desktop shows add page + manage pages', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/book/b4');
@@ -399,7 +534,7 @@ test('export a book to a file and import it back (with images)', async ({ page }
 test('room editor: Done skips the save dialog when nothing changed', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await expect(page.locator('.editor')).toBeVisible();
   await page.getByTitle('Collapse').click();
   await expect(page.locator('.editor--collapsed')).toBeVisible();
@@ -413,7 +548,7 @@ test('room editor: Done skips the save dialog when nothing changed', async ({ pa
 test('room editor: Done prompts to save when there are changes', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.editor .swatch').first().click(); // change the wall
   await page.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(page.locator('.dialog')).toBeVisible();
@@ -424,7 +559,7 @@ test('room editor: Done prompts to save when there are changes', async ({ page }
 test('room editor: clear room removes every item (undoable)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await expect(page.locator('.room-item').first()).toBeVisible();
   await page.getByRole('button', { name: 'Clear room' }).click();
   await expect(page.locator('.room-item')).toHaveCount(0);
@@ -435,7 +570,7 @@ test('room editor: clear room removes every item (undoable)', async ({ page }) =
 test('room editor: only left and right docks are offered', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await expect(page.locator('.editor__dock')).toHaveCount(2);
   await expect(page.locator('.editor__dock[title="Dock left"]')).toHaveCount(1);
   await expect(page.locator('.editor__dock[title="Dock right"]')).toHaveCount(1);
@@ -446,7 +581,7 @@ test('room editor: only left and right docks are offered', async ({ page }) => {
 test('room editor: collapse arrow points away from the docked edge', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   // Docked right (default): expanded points right, collapsed points left.
   await expect(page.getByTitle('Collapse')).toHaveText('›');
   await page.getByTitle('Collapse').click();
@@ -462,7 +597,7 @@ test('room editor: collapse arrow points away from the docked edge', async ({ pa
 test('asset-defined decor: effects, presets and night glow', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await expect(page.locator('.palette__item', { hasText: 'Paper lantern' })).toBeVisible();
 
   // Adding selects the item (which hides the catalog), so deselect to keep browsing.
@@ -493,7 +628,7 @@ test('asset-defined decor: effects, presets and night glow', async ({ page }) =>
 test('room lighting: canvas lightmap darkens night and lights the lamp', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
   await page.mouse.click(30, 30);
 
@@ -528,7 +663,7 @@ test('room lighting: performance mode falls back to the CSS night layer', async 
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.addInitScript(() => localStorage.setItem('journeybook:performance', '1'));
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
   await page.mouse.click(30, 30);
   await page.locator('.editor select').first().selectOption('night');
@@ -541,7 +676,7 @@ test('room lighting: performance mode falls back to the CSS night layer', async 
 test('room lighting: the brightness slider scales a light', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
 
   const field = page.locator('.editor .field', { hasText: 'Light' });
@@ -555,7 +690,7 @@ test('room lighting: the brightness slider scales a light', async ({ page }) => 
 test('room lighting: fireflies emit light at night', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item', { hasText: 'Trailing plant' }).first().click();
   await page.mouse.click(30, 30);
   await page.locator('.editor select').first().selectOption('night');
@@ -565,7 +700,7 @@ test('room lighting: fireflies emit light at night', async ({ page }) => {
 test('repeating decor tiles across the wall and recolours', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item', { hasText: 'Fairy lights' }).first().click();
   await expect(page.locator('.room-item--repeat')).toHaveCount(1);
   const rep = await page
@@ -584,7 +719,7 @@ test('repeating decor tiles across the wall and recolours', async ({ page }) => 
 test('places a catalog item and locks it', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const before = await page.locator('.room-item').count();
   await page.locator('.palette__item', { hasText: 'Plant' }).first().click();
   await expect(page.locator('.room-item')).toHaveCount(before + 1);
@@ -595,7 +730,7 @@ test('places a catalog item and locks it', async ({ page }) => {
 test('room editor: dragging a palette item previews its shape, not text', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const item = page.locator('.palette__item[title="Coffee cup"]').first();
   await item.scrollIntoViewIfNeeded();
   const box = (await item.boundingBox())!;
@@ -612,7 +747,7 @@ test('room editor: dragging a palette item previews its shape, not text', async 
 test('surface items attach to furniture and follow it', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
 
   const desk = page.locator('.room-item[data-catalog=desk]').first();
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
@@ -637,7 +772,7 @@ test('surface items attach to furniture and follow it', async ({ page }) => {
 test('dragging an attached item follows the pointer without jumping', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
   const before = (await laptop.boundingBox())!;
   await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
@@ -651,7 +786,7 @@ test('dragging an attached item follows the pointer without jumping', async ({ p
 test('dragging an attached item off its host detaches it', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
   // Attached children are nested inside their host so host transforms cascade.
   expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
@@ -669,7 +804,7 @@ test('dragging an attached item off its host detaches it', async ({ page }) => {
 test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const shelf = page.locator('.room-item[data-catalog=wall-shelf]').first();
   const shelfBox = (await shelf.boundingBox())!;
   const mugPalette = page.locator('.palette__item[title="Coffee cup"]').first();
@@ -691,7 +826,7 @@ test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
 test('surface items can be dragged from the floor up onto the wall', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.palette__item[title="Coffee cup"]').first().click();
   const mug = page.locator('.room-item[data-catalog=coffee-cup]').last();
   const before = (await mug.boundingBox())!;
@@ -711,7 +846,7 @@ test('surface items can be dragged from the floor up onto the wall', async ({ pa
 test('item depth is one absolute scale from the wall to the floor', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const zOf = (sel: string) => page.locator(sel).first().evaluate((el) => Number(getComputedStyle(el).zIndex));
   const wall = await zOf('.room-item[data-catalog=wall-shelf]');
   const desk = await zOf('.room-item[data-catalog=desk]');
@@ -732,7 +867,7 @@ test('item depth is one absolute scale from the wall to the floor', async ({ pag
 test('a buried item can be picked from the item list without leaving its depth', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.room-item[data-catalog=coffee-cup]').first().click();
   const depth = page.locator('.editor .field', { hasText: 'Depth' }).locator('input[type=number]');
   await depth.fill('4');
@@ -749,7 +884,7 @@ test('a buried item can be picked from the item list without leaving its depth',
 test('dragging shows a translucent preview while the item keeps its own depth', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.room-item[data-catalog=coffee-cup]').first().click();
   const depth = page.locator('.editor .field', { hasText: 'Depth' }).locator('input[type=number]');
   await depth.fill('4');
@@ -771,7 +906,7 @@ test('dragging shows a translucent preview while the item keeps its own depth', 
 test('clicking repeatedly cycles selection through overlapping items', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const win = (await page.locator('.room-item[data-catalog=window]').first().boundingBox())!;
   const curtain = (await page.locator('.room-item[data-catalog=curtain]').nth(1).boundingBox())!;
   const x0 = Math.max(win.x, curtain.x);
@@ -853,7 +988,7 @@ test('calendar: a visit in progress reads as together', async ({ page }) => {
 test('room editor: selected item shows scale and rotate handles, click away deselects', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   await expect(page.locator('.room-item--selected .pe-handle--br')).toHaveCount(1);
   await expect(page.locator('.room-item--selected .pe-rot')).toHaveCount(1);
@@ -865,7 +1000,7 @@ test('room editor: selected item shows scale and rotate handles, click away dese
 test('room editor: on-canvas scale handle resizes while keeping the aspect ratio', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   // Use a mid-screen item so its bottom-right handle is on screen.
   await page.locator('.item-list__row', { hasText: 'Wall clock' }).first().click();
   const xField = page.locator('.editor .field', { hasText: 'X' }).locator('input[type=number]');
@@ -886,7 +1021,7 @@ test('room editor: on-canvas scale handle resizes while keeping the aspect ratio
 test('room editor: attached items rotate and scale with their host', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
   const start = (await laptop.boundingBox())!;
@@ -907,7 +1042,7 @@ test('room editor: attached items rotate and scale with their host', async ({ pa
 
 test('room editor: depth list shows thumbnails and can be reordered', async ({ page }) => {  await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const topRows = page.locator('ul.item-list:not(.item-list--children) > li > .item-list__row');
   await expect(topRows.first().locator('.room-thumb')).toHaveCount(1);
   const before = await topRows.locator('.item-list__label').allTextContents();
@@ -928,7 +1063,7 @@ test('room editor: depth list shows thumbnails and can be reordered', async ({ p
 test('room editor: delete, undo and keyboard nudge', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const before = await page.locator('.room-item').count();
   await page.locator('.item-list__row', { hasText: 'Rug' }).first().click();
   await page.keyboard.press('Delete');
@@ -947,7 +1082,7 @@ test('room editor: delete, undo and keyboard nudge', async ({ page }) => {
 test('room editor: environment hides on selection, the item list always shows', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const env = page.locator('.editor section', { hasText: 'Time of day' });
   const list = page.getByText('Items (front to back)');
   // The item list is always the first section in the panel.
@@ -969,7 +1104,7 @@ test('room editor: environment hides on selection, the item list always shows', 
 test('room editor: dragging an attached item tracks the screen and its preview lines up', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   // Rotate the desk, then pick its laptop up.
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
@@ -1008,7 +1143,7 @@ test('room editor: dragging an attached item tracks the screen and its preview l
 test('room editor: dropping an item onto rotated furniture does not jump', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
   await rot.fill('30');
@@ -1033,7 +1168,7 @@ test('room editor: dropping an item onto rotated furniture does not jump', async
 test('room editor: moving an attached item along its host does not jump', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
   await rot.fill('30');
@@ -1058,7 +1193,7 @@ test('room editor: moving an attached item along its host does not jump', async 
 test('room editor: re-placing an attached item does not compound its rotation', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
   await rot.fill('30');
@@ -1085,7 +1220,7 @@ test('room editor: re-placing an attached item does not compound its rotation', 
 test('room editor: removing an item from rotated furniture restores its rotation', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
   await rot.fill('40');
@@ -1110,7 +1245,7 @@ test('room editor: removing an item from rotated furniture restores its rotation
 test('room editor: shows a live attach preview and a badge while over a host', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
   const rot = page.locator('.editor .field', { hasText: 'Rot°' }).locator('input[type=number]');
   await rot.fill('30');
@@ -1141,7 +1276,7 @@ test('room editor: shows a live attach preview and a badge while over a host', a
 test('room editor: rotating a loose item pivots around its centre', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   await page.locator('.item-list__row', { hasText: 'Wall clock' }).first().click();
   const xField = page.locator('.editor .field', { hasText: 'X' }).locator('input[type=number]');
   await xField.fill('0.5');
@@ -1163,7 +1298,7 @@ test('room editor: rotating a loose item pivots around its centre', async ({ pag
 test('room editor: shows a minus badge while removing an item from furniture', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const laptop = page.locator('.room-item[data-catalog=laptop]').first();
   expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
   const b = (await laptop.boundingBox())!;
@@ -1181,7 +1316,7 @@ test('room editor: shows a minus badge while removing an item from furniture', a
 test('room editor: attached items are draggable within their host in the list', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const deskLi = page
     .locator('.item-list > li')
     .filter({ has: page.locator('.item-list__row', { hasText: 'Desk' }) });
@@ -1206,7 +1341,7 @@ test('room editor: attached items are draggable within their host in the list', 
 test('room editor: the item list has no horizontal scrollbar', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const overflow = await page
     .locator('ul.item-list')
     .first()
@@ -1217,7 +1352,7 @@ test('room editor: the item list has no horizontal scrollbar', async ({ page }) 
 test('room editor: dragging a layer shows a floating preview and disables text selection', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   const rows = page.locator('ul.item-list:not(.item-list--children) > li > .item-list__row');
   const shelf = page.locator('.item-list__row', { hasText: 'Wall shelf' }).first();
   await shelf.scrollIntoViewIfNeeded();
@@ -1236,7 +1371,7 @@ test('room editor: dragging a layer shows a floating preview and disables text s
 test('room editor: the sidebar hides its scrollbars', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
-  await page.getByTitle('Edit room').click();
+  await openRoomEditor(page);
   expect(await page.locator('.editor__body').evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe('none');
   expect(await page.locator('.item-list').first().evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe('none');
 });
