@@ -2,21 +2,31 @@ import PocketBase, { type RecordModel } from 'pocketbase';
 import type {
   AppData,
   CalendarEvent,
-  ImageEffects,
   ImagePreset,
   MediaAsset,
   PageElement,
   PageGroup,
-  PhotoStyle,
   Room,
   RoomItem,
   ScrapNode,
   ScrapPage,
   StoredLayout,
-  TapeStyle,
+  TrashItem,
 } from './types';
-import { loadLayouts, loadPresets, saveData, saveLayouts, savePresets } from './storage';
+import {
+  loadData,
+  loadLayouts,
+  loadPresets,
+  loadTrashItems,
+  saveData,
+  saveLayouts,
+  savePresets,
+  saveTrashItems,
+} from './storage';
 import { createSeedData } from './seed';
+import { createOutbox } from './outbox';
+import { idbDelete } from './mediaStore';
+import { clone } from '@/utils/clone';
 
 export const PB_URL = ((import.meta.env.VITE_PB_URL as string | undefined) ?? '').trim();
 export const pbEnabled = PB_URL.length > 0;
@@ -48,6 +58,11 @@ export interface Backend {
   listImagePresets(): Promise<ImagePreset[]>;
   saveImagePreset(preset: ImagePreset): Promise<void>;
   deleteImagePreset(id: string): Promise<void>;
+  /** Soft-delete a group of records so they can be recovered from the trash. */
+  trash(item: TrashItem): void;
+  listTrash(): Promise<TrashItem[]>;
+  restoreTrash(item: TrashItem): Promise<void>;
+  purgeTrash(item: TrashItem): Promise<void>;
   subscribe(onChange: () => void): void;
 }
 
@@ -99,6 +114,52 @@ export const localBackend: Backend = {
   async deleteImagePreset(id) {
     savePresets(loadPresets().filter((p) => p.id !== id));
   },
+  trash(item) {
+    saveTrashItems([...loadTrashItems(), item]);
+  },
+  async listTrash() {
+    return loadTrashItems();
+  },
+  async restoreTrash(item) {
+    const data = loadData();
+    if (data) {
+      for (const ref of item.records) {
+        if (!ref.record) continue;
+        switch (ref.collection) {
+          case 'nodes':
+            if (!data.content.nodes.some((r) => r.id === ref.id))
+              data.content.nodes.push(ref.record as ScrapNode);
+            break;
+          case 'pages':
+            if (!data.content.pages.some((r) => r.id === ref.id))
+              data.content.pages.push(ref.record as ScrapPage);
+            break;
+          case 'elements':
+            if (!data.content.elements.some((r) => r.id === ref.id))
+              data.content.elements.push(ref.record as PageElement);
+            break;
+          case 'media':
+            if (!data.content.media.some((r) => r.id === ref.id))
+              data.content.media.push(ref.record as MediaAsset);
+            break;
+          case 'events':
+            if (!data.events.some((r) => r.id === ref.id))
+              data.events.push(ref.record as CalendarEvent);
+            break;
+          default:
+            break;
+        }
+      }
+      saveData(data);
+    }
+    saveTrashItems(loadTrashItems().filter((t) => t.id !== item.id));
+  },
+  async purgeTrash(item) {
+    for (const ref of item.records.filter((r) => r.collection === 'media')) {
+      await idbDelete(ref.id);
+    }
+    saveTrashItems(loadTrashItems().filter((t) => t.id !== item.id));
+  },
   subscribe: noop,
 };
 
@@ -138,11 +199,18 @@ function mapPage(rec: RecordModel): ScrapPage {
   };
 }
 
-function mapElement(rec: RecordModel): PageElement {
+/**
+ * Rebuild an element from its record. The `payload` column stores the complete
+ * element (minus identity), so every field — including ones added later — is
+ * preserved. Columns supply defaults for legacy rows whose payload held only a
+ * per-kind subset, then the payload is overlaid so nothing is dropped.
+ */
+export function mapElement(rec: RecordModel): PageElement {
   const payload = field<Record<string, unknown>>(rec, 'payload', {});
   const base = {
     id: rec.id,
     pageId: field<string>(rec, 'page', ''),
+    kind: field<PageElement['kind']>(rec, 'kind', 'note'),
     x: field<number>(rec, 'x', 0.5),
     y: field<number>(rec, 'y', 0.5),
     w: field<number>(rec, 'w', 0.5),
@@ -156,46 +224,7 @@ function mapElement(rec: RecordModel): PageElement {
     name: field<string>(rec, 'name', '') || undefined,
     scale: field<number>(rec, 'scale', 1),
   };
-  const color = payload.color as string | undefined;
-  const kind = field<'photo' | 'note' | 'sticker' | 'image' | 'tape'>(rec, 'kind', 'note');
-  if (kind === 'photo') {
-    return { ...base, kind: 'photo', photo: (payload.photo as PhotoStyle) ?? 'sunset', caption: payload.caption as string | undefined };
-  }
-  if (kind === 'sticker') {
-    return {
-      ...base,
-      kind: 'sticker',
-      icon: (payload.icon as 'heart' | 'star' | 'sparkle') ?? 'heart',
-      color,
-      colors: payload.colors as Record<string, string> | undefined,
-    };
-  }
-  if (kind === 'image') {
-    return {
-      ...base,
-      kind: 'image',
-      mediaId: (payload.mediaId as string) ?? '',
-      caption: payload.caption as string | undefined,
-      frame: payload.frame as string | undefined,
-      frameColor: payload.frameColor as string | undefined,
-      frameColors: payload.frameColors as Record<string, string> | undefined,
-      zoom: payload.zoom as number | undefined,
-      focusX: payload.focusX as number | undefined,
-      focusY: payload.focusY as number | undefined,
-      preset: payload.preset as string | undefined,
-      effects: payload.effects as ImageEffects | undefined,
-    };
-  }
-  if (kind === 'tape') {
-    return {
-      ...base,
-      kind: 'tape',
-      style: (payload.style as TapeStyle) ?? 'washi',
-      color,
-      colors: payload.colors as Record<string, string> | undefined,
-    };
-  }
-  return { ...base, kind: 'note', text: (payload.text as string) ?? '', color };
+  return { ...base, ...payload, id: rec.id, pageId: base.pageId } as unknown as PageElement;
 }
 
 function mapMedia(rec: RecordModel): MediaAsset {
@@ -218,28 +247,46 @@ function mapRoom(rec: RecordModel): Room {
   };
 }
 
-function mapRoomItem(rec: RecordModel): RoomItem {
+export function mapRoomItem(rec: RecordModel): RoomItem {
   const mobile = field<Record<string, unknown> | null>(rec, 'mobile', null);
-  return {
+  const data = field<Record<string, unknown> | null>(rec, 'data', null);
+  const base = {
     id: rec.id,
     catalogId: field<string>(rec, 'catalogId', ''),
     layer: field<RoomItem['layer']>(rec, 'layer', 'wall'),
     z: field<number>(rec, 'z', 1),
     attachTo: field<string>(rec, 'attachTo', '') || undefined,
     color: field<Record<string, string>>(rec, 'color', {}),
-    desktop: field<RoomItem['desktop']>(rec, 'desktop', { x: 0.5, y: 0.5, scale: 0.2, rotation: 0, flip: false }),
+    desktop: field<RoomItem['desktop']>(rec, 'desktop', {
+      x: 0.5,
+      y: 0.5,
+      scale: 0.2,
+      rotation: 0,
+      flip: false,
+    }),
     mobile: mobile ? (mobile as unknown as RoomItem['desktop']) : undefined,
     hideMobile: field<boolean>(rec, 'hideMobile', false),
     locked: field<boolean>(rec, 'locked', false),
   };
+  return { ...base, ...(data ?? {}), id: rec.id } as unknown as RoomItem;
 }
 
 function mapLayout(rec: RecordModel): StoredLayout {
   const data = field<{ room: Room; items: RoomItem[] }>(rec, 'data', {
-    room: { wallId: 'stripes-cream', floorId: 'wood-warm', dayNightMode: 'auto', referenceTz: 'America/Chicago' },
+    room: {
+      wallId: 'stripes-cream',
+      floorId: 'wood-warm',
+      dayNightMode: 'auto',
+      referenceTz: 'America/Chicago',
+    },
     items: [],
   });
-  return { id: rec.id, name: field<string>(rec, 'name', 'Untitled'), room: data.room, items: data.items ?? [] };
+  return {
+    id: rec.id,
+    name: field<string>(rec, 'name', 'Untitled'),
+    room: data.room,
+    items: data.items ?? [],
+  };
 }
 
 function nodeBody(node: ScrapNode): Record<string, unknown> {
@@ -264,41 +311,40 @@ function pageBody(page: ScrapPage): Record<string, unknown> {
 }
 
 function mapPreset(rec: RecordModel): ImagePreset {
-  return { id: rec.id, name: field<string>(rec, 'name', 'Untitled'), effects: field(rec, 'effects', {}) };
+  return {
+    id: rec.id,
+    name: field<string>(rec, 'name', 'Untitled'),
+    effects: field(rec, 'effects', {}),
+  };
 }
 function mapEvent(rec: RecordModel): CalendarEvent {
-  const data = field<CalendarEvent>(rec, 'data', { id: rec.id, kind: 'occasion', title: '', startsAt: '', recurrence: 'none' });
+  const data = field<CalendarEvent>(rec, 'data', {
+    id: rec.id,
+    kind: 'occasion',
+    title: '',
+    startsAt: '',
+    recurrence: 'none',
+  });
   return { ...data, id: rec.id };
 }
 function eventBody(event: CalendarEvent): Record<string, unknown> {
   return { kind: event.kind, title: event.title, data: event };
 }
-function elementBody(el: PageElement): Record<string, unknown> {
-  const payload =
-    el.kind === 'photo'
-      ? { photo: el.photo, caption: el.caption }
-      : el.kind === 'image'
-        ? {
-            mediaId: el.mediaId,
-            caption: el.caption,
-            frame: el.frame,
-            frameColor: el.frameColor,
-            frameColors: el.frameColors,
-            zoom: el.zoom,
-            focusX: el.focusX,
-            focusY: el.focusY,
-            preset: el.preset,
-            effects: el.effects,
-          }
-        : el.kind === 'note'
-          ? { text: el.text, color: el.color }
-          : el.kind === 'tape'
-            ? { style: el.style, color: el.color, colors: el.colors }
-            : { icon: el.icon, color: el.color, colors: el.colors };
+function mapTrash(rec: RecordModel): TrashItem {
+  const records = field<TrashItem['records']>(rec, 'records', []);
+  return {
+    id: rec.id,
+    kind: field<TrashItem['kind']>(rec, 'kind', 'book'),
+    label: field<string>(rec, 'label', 'Deleted item'),
+    detail: field<string>(rec, 'detail', '') || undefined,
+    deletedAt: field<number>(rec, 'deletedAt', 0),
+    records: Array.isArray(records) ? records : [],
+  };
+}
+export function elementBody(el: PageElement): Record<string, unknown> {
   return {
     page: el.pageId,
     kind: el.kind,
-    payload,
     x: el.x,
     y: el.y,
     w: el.w,
@@ -311,12 +357,19 @@ function elementBody(el: PageElement): Record<string, unknown> {
     group: el.groupId ?? '',
     name: el.name ?? '',
     scale: el.scale ?? 1,
+    // Full element so no field (present or future) is lost on the round-trip.
+    payload: clone(el),
   };
 }
 function roomBody(room: Room): Record<string, unknown> {
-  return { wallId: room.wallId, floorId: room.floorId, dayNightMode: room.dayNightMode, referenceTz: room.referenceTz };
+  return {
+    wallId: room.wallId,
+    floorId: room.floorId,
+    dayNightMode: room.dayNightMode,
+    referenceTz: room.referenceTz,
+  };
 }
-function roomItemBody(item: RoomItem): Record<string, unknown> {
+export function roomItemBody(item: RoomItem): Record<string, unknown> {
   return {
     catalogId: item.catalogId,
     layer: item.layer,
@@ -327,25 +380,38 @@ function roomItemBody(item: RoomItem): Record<string, unknown> {
     mobile: item.mobile ?? null,
     hideMobile: item.hideMobile ?? false,
     locked: item.locked ?? false,
+    // Full item so fields without a column (e.g. lightLevel) survive.
+    data: clone(item),
   };
 }
 
 async function seedIfEmpty(client: PocketBase): Promise<void> {
+  // Only ever seed demo content in development or when explicitly asked: never
+  // pour sample books into a real (possibly just-emptied) library.
+  const seedDemo = import.meta.env.DEV || import.meta.env.VITE_SEED_DEMO === '1';
+  if (!seedDemo) return;
   const nodes = await client.collection('nodes').getFullList();
   if (nodes.length === 0) {
     const content = createSeedData().content;
     const idMap = new Map<string, string>();
     for (const node of content.nodes) {
-      const rec = await client.collection('nodes').create({ ...nodeBody(node), parent: node.parentId ? idMap.get(node.parentId) ?? '' : '' });
+      const rec = await client.collection('nodes').create({
+        ...nodeBody(node),
+        parent: node.parentId ? (idMap.get(node.parentId) ?? '') : '',
+      });
       idMap.set(node.id, rec.id);
     }
     const pageMap = new Map<string, string>();
     for (const page of content.pages) {
-      const rec = await client.collection('pages').create({ ...pageBody(page), book: idMap.get(page.bookId) ?? '' });
+      const rec = await client
+        .collection('pages')
+        .create({ ...pageBody(page), book: idMap.get(page.bookId) ?? '' });
       pageMap.set(page.id, rec.id);
     }
     for (const el of content.elements) {
-      await client.collection('elements').create({ ...elementBody(el), page: pageMap.get(el.pageId) ?? '' });
+      await client
+        .collection('elements')
+        .create({ ...elementBody(el), page: pageMap.get(el.pageId) ?? '' });
     }
   }
 }
@@ -357,7 +423,10 @@ async function ensureRoom(client: PocketBase): Promise<{ room: Room; items: Room
     await client.collection('room').create(roomBody(seed.room));
     const idMap = new Map<string, string>();
     for (const item of seed.roomItems) {
-      const rec = await client.collection('room_items').create({ ...roomItemBody(item), attachTo: item.attachTo ? idMap.get(item.attachTo) ?? '' : '' });
+      const rec = await client.collection('room_items').create({
+        ...roomItemBody(item),
+        attachTo: item.attachTo ? (idMap.get(item.attachTo) ?? '') : '',
+      });
       idMap.set(item.id, rec.id);
     }
     roomRecs = await client.collection('room').getFullList();
@@ -366,6 +435,163 @@ async function ensureRoom(client: PocketBase): Promise<{ room: Room; items: Room
   return { room: mapRoom(roomRecs[0]), items: itemRecs.map(mapRoomItem) };
 }
 
+// ---------------------------------------------------------------------------
+// Durable writes
+//
+// PocketBase mutations are expressed as plain, serializable operations and fed
+// through a persistent outbox so a dropped connection or a restart never loses
+// an edit. See src/data/outbox.ts.
+// ---------------------------------------------------------------------------
+
+type PbOp =
+  | { t: 'create'; collection: string; id: string; body: Record<string, unknown> }
+  | { t: 'update'; collection: string; id: string; body: Record<string, unknown> }
+  | { t: 'upsert'; collection: string; id: string; body: Record<string, unknown> }
+  | { t: 'delete'; collection: string; id: string }
+  | { t: 'updateFirst'; collection: string; body: Record<string, unknown> }
+  | { t: 'deleteNode'; id: string }
+  | { t: 'applyRoomLayout'; room: Room; items: RoomItem[] }
+  | { t: 'trashGroup'; item: TrashItem };
+
+async function runPbOp(op: PbOp): Promise<void> {
+  const client = pb;
+  if (!client) return;
+  switch (op.t) {
+    case 'create':
+      await client.collection(op.collection).create({ id: op.id, ...op.body });
+      return;
+    case 'update':
+      await client.collection(op.collection).update(op.id, op.body);
+      return;
+    case 'upsert':
+      try {
+        await client.collection(op.collection).update(op.id, op.body);
+      } catch {
+        await client.collection(op.collection).create({ id: op.id, ...op.body });
+      }
+      return;
+    case 'delete':
+      await client.collection(op.collection).delete(op.id);
+      return;
+    case 'updateFirst': {
+      const recs = await client.collection(op.collection).getFullList();
+      if (recs[0]) await client.collection(op.collection).update(recs[0].id, op.body);
+      return;
+    }
+    case 'deleteNode': {
+      const nodes = await client.collection('nodes').getFullList();
+      const doomed = new Set<string>();
+      const collect = (rootId: string) => {
+        doomed.add(rootId);
+        nodes
+          .filter((n) => field<string>(n, 'parent', '') === rootId)
+          .forEach((n) => collect(n.id));
+      };
+      collect(op.id);
+      const pages = await client.collection('pages').getFullList();
+      const pageIds = pages
+        .filter((p) => doomed.has(field<string>(p, 'book', '')))
+        .map((p) => p.id);
+      const elements = await client.collection('elements').getFullList();
+      for (const el of elements.filter((e) => pageIds.includes(field<string>(e, 'page', '')))) {
+        await client.collection('elements').delete(el.id);
+      }
+      for (const pid of pageIds) await client.collection('pages').delete(pid);
+      for (const nid of doomed) await client.collection('nodes').delete(nid);
+      return;
+    }
+    case 'applyRoomLayout': {
+      const recs = await client.collection('room').getFullList();
+      if (recs[0]) await client.collection('room').update(recs[0].id, roomBody(op.room));
+      const existing = await client.collection('room_items').getFullList();
+      const keep = new Set(op.items.map((i) => i.id));
+      for (const r of existing.filter((row) => !keep.has(row.id))) {
+        await client.collection('room_items').delete(r.id);
+      }
+      for (const item of op.items) {
+        const body = roomItemBody(item);
+        try {
+          await client.collection('room_items').update(item.id, body);
+        } catch {
+          await client.collection('room_items').create({ id: item.id, ...body });
+        }
+      }
+      return;
+    }
+    case 'trashGroup': {
+      const { item } = op;
+      for (const ref of item.records) {
+        await client.collection(ref.collection).update(ref.id, { deletedAt: item.deletedAt });
+      }
+      await client.collection('trash').create({
+        id: item.id,
+        kind: item.kind,
+        label: item.label,
+        detail: item.detail ?? '',
+        records: item.records.map((ref) => ({ collection: ref.collection, id: ref.id })),
+        deletedAt: item.deletedAt,
+      });
+      return;
+    }
+  }
+}
+
+/** Coalesce redundant operations so rapid edits don't flood the queue. */
+export function coalescePbOps(queue: PbOp[], op: PbOp): PbOp[] {
+  const isWriteTo = (o: PbOp, collection: string, id: string): boolean =>
+    (o.t === 'create' || o.t === 'update' || o.t === 'upsert') &&
+    o.collection === collection &&
+    o.id === id;
+  if (op.t === 'update' || op.t === 'upsert') {
+    const createIdx = queue.findIndex(
+      (o) => o.t === 'create' && o.collection === op.collection && o.id === op.id,
+    );
+    if (createIdx >= 0) {
+      const create = queue[createIdx];
+      if (create.t === 'create') {
+        queue[createIdx] = { ...create, body: op.body };
+        return queue;
+      }
+    }
+    const idx = queue.findIndex(
+      (o) =>
+        (o.t === 'update' || o.t === 'upsert') && o.collection === op.collection && o.id === op.id,
+    );
+    if (idx >= 0) {
+      queue[idx] = op;
+      return queue;
+    }
+  }
+  if (op.t === 'delete') {
+    const hadCreate = queue.some(
+      (o) => o.t === 'create' && o.collection === op.collection && o.id === op.id,
+    );
+    const kept = queue.filter(
+      (o) =>
+        !isWriteTo(o, op.collection, op.id) &&
+        !(o.t === 'delete' && o.collection === op.collection && o.id === op.id),
+    );
+    // A record that never reached the server need not be deleted.
+    return hadCreate ? kept : [...kept, op];
+  }
+  if (op.t === 'updateFirst') {
+    const idx = queue.findIndex((o) => o.t === 'updateFirst' && o.collection === op.collection);
+    if (idx >= 0) {
+      queue[idx] = op;
+      return queue;
+    }
+  }
+  return [...queue, op];
+}
+
+export const pbOutbox = pbEnabled
+  ? createOutbox<PbOp>({
+      run: runPbOp,
+      storageKey: 'journeybook:outbox:v1',
+      coalesce: coalescePbOps,
+    })
+  : null;
+
 export const pbBackend: Backend = {
   kind: 'pocketbase',
   async fetchAll(): Promise<AppData | null> {
@@ -373,11 +599,11 @@ export const pbBackend: Backend = {
     if (!client) return null;
     await seedIfEmpty(client);
     const [nodes, pages, elements, media, events] = await Promise.all([
-      client.collection('nodes').getFullList(),
-      client.collection('pages').getFullList(),
-      client.collection('elements').getFullList(),
-      client.collection('media').getFullList(),
-      client.collection('events').getFullList(),
+      client.collection('nodes').getFullList({ filter: 'deletedAt = 0' }),
+      client.collection('pages').getFullList({ filter: 'deletedAt = 0' }),
+      client.collection('elements').getFullList({ filter: 'deletedAt = 0' }),
+      client.collection('media').getFullList({ filter: 'deletedAt = 0' }),
+      client.collection('events').getFullList({ filter: 'deletedAt = 0' }),
     ]);
     const { room, items } = await ensureRoom(client);
     return {
@@ -395,100 +621,97 @@ export const pbBackend: Backend = {
   },
   persistLocal: noop,
   nodeCreate(node) {
-    void pb?.collection('nodes').create({ id: node.id, ...nodeBody(node) }).catch((e) => console.error('nodeCreate', e));
+    pbOutbox?.enqueue({
+      t: 'create',
+      collection: 'nodes',
+      id: node.id,
+      body: clone(nodeBody(node)),
+    });
   },
   nodeUpdate(node) {
-    void pb?.collection('nodes').update(node.id, nodeBody(node)).catch((e) => console.error('nodeUpdate', e));
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'nodes',
+      id: node.id,
+      body: clone(nodeBody(node)),
+    });
   },
   nodeDelete(id) {
-    void (async () => {
-      const client = pb;
-      if (!client) return;
-      const nodes = await client.collection('nodes').getFullList();
-      const doomed = new Set<string>();
-      const collect = (rootId: string) => {
-        doomed.add(rootId);
-        nodes.filter((n) => field<string>(n, 'parent', '') === rootId).forEach((n) => collect(n.id));
-      };
-      collect(id);
-      const pages = await client.collection('pages').getFullList();
-      const pageIds = pages.filter((p) => doomed.has(field<string>(p, 'book', ''))).map((p) => p.id);
-      const elements = await client.collection('elements').getFullList();
-      await Promise.all(
-        elements.filter((el) => pageIds.includes(field<string>(el, 'page', ''))).map((el) => client.collection('elements').delete(el.id)),
-      );
-      await Promise.all(pageIds.map((pid) => client.collection('pages').delete(pid)));
-      await Promise.all([...doomed].map((nid) => client.collection('nodes').delete(nid)));
-    })().catch((e) => console.error('nodeDelete', e));
+    pbOutbox?.enqueue({ t: 'deleteNode', id });
   },
   pageCreate(page) {
-    void pb?.collection('pages').create({ id: page.id, ...pageBody(page) }).catch((e) => console.error('pageCreate', e));
+    pbOutbox?.enqueue({
+      t: 'create',
+      collection: 'pages',
+      id: page.id,
+      body: clone(pageBody(page)),
+    });
   },
   pageUpdate(page) {
-    void pb?.collection('pages').update(page.id, pageBody(page)).catch((e) => console.error('pageUpdate', e));
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'pages',
+      id: page.id,
+      body: clone(pageBody(page)),
+    });
   },
   pageDelete(id) {
-    void pb?.collection('pages').delete(id).catch((e) => console.error('pageDelete', e));
+    pbOutbox?.enqueue({ t: 'delete', collection: 'pages', id });
   },
   elementCreate(el) {
-    void pb?.collection('elements').create({ id: el.id, ...elementBody(el) }).catch((e) => console.error('elementCreate', e));
+    pbOutbox?.enqueue({
+      t: 'create',
+      collection: 'elements',
+      id: el.id,
+      body: clone(elementBody(el)),
+    });
   },
   elementUpdate(el) {
-    void pb?.collection('elements').update(el.id, elementBody(el)).catch((e) => console.error('elementUpdate', e));
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'elements',
+      id: el.id,
+      body: clone(elementBody(el)),
+    });
   },
   elementDelete(id) {
-    void pb?.collection('elements').delete(id).catch((e) => console.error('elementDelete', e));
+    pbOutbox?.enqueue({ t: 'delete', collection: 'elements', id });
   },
   roomUpdate(room) {
-    void (async () => {
-      const client = pb;
-      if (!client) return;
-      const recs = await client.collection('room').getFullList();
-      if (recs[0]) await client.collection('room').update(recs[0].id, roomBody(room));
-    })().catch((e) => console.error('roomUpdate', e));
+    pbOutbox?.enqueue({ t: 'updateFirst', collection: 'room', body: clone(roomBody(room)) });
   },
   roomItemCreate(item) {
-    void pb?.collection('room_items').create({ id: item.id, ...roomItemBody(item) }).catch((e) => console.error('roomItemCreate', e));
+    pbOutbox?.enqueue({
+      t: 'create',
+      collection: 'room_items',
+      id: item.id,
+      body: clone(roomItemBody(item)),
+    });
   },
   roomItemUpdate(item) {
-    void pb?.collection('room_items').update(item.id, roomItemBody(item)).catch((e) => console.error('roomItemUpdate', e));
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'room_items',
+      id: item.id,
+      body: clone(roomItemBody(item)),
+    });
   },
   roomItemDelete(id) {
-    void pb?.collection('room_items').delete(id).catch((e) => console.error('roomItemDelete', e));
+    pbOutbox?.enqueue({ t: 'delete', collection: 'room_items', id });
   },
   applyRoomLayout(room, items) {
-    void (async () => {
-      const client = pb;
-      if (!client) return;
-      const recs = await client.collection('room').getFullList();
-      if (recs[0]) await client.collection('room').update(recs[0].id, roomBody(room));
-      const existing = await client.collection('room_items').getFullList();
-      const keep = new Set(items.map((i) => i.id));
-      await Promise.all(existing.filter((r) => !keep.has(r.id)).map((r) => client.collection('room_items').delete(r.id)));
-      for (const item of items) {
-        const body = roomItemBody(item);
-        try {
-          await client.collection('room_items').update(item.id, body);
-        } catch {
-          await client.collection('room_items').create({ id: item.id, ...body });
-        }
-      }
-    })().catch((e) => console.error('applyRoomLayout', e));
+    pbOutbox?.enqueue({ t: 'applyRoomLayout', room: clone(room), items: clone(items) });
   },
   eventSave(event) {
-    void (async () => {
-      const client = pb;
-      if (!client) return;
-      const body = eventBody(event);
-      try {
-        await client.collection('events').update(event.id, body);
-      } catch {
-        await client.collection('events').create({ id: event.id, ...body });
-      }
-    })().catch((e) => console.error('eventSave', e));
+    pbOutbox?.enqueue({
+      t: 'upsert',
+      collection: 'events',
+      id: event.id,
+      body: clone(eventBody(event)),
+    });
   },
   eventDelete(id) {
-    void pb?.collection('events').delete(id).catch((e) => console.error('eventDelete', e));
+    pbOutbox?.enqueue({ t: 'delete', collection: 'events', id });
   },
   async listLayouts() {
     const client = pb;
@@ -497,17 +720,15 @@ export const pbBackend: Backend = {
     return recs.map(mapLayout);
   },
   async saveLayout(layout) {
-    const client = pb;
-    if (!client) return;
-    const body = { name: layout.name, data: { room: layout.room, items: layout.items } };
-    try {
-      await client.collection('room_layouts').update(layout.id, body);
-    } catch {
-      await client.collection('room_layouts').create({ id: layout.id, ...body });
-    }
+    pbOutbox?.enqueue({
+      t: 'upsert',
+      collection: 'room_layouts',
+      id: layout.id,
+      body: { name: layout.name, data: { room: layout.room, items: layout.items } },
+    });
   },
   async deleteLayout(id) {
-    await pb?.collection('room_layouts').delete(id);
+    pbOutbox?.enqueue({ t: 'delete', collection: 'room_layouts', id });
   },
   async listImagePresets() {
     const client = pb;
@@ -516,23 +737,76 @@ export const pbBackend: Backend = {
     return recs.map(mapPreset);
   },
   async saveImagePreset(preset) {
-    const client = pb;
-    if (!client) return;
-    const body = { name: preset.name, effects: preset.effects };
-    try {
-      await client.collection('image_presets').update(preset.id, body);
-    } catch {
-      await client.collection('image_presets').create({ id: preset.id, ...body });
-    }
+    pbOutbox?.enqueue({
+      t: 'upsert',
+      collection: 'image_presets',
+      id: preset.id,
+      body: { name: preset.name, effects: preset.effects },
+    });
   },
   async deleteImagePreset(id) {
-    await pb?.collection('image_presets').delete(id);
+    pbOutbox?.enqueue({ t: 'delete', collection: 'image_presets', id });
+  },
+  trash(item) {
+    pbOutbox?.enqueue({ t: 'trashGroup', item });
+  },
+  async listTrash() {
+    const client = pb;
+    if (!client) return [];
+    const recs = await client.collection('trash').getFullList();
+    return recs.map(mapTrash).sort((a, b) => b.deletedAt - a.deletedAt);
+  },
+  async restoreTrash(item) {
+    const client = pb;
+    if (!client) return;
+    for (const ref of item.records) {
+      try {
+        await client.collection(ref.collection).update(ref.id, { deletedAt: 0 });
+      } catch (e) {
+        console.error('restoreTrash', e);
+      }
+    }
+    try {
+      await client.collection('trash').delete(item.id);
+    } catch (e) {
+      console.error('restoreTrash', e);
+    }
+  },
+  async purgeTrash(item) {
+    const client = pb;
+    if (!client) return;
+    for (const ref of item.records) {
+      try {
+        await client.collection(ref.collection).delete(ref.id);
+      } catch (e) {
+        console.error('purgeTrash', e);
+      }
+    }
+    try {
+      await client.collection('trash').delete(item.id);
+    } catch (e) {
+      console.error('purgeTrash', e);
+    }
   },
   subscribe(onChange) {
     const client = pb;
     if (!client) return;
-    for (const name of ['nodes', 'pages', 'elements', 'media', 'room', 'room_items', 'room_layouts', 'image_presets', 'events']) {
-      void client.collection(name).subscribe('*', () => onChange()).catch((e) => console.error('subscribe', e));
+    for (const name of [
+      'nodes',
+      'pages',
+      'elements',
+      'media',
+      'room',
+      'room_items',
+      'room_layouts',
+      'image_presets',
+      'events',
+      'trash',
+    ]) {
+      void client
+        .collection(name)
+        .subscribe('*', () => onChange())
+        .catch((e) => console.error('subscribe', e));
     }
   },
 };

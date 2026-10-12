@@ -130,6 +130,9 @@ function openZoom(index: number) {
 function closeZoom() {
   zoomIndex.value = null;
 }
+function removePage(pageId: string, index: number) {
+  if (window.confirm(`Delete page ${index + 1}? You can restore it from the trash.`)) app.removePage(pageId);
+}
 function onKey(e: KeyboardEvent) {
   if (e.key === 'Escape') closeZoom();
 }
@@ -247,7 +250,7 @@ function onPageTap(index: number, e: PointerEvent) {
             <button class="layer-mini" type="button" title="Move later" :disabled="idx === pages.length - 1" @click.stop="app.movePage(p.id, 1)">
               <Icon name="chev-right" class="rot-down" />
             </button>
-            <button class="layer-mini" type="button" title="Remove page" @click.stop="app.removePage(p.id)">
+            <button class="layer-mini" type="button" title="Remove page" @click.stop="removePage(p.id, idx)">
               <Icon name="trash" />
             </button>
           </div>

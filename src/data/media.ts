@@ -1,66 +1,12 @@
 import type { MediaAsset } from './types';
 import { PB_URL, pb, pbEnabled } from './backend';
-
-const DB_NAME = 'journeybook-media';
-const STORE = 'blobs';
+import { idbDelete, idbGet, idbPut } from './mediaStore';
 
 /** Runtime object URLs for locally stored blobs (local mode only). */
 const urls = new Map<string, string>();
 
 function isPbMedia(): boolean {
   return pbEnabled && PB_URL.length > 0;
-}
-
-function idbSupported(): boolean {
-  return typeof indexedDB !== 'undefined';
-}
-
-function openDb(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = () => {
-      if (!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE);
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function idbPut(id: string, blob: Blob): Promise<void> {
-  if (!idbSupported()) return;
-  const db = await openDb();
-  await new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(blob, id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
-}
-
-async function idbGet(id: string): Promise<Blob | undefined> {
-  if (!idbSupported()) return undefined;
-  const db = await openDb();
-  const blob = await new Promise<Blob | undefined>((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readonly');
-    const req = tx.objectStore(STORE).get(id);
-    req.onsuccess = () => resolve(req.result as Blob | undefined);
-    req.onerror = () => reject(req.error);
-  });
-  db.close();
-  return blob;
-}
-
-async function idbDelete(id: string): Promise<void> {
-  if (!idbSupported()) return;
-  const db = await openDb();
-  await new Promise<void>((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).delete(id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
 }
 
 const pending = new Set<string>();
@@ -99,7 +45,9 @@ export async function uploadMedia(asset: MediaAsset, file: File): Promise<string
       name: asset.name,
       file,
     });
-    return (rec as unknown as { file: string }).file;
+    const fileName = (rec as unknown as { file?: string }).file;
+    if (!fileName) throw new Error('Upload did not store a file');
+    return fileName;
   }
   await idbPut(asset.id, file);
   urls.set(asset.id, URL.createObjectURL(file));

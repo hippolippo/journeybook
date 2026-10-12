@@ -261,3 +261,23 @@ export interface AppData {
   roomItems: RoomItem[];
   events: CalendarEvent[];
 }
+
+/** What can be recovered from the trash. */
+export type TrashKind = 'book' | 'page' | 'media' | 'event' | 'layout' | 'preset';
+
+/** A reference to one soft-deleted record, plus its data for local restore. */
+export interface TrashRecordRef {
+  collection: string;
+  id: string;
+  record?: unknown;
+}
+
+/** One recoverable deletion: a single action that may affect many records. */
+export interface TrashItem {
+  id: string;
+  kind: TrashKind;
+  label: string;
+  detail?: string;
+  deletedAt: number;
+  records: TrashRecordRef[];
+}

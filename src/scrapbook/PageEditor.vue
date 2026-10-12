@@ -167,6 +167,7 @@ function useMedia(id: string) {
   else pe.addImage(id);
 }
 async function deleteMedia(id: string) {
+  if (!window.confirm('Move this photo to the trash? You can restore it later.')) return;
   await app.removeMedia(id);
 }
 

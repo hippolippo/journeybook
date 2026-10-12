@@ -1,5 +1,17 @@
-/** PocketBase-compatible id: 15 chars of [a-z0-9]. */
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+/**
+ * PocketBase-compatible id: 15 chars of [a-z0-9]. Uses the platform CSPRNG when
+ * available to keep collisions effectively impossible across the two devices.
+ */
 export function newId(): string {
-  const raw = (Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^a-z0-9]/g, '');
-  return raw.slice(0, 15).padEnd(15, '0');
+  const bytes = new Uint8Array(15);
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    crypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  let out = '';
+  for (let i = 0; i < bytes.length; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+  return out;
 }
