@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import Icon from '@/components/Icon.vue';
 import { useAppStore } from '@/stores/app';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { useViewport } from '@/composables/useViewport';
@@ -461,7 +462,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             <div class="editor__row" style="margin-top: 0.4rem">
               <button class="btn btn--small" type="button" @click="pe.duplicateElement(sel.id)">Duplicate</button>
               <button class="btn btn--small" type="button" :disabled="!!sel.locked" @click="pe.removeElement(sel.id)">
-                <span class="icon icon--trash"></span>Remove
+                <Icon name="trash" />Remove
               </button>
             </div>
           </section>

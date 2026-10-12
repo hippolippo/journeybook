@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import Icon from '@/components/Icon.vue';
 import { useRouter } from 'vue-router';
 import type { ScrapNode } from '@/data/types';
 import { useAppStore } from '@/stores/app';
+import { useViewport } from '@/composables/useViewport';
 import { duplicateBook, exportBookData, importBookData } from '@/data/bookTransfer';
 import pressedFlower from '@/assets/svg/pressed-flower.svg';
 
 const props = defineProps<{ folderId?: string }>();
 const app = useAppStore();
 const router = useRouter();
+const { isMobile } = useViewport();
 
-const folder = computed(() => (props.folderId ? app.node(props.folderId) : undefined));
-const kids = computed(() => app.childrenOf(props.folderId ?? null));
-const crumbs = computed(() => app.breadcrumb(props.folderId ?? null));
+/** Optional route params arrive as an empty string on direct load; normalize. */
+const folderId = computed(() => props.folderId || null);
+const folder = computed(() => (folderId.value ? app.node(folderId.value) : undefined));
+const kids = computed(() => app.childrenOf(folderId.value));
+const crumbs = computed(() => app.breadcrumb(folderId.value));
 
 const creating = ref<null | 'folder' | 'scrapbook'>(null);
 const newTitle = ref('');
@@ -62,6 +67,7 @@ function openBook(id: string) {
 }
 
 function startCreate(type: 'folder' | 'scrapbook') {
+  if (isMobile.value) return;
   creating.value = type;
   newTitle.value = '';
   nextTick(() => newInput.value?.focus());
@@ -69,11 +75,12 @@ function startCreate(type: 'folder' | 'scrapbook') {
 function submitCreate() {
   const title = newTitle.value.trim();
   if (!title || !creating.value) return;
-  app.createNode(creating.value, props.folderId ?? null, title);
+  app.createNode(creating.value, folderId.value, title);
   creating.value = null;
   newTitle.value = '';
 }
 function toggleMenu(node: ScrapNode, event: Event) {
+  if (isMobile.value) return;
   if (menuOpen.value === node.id) {
     menuOpen.value = null;
     return;
@@ -136,7 +143,7 @@ async function onImport(e: Event) {
   input.value = '';
   if (!file) return;
   try {
-    const node = await importBookData(await file.text(), props.folderId ?? null);
+    const node = await importBookData(await file.text(), folderId.value);
     openBook(node.id);
   } catch (err) {
     console.error(err);
@@ -200,15 +207,15 @@ watch(entries, () => nextTick(updateArrows));
     </template>
   </nav>
 
-  <div class="toolbar">
+  <div v-if="!isMobile" class="toolbar">
     <button class="btn btn--primary" type="button" @click="startCreate('folder')">
-      <span class="icon icon--folder"></span>New folder
+      <Icon name="folder" />New folder
     </button>
     <button class="btn btn--sage" type="button" @click="startCreate('scrapbook')">
-      <span class="icon icon--book"></span>New scrapbook
+      <Icon name="book" />New scrapbook
     </button>
     <button class="btn" type="button" @click="importInput?.click()">
-      <span class="icon icon--plus"></span>Import book
+      <Icon name="plus" />Import book
     </button>
     <input ref="importInput" class="visually-hidden" type="file" accept=".json,application/json" @change="onImport" />
   </div>
@@ -221,7 +228,7 @@ watch(entries, () => nextTick(updateArrows));
       aria-label="More to the left"
       @click="scrollDir(-1)"
     >
-      <span class="icon icon--chev-left"></span>
+      <Icon name="chev-left" />
     </button>
     <div ref="tilesEl" class="tiles" @scroll="onTilesScroll">
       <template v-for="entry in entries" :key="entry.key">
@@ -265,8 +272,14 @@ watch(entries, () => nextTick(updateArrows));
             </span>
             <span class="folder__title">{{ entry.node.title }}</span>
           </div>
-          <button class="tile-menu" type="button" aria-label="More" @click.stop="toggleMenu(entry.node, $event)">
-            <span class="icon icon--menu"></span>
+          <button
+            v-if="!isMobile"
+            class="tile-menu"
+            type="button"
+            aria-label="More"
+            @click.stop="toggleMenu(entry.node, $event)"
+          >
+            <Icon name="menu" />
           </button>
         </div>
 
@@ -287,8 +300,14 @@ watch(entries, () => nextTick(updateArrows));
             </span>
             <span v-if="!entry.node.published" class="book__draft">Draft</span>
           </div>
-          <button class="tile-menu" type="button" aria-label="More" @click.stop="toggleMenu(entry.node, $event)">
-            <span class="icon icon--menu"></span>
+          <button
+            v-if="!isMobile"
+            class="tile-menu"
+            type="button"
+            aria-label="More"
+            @click.stop="toggleMenu(entry.node, $event)"
+          >
+            <Icon name="menu" />
           </button>
         </div>
       </template>
@@ -300,7 +319,7 @@ watch(entries, () => nextTick(updateArrows));
       aria-label="More to the right"
       @click="scrollDir(1)"
     >
-      <span class="icon icon--chev-right"></span>
+      <Icon name="chev-right" />
     </button>
   </div>
 
@@ -308,7 +327,8 @@ watch(entries, () => nextTick(updateArrows));
     <div class="empty">
       <img :src="pressedFlower" alt="" aria-hidden="true" />
       <h3>This room is empty</h3>
-      <p>Make your first folder or scrapbook?</p>
+      <p v-if="isMobile">Nothing here yet.</p>
+      <p v-else>Make your first folder or scrapbook?</p>
     </div>
   </div>
 

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" role="img">
+  <title>Rotate your phone</title>
+  <rect x="36" y="42" width="50" height="38" rx="9" fill="#fbf6ec" stroke="#4a3b2e" stroke-width="4" stroke-linejoin="round" transform="rotate(-12 61 61)"/>
+  <line x1="50" y1="73" x2="72" y2="73" stroke="#4a3b2e" stroke-width="4" stroke-linecap="round" transform="rotate(-12 61 61)"/>
+  <path d="M27 61 A34 34 0 0 1 61 27 A34 34 0 0 1 95 61" fill="none" stroke="#c97b5a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M95 61 l -10 -2 l 5 -9" fill="none" stroke="#c97b5a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

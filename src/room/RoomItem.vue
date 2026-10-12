@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import Icon from '@/components/Icon.vue';
 import type { Placement, RoomItem } from '@/data/types';
 import type { Band } from '@/catalog/types';
 import type { Viewport } from '@/stores/app';
@@ -502,7 +503,7 @@ function onUp(event: PointerEvent) {
         </FxLayer>
       </span>
       <slot />
-      <span v-if="canEdit && props.item.locked" class="room-item__lock icon icon--lock" aria-hidden="true"></span>
+      <Icon name="lock" v-if="canEdit && props.item.locked" class="room-item__lock" aria-hidden="true" />
       <span v-if="preview && !props.ghost" class="room-item__attach-badge" aria-hidden="true"></span>
       <span v-if="removePreview" class="room-item__remove-badge" aria-hidden="true"></span>
       <template v-if="selected && canEdit && !props.item.locked">

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="68" viewBox="0 0 64 68" aria-hidden="true">
+  <g fill="#000">
+    <path
+      fill-rule="evenodd"
+      d="M18 9 H46 A11 11 0 0 1 57 20 V53 A11 11 0 0 1 46 64 H18 A11 11 0 0 1 7 53 V20 A11 11 0 0 1 18 9 Z
+         M7 25.5 H57 V30 H7 Z
+         M15 37 H24 V45 H15 Z
+         M27.5 37 H36.5 V45 H27.5 Z
+         M40 37 H49 V45 H40 Z
+         M15 49 H24 V57 H15 Z
+         M27.5 49 H36.5 V57 H27.5 Z
+         M40 49 H49 V57 H40 Z"
+    />
+    <rect x="18" y="3.5" width="7.5" height="13" rx="3.75" />
+    <rect x="38.5" y="3.5" width="7.5" height="13" rx="3.75" />
+  </g>
+</svg>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import Icon from '@/components/Icon.vue';
 import type { PageElement } from '@/data/types';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { elementStyle } from '@/scrapbook/elementStyle';
@@ -130,6 +131,6 @@ function onDoubleClick() {
       <span class="pe-handle pe-handle--br" title="Resize" @pointerdown="onResizeDown"></span>
       <span class="pe-rot" title="Rotate" @pointerdown="onRotateDown"></span>
     </template>
-    <span v-if="el.locked" class="pe-lock icon icon--lock" aria-hidden="true"></span>
+    <Icon name="lock" v-if="el.locked" class="pe-lock" aria-hidden="true" />
   </div>
 </template>

@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue';
 import OrganizerView from '@/views/OrganizerView.vue';
 import BookView from '@/views/BookView.vue';
 import CalendarView from '@/views/CalendarView.vue';
+import SettingsView from '@/views/SettingsView.vue';
 import LoginView from '@/views/LoginView.vue';
 import { useAuthStore } from '@/stores/auth';
 
@@ -14,6 +15,7 @@ const router = createRouter({
     { path: '/scrapbooks/:folderId?', name: 'organizer', component: OrganizerView, props: true },
     { path: '/book/:bookId', name: 'book', component: BookView, props: true },
     { path: '/calendar', name: 'calendar', component: CalendarView },
+    { path: '/settings', name: 'settings', component: SettingsView },
   ],
 });
 
