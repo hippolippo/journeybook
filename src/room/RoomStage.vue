@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { floorById, wallById } from '@/catalog/options';
+import type { RoomItem as RoomItemData } from '@/data/types';
 import RoomItem from './RoomItem.vue';
 import RoomLights from './RoomLights.vue';
 
@@ -16,8 +17,19 @@ const sorted = computed(() => [...items.value].sort((a, b) => a.z - b.z));
 const ids = computed(() => new Set(items.value.map((i) => i.id)));
 // Attached children render inside their host so host transforms cascade.
 const topLevel = computed(() => sorted.value.filter((i) => !i.attachTo || !ids.value.has(i.attachTo)));
-function childrenOf(hostId: string) {
-  return sorted.value.filter((i) => i.attachTo === hostId);
+/** Host id -> its attached children, built once per render instead of filtering per host. */
+const childrenByHost = computed(() => {
+  const map = new Map<string, RoomItemData[]>();
+  for (const item of sorted.value) {
+    if (!item.attachTo) continue;
+    const list = map.get(item.attachTo);
+    if (list) list.push(item);
+    else map.set(item.attachTo, [item]);
+  }
+  return map;
+});
+function childrenOf(hostId: string): RoomItemData[] {
+  return childrenByHost.value.get(hostId) ?? [];
 }
 const wallClass = computed(() => wallById(room.value.wallId).className);
 const floorClass = computed(() => floorById(room.value.floorId).className);

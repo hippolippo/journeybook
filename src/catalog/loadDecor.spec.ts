@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { EffectDef } from './types';
 import { CATALOG } from './catalog';
-import { loadedFrames, loadedPapers, loadedRoomItems, loadedStickers } from './loadDecor';
+import {
+  loadedFrames,
+  loadedPapers,
+  loadedRoomItems,
+  loadedStickers,
+  loadedTapes,
+} from './loadDecor';
 
 function firstEffect(effect: unknown): EffectDef | undefined {
   if (!effect) return undefined;
@@ -49,6 +55,22 @@ describe('asset loader', () => {
     const shape = night?.[0].shape?.svg ?? '';
     expect(shape).toBeTruthy();
     expect(shape).not.toBe('particle-firefly.svg');
+  });
+
+  it('loads the migrated built-in stickers from sidecars', () => {
+    const byId = new Map(loadedStickers.map((s) => [s.id, s]));
+    for (const id of ['heart', 'star', 'sparkle', 'flower', 'corner', 'postcard', 'paperclip']) {
+      expect(byId.get(id), `${id} should load from a sidecar`).toBeTruthy();
+    }
+    expect(byId.get('heart')?.tint).toBe(true);
+    expect(byId.get('flower')?.art).toBeTruthy();
+    expect(byId.get('postcard')?.aspect).toBe(1.5);
+  });
+
+  it('loads the migrated built-in tapes from sidecars', () => {
+    const byId = new Map(loadedTapes.map((t) => [t.id, t]));
+    expect(byId.get('washi')?.opacity).toBeCloseTo(0.85);
+    expect(byId.get('masking')?.defaultColor).toBe('#f2e3c0');
   });
 
   it('loads a recolourable, animated sticker', () => {
@@ -110,11 +132,9 @@ describe('asset loader', () => {
     expect(new Set(aliasedArts).size).toBe(3);
     // The window has a day/night pair (window-day / window-night).
     expect(byId.get('window')?.art.night).toBeTruthy();
-    // Multi-slot furniture keeps its slots, presets and inlined svg.
-    expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['body', 'trim', 'seat']);
-    expect(byId.get('beanbag')?.presets?.length).toBeGreaterThan(0);
-    expect(byId.get('beanbag')?.raw).toContain('--c-body');
+    // Furniture can host surface items; the beanbag's art has no recolour slots.
     expect(byId.get('beanbag')?.host).toBe(true);
+    expect(byId.get('beanbag')?.colorSlots).toEqual([]);
     expect(byId.get('rug')?.colorSlots.map((s) => s.id)).toEqual([
       'band1',
       'band2',
@@ -122,8 +142,8 @@ describe('asset loader', () => {
       'band4',
     ]);
     expect(byId.get('rug')?.raw).toContain('--c-band1');
-    // Particles survive the move to data.
-    expect(byId.get('raccoon')?.particles?.[0].name).toBe('zzz');
+    // Particles survive the move to data (per-variant on the day art).
+    expect(byId.get('raccoon')?.artVariants?.day?.particles?.[0].name).toBe('zzz');
     // The wall clock stays built-in so its live component still renders.
     expect(CATALOG.find((i) => i.id === 'wall-clock')?.component).toBe('clock');
   });

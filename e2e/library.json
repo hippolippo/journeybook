@@ -1,0 +1,772 @@
+{
+  "version": 1,
+  "content": {
+    "nodes": [
+      {
+        "id": "f1",
+        "type": "folder",
+        "title": "Us",
+        "parentId": null,
+        "tags": [],
+        "order": 0
+      },
+      {
+        "id": "f2",
+        "type": "folder",
+        "title": "Trips",
+        "parentId": null,
+        "tags": [],
+        "order": 1
+      },
+      {
+        "id": "b7",
+        "type": "scrapbook",
+        "title": "Everyday",
+        "parentId": null,
+        "tags": [],
+        "order": 2,
+        "cover": "sage"
+      },
+      {
+        "id": "b1",
+        "type": "scrapbook",
+        "title": "First hello",
+        "parentId": "f1",
+        "tags": [],
+        "order": 0,
+        "cover": "rose"
+      },
+      {
+        "id": "b2",
+        "type": "scrapbook",
+        "title": "Little things",
+        "parentId": "f1",
+        "tags": [],
+        "order": 1,
+        "cover": "mustard"
+      },
+      {
+        "id": "f3",
+        "type": "folder",
+        "title": "Inside jokes",
+        "parentId": "f1",
+        "tags": [],
+        "order": 2
+      },
+      {
+        "id": "b3",
+        "type": "scrapbook",
+        "title": "The raccoon incident",
+        "parentId": "f3",
+        "tags": [],
+        "order": 0,
+        "cover": "terracotta"
+      },
+      {
+        "id": "f4",
+        "type": "folder",
+        "title": "2024",
+        "parentId": "f2",
+        "tags": [],
+        "order": 0
+      },
+      {
+        "id": "b4",
+        "type": "scrapbook",
+        "title": "Lisbon",
+        "parentId": "f4",
+        "tags": [],
+        "order": 0,
+        "cover": "sky"
+      },
+      {
+        "id": "b5",
+        "type": "scrapbook",
+        "title": "Cabin weekend",
+        "parentId": "f4",
+        "tags": [],
+        "order": 1,
+        "cover": "kraft"
+      },
+      {
+        "id": "b6",
+        "type": "scrapbook",
+        "title": "Someday list",
+        "parentId": "f2",
+        "tags": [],
+        "order": 1,
+        "cover": "rose"
+      }
+    ],
+    "pages": [
+      {
+        "id": "b1-p1",
+        "bookId": "b1",
+        "index": 0
+      },
+      {
+        "id": "b1-p2",
+        "bookId": "b1",
+        "index": 1
+      },
+      {
+        "id": "b1-p3",
+        "bookId": "b1",
+        "index": 2
+      },
+      {
+        "id": "b2-p1",
+        "bookId": "b2",
+        "index": 0
+      },
+      {
+        "id": "b2-p2",
+        "bookId": "b2",
+        "index": 1
+      },
+      {
+        "id": "b3-p1",
+        "bookId": "b3",
+        "index": 0
+      },
+      {
+        "id": "b4-p1",
+        "bookId": "b4",
+        "index": 0
+      },
+      {
+        "id": "b4-p2",
+        "bookId": "b4",
+        "index": 1
+      },
+      {
+        "id": "b4-p3",
+        "bookId": "b4",
+        "index": 2
+      },
+      {
+        "id": "b4-p4",
+        "bookId": "b4",
+        "index": 3
+      },
+      {
+        "id": "b6-p1",
+        "bookId": "b6",
+        "index": 0
+      }
+    ],
+    "elements": [
+      {
+        "id": "e1",
+        "pageId": "b1-p1",
+        "x": 0.42,
+        "y": 0.34,
+        "w": 0.56,
+        "h": 0.52,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "blush",
+        "caption": "us, day one"
+      },
+      {
+        "id": "e2",
+        "pageId": "b1-p1",
+        "x": 0.2,
+        "y": 0.24,
+        "w": 0.16,
+        "h": 0.16,
+        "rotation": -8,
+        "z": 2,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "heart"
+      },
+      {
+        "id": "e3",
+        "pageId": "b1-p1",
+        "x": 0.5,
+        "y": 0.78,
+        "w": 0.66,
+        "h": 0.26,
+        "rotation": 2,
+        "z": 3,
+        "opacity": 1,
+        "kind": "note",
+        "text": "I still get butterflies when your name pops up."
+      },
+      {
+        "id": "e4",
+        "pageId": "b1-p2",
+        "x": 0.55,
+        "y": 0.36,
+        "w": 0.56,
+        "h": 0.52,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "night",
+        "caption": "3am talks"
+      },
+      {
+        "id": "e5",
+        "pageId": "b1-p2",
+        "x": 0.42,
+        "y": 0.78,
+        "w": 0.66,
+        "h": 0.24,
+        "rotation": -2,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "We said we would just say goodnight. We did not."
+      },
+      {
+        "id": "e6",
+        "pageId": "b1-p3",
+        "x": 0.32,
+        "y": 0.3,
+        "w": 0.18,
+        "h": 0.18,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "sparkle"
+      },
+      {
+        "id": "e7",
+        "pageId": "b1-p3",
+        "x": 0.5,
+        "y": 0.56,
+        "w": 0.72,
+        "h": 0.26,
+        "rotation": 3,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "Twelve hours apart, zero kilometres between us."
+      },
+      {
+        "id": "e8",
+        "pageId": "b2-p1",
+        "x": 0.44,
+        "y": 0.36,
+        "w": 0.58,
+        "h": 0.54,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "meadow",
+        "caption": "your laugh, Wednesday"
+      },
+      {
+        "id": "e9",
+        "pageId": "b2-p1",
+        "x": 0.2,
+        "y": 0.72,
+        "w": 0.16,
+        "h": 0.16,
+        "rotation": 6,
+        "z": 2,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "star"
+      },
+      {
+        "id": "e10",
+        "pageId": "b2-p2",
+        "x": 0.5,
+        "y": 0.46,
+        "w": 0.76,
+        "h": 0.3,
+        "rotation": -2,
+        "z": 1,
+        "opacity": 1,
+        "kind": "note",
+        "text": "You hum when you are happy. I noticed. I always notice."
+      },
+      {
+        "id": "e11",
+        "pageId": "b3-p1",
+        "x": 0.5,
+        "y": 0.36,
+        "w": 0.6,
+        "h": 0.54,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "forest",
+        "caption": "the culprit"
+      },
+      {
+        "id": "e12",
+        "pageId": "b3-p1",
+        "x": 0.48,
+        "y": 0.8,
+        "w": 0.72,
+        "h": 0.22,
+        "rotation": -3,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "We do not speak of the bins."
+      },
+      {
+        "id": "e13",
+        "pageId": "b4-p1",
+        "x": 0.42,
+        "y": 0.34,
+        "w": 0.56,
+        "h": 0.52,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "sunset",
+        "caption": "the miradouro"
+      },
+      {
+        "id": "e14",
+        "pageId": "b4-p1",
+        "x": 0.22,
+        "y": 0.68,
+        "w": 0.16,
+        "h": 0.16,
+        "rotation": 10,
+        "z": 2,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "sparkle"
+      },
+      {
+        "id": "e15",
+        "pageId": "b4-p2",
+        "x": 0.56,
+        "y": 0.34,
+        "w": 0.56,
+        "h": 0.52,
+        "rotation": 0,
+        "z": 1,
+        "opacity": 1,
+        "kind": "photo",
+        "photo": "sea",
+        "caption": "tram 28, again"
+      },
+      {
+        "id": "e16",
+        "pageId": "b4-p2",
+        "x": 0.48,
+        "y": 0.78,
+        "w": 0.7,
+        "h": 0.24,
+        "rotation": -2,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "Pastéis de nata count: eleven. No regrets."
+      },
+      {
+        "id": "e17",
+        "pageId": "b4-p3",
+        "x": 0.5,
+        "y": 0.44,
+        "w": 0.78,
+        "h": 0.3,
+        "rotation": 1,
+        "z": 1,
+        "opacity": 1,
+        "kind": "note",
+        "text": "You fell asleep on my shoulder and I did not move for an hour."
+      },
+      {
+        "id": "e18",
+        "pageId": "b4-p4",
+        "x": 0.36,
+        "y": 0.34,
+        "w": 0.2,
+        "h": 0.2,
+        "rotation": -6,
+        "z": 1,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "heart"
+      },
+      {
+        "id": "e19",
+        "pageId": "b4-p4",
+        "x": 0.5,
+        "y": 0.64,
+        "w": 0.6,
+        "h": 0.24,
+        "rotation": 2,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "Next time: the Algarve."
+      },
+      {
+        "id": "e20",
+        "pageId": "b6-p1",
+        "x": 0.5,
+        "y": 0.36,
+        "w": 0.78,
+        "h": 0.24,
+        "rotation": -2,
+        "z": 1,
+        "opacity": 1,
+        "kind": "note",
+        "text": "Things we will do when the distance is done:"
+      },
+      {
+        "id": "e21",
+        "pageId": "b6-p1",
+        "x": 0.5,
+        "y": 0.62,
+        "w": 0.72,
+        "h": 0.22,
+        "rotation": 1,
+        "z": 2,
+        "opacity": 1,
+        "kind": "note",
+        "text": "1. Adopt a cat with an unimpressed face."
+      },
+      {
+        "id": "e22",
+        "pageId": "b6-p1",
+        "x": 0.76,
+        "y": 0.8,
+        "w": 0.16,
+        "h": 0.16,
+        "rotation": -10,
+        "z": 3,
+        "opacity": 1,
+        "kind": "sticker",
+        "icon": "star"
+      }
+    ],
+    "media": []
+  },
+  "room": {
+    "wallId": "stripes-cream",
+    "floorId": "wood-warm",
+    "dayNightMode": "auto",
+    "referenceTz": "America/Chicago"
+  },
+  "roomItems": [
+    {
+      "id": "string-lights-4",
+      "catalogId": "string-lights",
+      "layer": "wall",
+      "z": 10,
+      "color": {},
+      "desktop": {
+        "x": 0.17,
+        "y": 0.3,
+        "scale": 0.22,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "string-lights-5",
+      "catalogId": "string-lights",
+      "layer": "wall",
+      "z": 10,
+      "color": {},
+      "desktop": {
+        "x": 0.83,
+        "y": 0.3,
+        "scale": 0.22,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "window-6",
+      "catalogId": "window",
+      "layer": "wall",
+      "z": 12,
+      "color": {},
+      "desktop": {
+        "x": 0.115,
+        "y": 0.583,
+        "scale": 0.4,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "curtain-7",
+      "catalogId": "curtain",
+      "layer": "wall",
+      "z": 14,
+      "color": {},
+      "desktop": {
+        "x": 0.05,
+        "y": 0.6,
+        "scale": 0.46,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "curtain-8",
+      "catalogId": "curtain",
+      "layer": "wall",
+      "z": 14,
+      "color": {},
+      "desktop": {
+        "x": 0.18,
+        "y": 0.6,
+        "scale": 0.46,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "wall-shelf-3",
+      "catalogId": "wall-shelf",
+      "layer": "wall",
+      "z": 16,
+      "color": {},
+      "desktop": {
+        "x": 0.12,
+        "y": 0.9,
+        "scale": 0.22,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "corkboard-9",
+      "catalogId": "corkboard",
+      "layer": "wall",
+      "z": 12,
+      "color": {},
+      "desktop": {
+        "x": 0.9,
+        "y": 0.97,
+        "scale": 0.38,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "wall-clock-10",
+      "catalogId": "wall-clock",
+      "layer": "wall",
+      "z": 12,
+      "color": {},
+      "desktop": {
+        "x": 0.925,
+        "y": 0.573,
+        "scale": 0.22,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "rug-11",
+      "catalogId": "rug",
+      "layer": "floor",
+      "z": 5,
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 1,
+        "scale": 0.5,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "desk-1",
+      "catalogId": "desk",
+      "layer": "floor",
+      "z": 20,
+      "color": {},
+      "desktop": {
+        "x": 0.185,
+        "y": 1,
+        "scale": 1,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "beanbag-2",
+      "catalogId": "beanbag",
+      "layer": "floor",
+      "z": 20,
+      "color": {},
+      "desktop": {
+        "x": 0.86,
+        "y": 1,
+        "scale": 0.92,
+        "rotation": 0,
+        "flip": false
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "plant-12",
+      "catalogId": "plant",
+      "layer": "surface",
+      "z": 30,
+      "attachTo": "wall-shelf-3",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.18,
+        "rotation": 0,
+        "flip": false,
+        "ax": 0.5,
+        "ay": 0.05
+      },
+      "hideMobile": true
+    },
+    {
+      "id": "raccoon-13",
+      "catalogId": "raccoon",
+      "layer": "surface",
+      "z": 30,
+      "attachTo": "beanbag-2",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.4,
+        "rotation": 0,
+        "flip": false,
+        "ax": 0.5,
+        "ay": 0.18
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "pencil-cup-14",
+      "catalogId": "pencil-cup",
+      "layer": "surface",
+      "z": 35,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.17,
+        "rotation": 4,
+        "flip": false,
+        "ax": 0.1,
+        "ay": 0.02
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "coffee-cup-15",
+      "catalogId": "coffee-cup",
+      "layer": "surface",
+      "z": 36,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.14,
+        "rotation": -4,
+        "flip": false,
+        "ax": 0.22,
+        "ay": 0.03
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "laptop-16",
+      "catalogId": "laptop",
+      "layer": "surface",
+      "z": 37,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.22,
+        "rotation": -2,
+        "flip": false,
+        "ax": 0.35,
+        "ay": 0
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "scissors-17",
+      "catalogId": "scissors",
+      "layer": "surface",
+      "z": 38,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.12,
+        "rotation": 12,
+        "flip": false,
+        "ax": 0.5,
+        "ay": 0.05
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "owala-18",
+      "catalogId": "owala",
+      "layer": "surface",
+      "z": 39,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.2,
+        "rotation": -3,
+        "flip": false,
+        "ax": 0.62,
+        "ay": 0.02
+      },
+      "hideMobile": false
+    },
+    {
+      "id": "plant-19",
+      "catalogId": "plant",
+      "layer": "surface",
+      "z": 40,
+      "attachTo": "desk-1",
+      "color": {},
+      "desktop": {
+        "x": 0.5,
+        "y": 0.5,
+        "scale": 0.18,
+        "rotation": 3,
+        "flip": false,
+        "ax": 0.74,
+        "ay": 0.02
+      },
+      "hideMobile": false
+    }
+  ],
+  "events": []
+}

@@ -335,7 +335,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                   @click="useMedia(m.id)"
                   @pointerdown="startPlace($event, { img: app.assetUrl(m.id) }, (at) => pe.addImage(m.id, at))"
                 >
-                  <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" />
+                  <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" loading="lazy" decoding="async" />
                 </button>
                 <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)"><Icon name="close" /></button>
               </div>

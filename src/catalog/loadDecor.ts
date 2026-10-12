@@ -110,6 +110,11 @@ function hasSvg(name: string): boolean {
   return `${DIR}${name}` in urls;
 }
 
+/** Resolve a bare `assets/svg` file name to its built URL (e.g. effect textures). */
+export function assetSrc(name: string): string | undefined {
+  return urlOf(name);
+}
+
 /** Resolve a bare `assets/svg` file name referenced inside a definition. */
 function resolveSvgRef(svg: string | undefined): string | undefined {
   if (!svg) return svg;

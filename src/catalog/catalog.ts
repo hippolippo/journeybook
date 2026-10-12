@@ -23,6 +23,15 @@ const BUILTIN: CatalogItem[] = [
 /** Built-in items plus any loaded from artist asset definitions. */
 export const CATALOG: CatalogItem[] = [...BUILTIN, ...loadedRoomItems];
 
+/**
+ * Indexed once so per-item lookups during rendering stay O(1). Mirrors
+ * `Array.prototype.find` semantics: the first definition of an id wins.
+ */
+const CATALOG_BY_ID = new Map<string, CatalogItem>();
+for (const item of CATALOG) {
+  if (!CATALOG_BY_ID.has(item.id)) CATALOG_BY_ID.set(item.id, item);
+}
+
 export function getCatalogItem(id: string): CatalogItem | undefined {
-  return CATALOG.find((item) => item.id === id);
+  return CATALOG_BY_ID.get(id);
 }

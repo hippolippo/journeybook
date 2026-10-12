@@ -23,7 +23,7 @@ import {
   savePresets,
   saveTrashItems,
 } from './storage';
-import { createSeedData } from './seed';
+import { createEmptyData } from './seed';
 import { createOutbox } from './outbox';
 import { idbDelete } from './mediaStore';
 import { clone } from '@/utils/clone';
@@ -385,50 +385,11 @@ export function roomItemBody(item: RoomItem): Record<string, unknown> {
   };
 }
 
-async function seedIfEmpty(client: PocketBase): Promise<void> {
-  // Only ever seed demo content in development or when explicitly asked: never
-  // pour sample books into a real (possibly just-emptied) library.
-  const seedDemo = import.meta.env.DEV || import.meta.env.VITE_SEED_DEMO === '1';
-  if (!seedDemo) return;
-  const nodes = await client.collection('nodes').getFullList();
-  if (nodes.length === 0) {
-    const content = createSeedData().content;
-    const idMap = new Map<string, string>();
-    for (const node of content.nodes) {
-      const rec = await client.collection('nodes').create({
-        ...nodeBody(node),
-        parent: node.parentId ? (idMap.get(node.parentId) ?? '') : '',
-      });
-      idMap.set(node.id, rec.id);
-    }
-    const pageMap = new Map<string, string>();
-    for (const page of content.pages) {
-      const rec = await client
-        .collection('pages')
-        .create({ ...pageBody(page), book: idMap.get(page.bookId) ?? '' });
-      pageMap.set(page.id, rec.id);
-    }
-    for (const el of content.elements) {
-      await client
-        .collection('elements')
-        .create({ ...elementBody(el), page: pageMap.get(el.pageId) ?? '' });
-    }
-  }
-}
-
 async function ensureRoom(client: PocketBase): Promise<{ room: Room; items: RoomItem[] }> {
   let roomRecs = await client.collection('room').getFullList();
   if (roomRecs.length === 0) {
-    const seed = createSeedData();
-    await client.collection('room').create(roomBody(seed.room));
-    const idMap = new Map<string, string>();
-    for (const item of seed.roomItems) {
-      const rec = await client.collection('room_items').create({
-        ...roomItemBody(item),
-        attachTo: item.attachTo ? (idMap.get(item.attachTo) ?? '') : '',
-      });
-      idMap.set(item.id, rec.id);
-    }
+    // A fresh library starts with an empty room: default wall/floor, no items.
+    await client.collection('room').create(roomBody(createEmptyData().room));
     roomRecs = await client.collection('room').getFullList();
   }
   const itemRecs = await client.collection('room_items').getFullList();
@@ -597,7 +558,6 @@ export const pbBackend: Backend = {
   async fetchAll(): Promise<AppData | null> {
     const client = pb;
     if (!client) return null;
-    await seedIfEmpty(client);
     const [nodes, pages, elements, media, events] = await Promise.all([
       client.collection('nodes').getFullList({ filter: 'deletedAt = 0' }),
       client.collection('pages').getFullList({ filter: 'deletedAt = 0' }),

@@ -1,5 +1,21 @@
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+
+const library = JSON.parse(
+  readFileSync(fileURLToPath(new URL('./library.json', import.meta.url)), 'utf8'),
+) as unknown;
+
+// The app ships with no demo data, so every test boots from the same seeded
+// library injected into local storage before the app loads.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript((data) => {
+    // Seed once per test; later full reloads keep the mutated library.
+    if (!localStorage.getItem('journeybook:v1')) {
+      localStorage.setItem('journeybook:v1', JSON.stringify(data));
+    }
+  }, library);
+});
 
 /** Open the profile menu, go to Settings, and start the room editor (desktop). */
 async function openRoomEditor(page: Page) {

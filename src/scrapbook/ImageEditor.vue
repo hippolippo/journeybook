@@ -297,7 +297,7 @@ async function onFiles(e: Event) {
                 :class="{ 'is-active': m.id === el.mediaId }"
                 @click="useMedia(m.id)"
               >
-                <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" />
+                <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" loading="lazy" decoding="async" />
               </button>
             </div>
             <p v-if="uploadError" class="editor__error">{{ uploadError }}</p>
