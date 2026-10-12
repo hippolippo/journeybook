@@ -68,6 +68,9 @@ function toggleLock(value: boolean) {
 function setLightLevel(value: string) {
   if (selected.value) editor.setLightLevel(selected.value.id, num(value));
 }
+function removeLayout(id: string, name: string) {
+  if (window.confirm(`Delete the layout "${name}"?`)) void editor.deleteLayout(id);
+}
 
 // ---- reorder the depth list (pointer-based so it works on touch too) ----
 const draggingId = ref<string | null>(null);
@@ -495,7 +498,7 @@ async function saveNamed() {
             <span>{{ layout.name }}</span>
             <span class="editor__row">
               <button class="btn btn--small" type="button" @click="editor.loadLayout(layout.id)">Load</button>
-              <button class="btn btn--small" type="button" @click="editor.deleteLayout(layout.id)"><Icon name="trash" /></button>
+              <button class="btn btn--small" type="button" @click="removeLayout(layout.id, layout.name)"><Icon name="trash" /></button>
             </span>
           </li>
         </ul>

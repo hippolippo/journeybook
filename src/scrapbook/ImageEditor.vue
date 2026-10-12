@@ -146,6 +146,7 @@ async function savePreset() {
   presetName.value = '';
 }
 async function deletePreset(p: ImagePreset) {
+  if (!window.confirm(`Delete the preset "${p.name}"?`)) return;
   await app.deleteImagePreset(p.id);
 }
 function applyPreset(p: ImagePreset) {

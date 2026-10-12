@@ -465,6 +465,7 @@ test('book view: desktop shows add page + manage pages', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Add photo' })).toHaveCount(0);
 
   await page.getByRole('button', { name: /Manage pages/ }).click();
+  page.once('dialog', (dialog) => dialog.accept());
   await page.locator('.pages-menu__row').last().locator('button[title="Remove page"]').click();
   await expect(page.locator('.page-nav__label')).toContainText('of 3');
 });

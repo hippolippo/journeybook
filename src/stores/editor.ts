@@ -5,6 +5,7 @@ import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
 import { clone } from '@/utils/clone';
+import { newId } from '@/utils/id';
 
 export type Dock = 'left' | 'right';
 
@@ -15,10 +16,6 @@ interface Draft {
 
 const UI_KEY = 'journeybook:editor-ui:v1';
 
-function pbId(): string {
-  const raw = (Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^a-z0-9]/g, '');
-  return raw.slice(0, 15).padEnd(15, '0');
-}
 function loadUi(): { dock: Dock; collapsed: boolean } {
   try {
     const raw = localStorage.getItem(UI_KEY);
@@ -73,7 +70,10 @@ export const useEditorStore = defineStore('editor', {
   actions: {
     persistUi() {
       try {
-        localStorage.setItem(UI_KEY, JSON.stringify({ dock: this.dock, collapsed: this.collapsed }));
+        localStorage.setItem(
+          UI_KEY,
+          JSON.stringify({ dock: this.dock, collapsed: this.collapsed }),
+        );
       } catch {
         /* ignore */
       }
@@ -107,7 +107,8 @@ export const useEditorStore = defineStore('editor', {
      */
     pickAt(ids: string[], x: number, y: number) {
       if (!ids.length) return;
-      const near = this.lastPick != null && Math.hypot(x - this.lastPick.x, y - this.lastPick.y) < 6;
+      const near =
+        this.lastPick != null && Math.hypot(x - this.lastPick.x, y - this.lastPick.y) < 6;
       const index = near && this.lastPick ? (this.lastPick.index + 1) % ids.length : 0;
       this.lastPick = { x, y, index };
       this.selectedId = ids[index];
@@ -115,6 +116,7 @@ export const useEditorStore = defineStore('editor', {
 
     async start() {
       const app = useAppStore();
+      app.setSyncPaused(true);
       this.draft = { room: clone(app.room), items: clone(app.roomItems) };
       this.selectedId = null;
       this.dirty = false;
@@ -139,7 +141,8 @@ export const useEditorStore = defineStore('editor', {
       this.future.push(clone(this.draft));
       this.draft = this.history.pop() as Draft;
       this.dirty = true;
-      if (this.selectedId && !this.draft.items.some((i) => i.id === this.selectedId)) this.selectedId = null;
+      if (this.selectedId && !this.draft.items.some((i) => i.id === this.selectedId))
+        this.selectedId = null;
     },
     redo() {
       if (!this.draft || !this.future.length) return;
@@ -189,6 +192,7 @@ export const useEditorStore = defineStore('editor', {
       this.attachPreview = null;
       this.removePreviewId = null;
       this.draggingId = null;
+      useAppStore().setSyncPaused(false);
     },
     async loadLayout(id: string) {
       const layout = this.layouts.find((l) => l.id === id);
@@ -207,14 +211,17 @@ export const useEditorStore = defineStore('editor', {
     itemById(id: string): RoomItem | undefined {
       return this.draft?.items.find((i) => i.id === id);
     },
-    addItem(catalogId: string, at?: { x?: number; y?: number; hostId?: string; ax?: number; ay?: number }): RoomItem | null {
+    addItem(
+      catalogId: string,
+      at?: { x?: number; y?: number; hostId?: string; ax?: number; ay?: number },
+    ): RoomItem | null {
       if (!this.draft) return null;
       const cat = getCatalogItem(catalogId);
       if (!cat) return null;
       this.snapshot();
       const z = this.draft.items.reduce((m, i) => Math.max(m, i.z), 0) + 1;
       const item: RoomItem = {
-        id: pbId(),
+        id: newId(),
         catalogId,
         layer: cat.layer,
         z,
@@ -261,7 +268,7 @@ export const useEditorStore = defineStore('editor', {
       if (!item) return;
       this.snapshot();
       const copy = clone(item);
-      copy.id = pbId();
+      copy.id = newId();
       copy.z = this.draft.items.reduce((m, i) => Math.max(m, i.z), 0) + 1;
       copy.desktop = { ...copy.desktop, x: Math.min(0.98, copy.desktop.x + 0.05) };
       this.draft.items.push(copy);

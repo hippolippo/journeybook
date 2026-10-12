@@ -70,6 +70,43 @@ Content is precious. PocketBase's data (`pb_data`) is a SQLite database plus
 uploaded files in one directory. Back it up **off-box** regularly and always
 before a schema/migration change.
 
+### Automated backups (on-box)
+
+PocketBase is configured by `server/pb_hooks/backups.pb.js` to create a backup
+every day at 03:00 and keep the 14 most recent, landing in `pb_data/backups`
+inside the `pb_data` volume. An admin who changes the schedule in
+Settings → Backups keeps their setting. On-box backups protect against corrupt
+data and bad writes, but they do **not** survive losing the disk or volume.
+
+### Automated off-box copy (required)
+
+`scripts/backup-offsite.sh` copies the newest archives to storage on another
+machine. It is destination-agnostic: configure **either** an rclone remote
+**or** an rsync target in `docker/.env`:
+
+```sh
+# either
+BACKUP_REMOTE=gdrive:journeybook-backups
+# or
+BACKUP_RSYNC_TARGET=backup@host:/srv/journeybook-backups
+```
+
+The host needs `rclone` or `rsync` installed. The script reads the backups via
+the `pb_data` volume (works even when the stack is stopped) and exits non-zero
+on failure so a scheduler can alert. Run it after the on-box backup, e.g. a
+host crontab at 04:15:
+
+```cron
+15 4 * * *  cd /opt/journeybook && ./scripts/backup-offsite.sh >> /var/log/journeybook-backup.log 2>&1
+```
+
+This is a real off-box backup because the archive leaves the machine. Verify it
+works end to end with the restore drill below. `rclone` to Google Drive, S3,
+Backblaze B2, etc. all work the same way; PocketBase also has a built-in S3
+backup target in Settings → Backups if you prefer that.
+
+### Manual backup
+
 **Via the admin UI (no downtime).** Settings → Backups → _Create backup_. The
 archive lands in `pb_data/backups` inside the `pb_data` volume; copy it out:
 
@@ -93,10 +130,23 @@ In both cases, copy the resulting archive to storage on another machine
 (rsync, S3, etc.) — an on-box copy is not a backup. The volume name is prefixed
 with the Compose project name (`journeybook` by default, from the directory).
 
-Restore by extracting a `pb_data` archive back into the volume while the stack
-is stopped, then `docker compose up -d`.
+### Restore drill (do this before you need it)
 
-Automated off-box backups are still to be wired up.
+Restoring is only trustworthy if you have practised it:
+
+1. Stop the stack: `docker compose --env-file docker/.env down`.
+2. Copy the chosen archive back into the volume. PocketBase backup `.zip`
+   archives restore in place; a `pb_data-*.tar.gz` snapshot restores by
+   extracting into the volume:
+   ```sh
+   docker run --rm \
+     -v journeybook_pb_data:/data \
+     -v "$PWD/backups":/backup \
+     alpine sh -c 'rm -rf /data/* && tar xzf /backup/<archive>.tar.gz -C /data'
+   ```
+   (Alternatively, use Settings → Backups → Restore in the admin UI.)
+3. `docker compose --env-file docker/.env up -d --build` and confirm the app
+   loads the expected books and images.
 
 ## Dev credentials
 

@@ -2,16 +2,19 @@
 import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
+import { usePageEditorStore } from '@/stores/pageEditor';
 import { useAuthStore } from '@/stores/auth';
 import { useViewport } from '@/composables/useViewport';
 import RoomStage from '@/room/RoomStage.vue';
 import RoomBar from '@/components/RoomBar.vue';
 import EditorPanel from '@/editor/EditorPanel.vue';
 import EditorExit from '@/editor/EditorExit.vue';
+import ToastHost from '@/components/ToastHost.vue';
 import rotatePhone from '@/assets/svg/rotate-phone.svg';
 
 const app = useAppStore();
 const editor = useEditorStore();
+const pageEditor = usePageEditorStore();
 const auth = useAuthStore();
 const { width, height, isMobile, rotate } = useViewport();
 
@@ -23,6 +26,18 @@ watch(
   },
   { immediate: true },
 );
+
+// Warn before closing the tab with unsaved editor work.
+function onBeforeUnload(event: BeforeUnloadEvent) {
+  const dirtyRoom = editor.isEditing && editor.dirty;
+  const dirtyPage = pageEditor.isEditing && pageEditor.dirty;
+  if (dirtyRoom || dirtyPage) {
+    event.preventDefault();
+    event.returnValue = '';
+  }
+}
+onMounted(() => window.addEventListener('beforeunload', onBeforeUnload));
+onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload));
 
 const mobilePreview = computed(() => editor.isEditing && editor.viewport === 'mobile');
 const mainLayout = computed<Viewport>(() =>
@@ -68,6 +83,16 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
       <p class="rotate-gate__sub">this little room is best standing up</p>
     </div>
 
+    <div v-else-if="app.loading" class="boot-gate">
+      <p class="boot-gate__title">Opening your scrapbook…</p>
+    </div>
+
+    <div v-else-if="app.loadError" class="boot-gate">
+      <p class="boot-gate__title">We couldn't load your memories</p>
+      <p class="boot-gate__sub">Your saved work is safe. Check your connection and try again.</p>
+      <button class="btn btn--primary" type="button" @click="app.retryInit()">Try again</button>
+    </div>
+
     <template v-else>
       <template v-if="!mobilePreview">
         <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
@@ -90,5 +115,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
       <EditorPanel v-if="editor.isEditing" />
       <EditorExit v-if="editor.showExit" />
     </template>
+
+    <ToastHost />
   </div>
 </template>

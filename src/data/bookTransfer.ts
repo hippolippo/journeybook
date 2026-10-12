@@ -30,7 +30,7 @@ interface BookFile {
   media: BookFileMedia[];
 }
 
-function blobToDataUrl(blob: Blob): Promise<string> {
+export function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
@@ -39,7 +39,7 @@ function blobToDataUrl(blob: Blob): Promise<string> {
   });
 }
 
-function dataUrlToFile(dataUrl: string, name: string): File {
+export function dataUrlToFile(dataUrl: string, name: string): File {
   const comma = dataUrl.indexOf(',');
   const meta = dataUrl.slice(0, comma);
   const base64 = dataUrl.slice(comma + 1);
@@ -57,7 +57,9 @@ export async function exportBookData(bookId: string): Promise<string> {
   if (!node) throw new Error('Book not found');
   const pages = app.pagesOf(bookId);
   const pageIds = new Set(pages.map((p) => p.id));
-  const elements = app.data.content.elements.filter((e) => pageIds.has(e.pageId)).map((e) => ({ ...e }));
+  const elements = app.data.content.elements
+    .filter((e) => pageIds.has(e.pageId))
+    .map((e) => ({ ...e }));
 
   const media: BookFileMedia[] = [];
   for (const asset of app.mediaFor(bookId)) {
@@ -110,14 +112,19 @@ export async function importBookData(json: string, parentId: string | null): Pro
     const page = app.addPage(node.id);
     pageMap.set(p.id, page.id);
     if (p.background || p.groups || p.paperColors)
-      app.updatePage(page.id, { background: p.background, paperColors: p.paperColors, groups: p.groups });
+      app.updatePage(page.id, {
+        background: p.background,
+        paperColors: p.paperColors,
+        groups: p.groups,
+      });
   }
 
   for (const el of data.elements ?? []) {
     const pageId = pageMap.get(el.pageId);
     if (!pageId) continue;
     const copy = { ...el, id: newId(), pageId } as PageElement;
-    if (copy.kind === 'image' && copy.mediaId) copy.mediaId = mediaMap.get(copy.mediaId) ?? copy.mediaId;
+    if (copy.kind === 'image' && copy.mediaId)
+      copy.mediaId = mediaMap.get(copy.mediaId) ?? copy.mediaId;
     app.putElement(copy);
   }
 

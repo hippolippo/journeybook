@@ -13,28 +13,29 @@ import type {
   ScrapNode,
   ScrapPage,
   StoredLayout,
+  TrashItem,
+  TrashKind,
+  TrashRecordRef,
 } from '@/data/types';
 import { clearData, loadData } from '@/data/storage';
 import { createSeedData } from '@/data/seed';
 import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
-import { backend } from '@/data/backend';
-import { deleteMedia, ensureMedia, hydrateMedia, mediaUrl, uploadMedia } from '@/data/media';
+import { backend, pbOutbox } from '@/data/backend';
+import { ensureMedia, hydrateMedia, mediaUrl, uploadMedia } from '@/data/media';
 import { prepareImageFile } from '@/data/imageImport';
 import { clone } from '@/utils/clone';
+import { newId } from '@/utils/id';
+import { notify } from '@/utils/notify';
+import { auditIntegrity } from '@/data/integrity';
 
 const COVERS: CoverColor[] = ['rose', 'sage', 'mustard', 'terracotta', 'sky', 'kraft'];
-
-/** PocketBase-compatible id: 15 chars of [a-z0-9]. */
-function newId(): string {
-  const raw = (Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^a-z0-9]/g, '');
-  return raw.slice(0, 15).padEnd(15, '0');
-}
 
 let refreshTimer: number | undefined;
 
 const PERF_KEY = 'journeybook:performance';
+const REMOTE = backend.kind === 'pocketbase';
 
 /** Hidden performance mode (canvas lighting -> CSS fallback). No UI toggle yet. */
 function initialPerformance(): boolean {
@@ -54,9 +55,18 @@ export const useAppStore = defineStore('app', {
   state: () => ({
     data: (loadData() ?? createSeedData()) as AppData,
     synced: false,
+    /** Remote backend: true until the first successful load. */
+    loading: REMOTE,
+    /** Remote backend: true when the last load failed. */
+    loadError: false,
+    subscribed: false,
+    /** Pause realtime refreshes while an editor draft is open. */
+    syncPaused: false,
     /** Bumped when album URLs change so dependent renders refresh. */
     mediaVersion: 0,
     imagePresets: [] as ImagePreset[],
+    /** Recoverable, soft-deleted items. */
+    trash: [] as TrashItem[],
     /** When true, room lighting falls back to the CSS layer (cheaper). */
     performanceMode: initialPerformance(),
   }),
@@ -78,10 +88,16 @@ export const useAppStore = defineStore('app', {
         return mediaUrl(s.data.content.media.find((m) => m.id === id));
       };
     },
+    integrity: (s) => auditIntegrity(s.data),
   },
   actions: {
     save() {
-      backend.persistLocal(this.data);
+      try {
+        backend.persistLocal(this.data);
+      } catch (e) {
+        console.error('save', e);
+        notify('error', "Couldn't save changes", 'This browser is out of storage space.');
+      }
     },
     /** Toggle performance mode (no UI yet); persisted for the browser. */
     setPerformanceMode(value: boolean) {
@@ -100,18 +116,95 @@ export const useAppStore = defineStore('app', {
 
     // ---- backend lifecycle ----
     async initBackend() {
+      if (!REMOTE) {
+        this.synced = true;
+        this.loading = false;
+        await this.resolveMedia();
+        await this.loadImagePresets();
+        await this.loadTrash();
+        return;
+      }
+      this.loading = true;
+      this.loadError = false;
       try {
-        if (backend.kind !== 'local') {
-          const data = await backend.fetchAll();
-          if (data) this.data = data;
+        const data = await backend.fetchAll();
+        if (data) this.data = data;
+        if (!this.subscribed) {
           backend.subscribe(() => this.scheduleRefresh());
+          this.subscribed = true;
         }
         this.synced = true;
       } catch (e) {
         console.error('initBackend', e);
+        this.loadError = true;
+        this.loading = false;
+        notify('error', "Couldn't load your memories", 'Check your connection and try again.');
+        return;
       }
+      this.loading = false;
       await this.resolveMedia();
       await this.loadImagePresets();
+      await this.loadTrash();
+    },
+    async retryInit() {
+      await this.initBackend();
+    },
+    async loadTrash() {
+      this.trash = await backend.listTrash();
+    },
+    /** Soft-delete a group of records and remember it for restore. */
+    trashRecords(kind: TrashKind, label: string, records: TrashRecordRef[], detail?: string) {
+      const item: TrashItem = { id: newId(), kind, label, detail, deletedAt: Date.now(), records };
+      this.trash.unshift(item);
+      backend.trash(item);
+    },
+    async restoreItem(item: TrashItem) {
+      await backend.restoreTrash(item);
+      this.trash = this.trash.filter((t) => t.id !== item.id);
+      await this.reload();
+    },
+    async purgeItem(item: TrashItem) {
+      await backend.purgeTrash(item);
+      this.trash = this.trash.filter((t) => t.id !== item.id);
+    },
+    async emptyTrash() {
+      const items = [...this.trash];
+      for (const item of items) await backend.purgeTrash(item);
+      this.trash = [];
+    },
+    /** Remove records left dangling by an interrupted cascade. */
+    cleanOrphans() {
+      const nodeIds = new Set(this.data.content.nodes.map((n) => n.id));
+      const pageIds = new Set(this.data.content.pages.map((p) => p.id));
+      const badPages = this.data.content.pages.filter((p) => !nodeIds.has(p.bookId));
+      const badElements = this.data.content.elements.filter((e) => !pageIds.has(e.pageId));
+      const badMedia = this.data.content.media.filter((m) => !nodeIds.has(m.bookId));
+      for (const page of badPages) backend.pageDelete(page.id);
+      for (const element of badElements) backend.elementDelete(element.id);
+      if (badMedia.length) {
+        this.trashRecords(
+          'media',
+          'Orphaned photos',
+          badMedia.map((m) => ({ collection: 'media', id: m.id, record: clone(m) })),
+          `${badMedia.length}`,
+        );
+      }
+      const badPageIds = new Set(badPages.map((p) => p.id));
+      const badElementIds = new Set(badElements.map((e) => e.id));
+      this.data.content.pages = this.data.content.pages.filter((p) => !badPageIds.has(p.id));
+      this.data.content.elements = this.data.content.elements.filter((e) => !badElementIds.has(e.id));
+      this.data.content.media = this.data.content.media.filter((m) => nodeIds.has(m.bookId));
+      this.save();
+    },
+    async reload() {
+      if (!REMOTE) {
+        this.data = loadData() ?? this.data;
+      } else {
+        await pbOutbox?.whenIdle();
+        await this.refreshFromBackend();
+      }
+      await this.resolveMedia();
+      this.mediaVersion++;
     },
     async resolveMedia() {
       await hydrateMedia(this.data.content.media);
@@ -125,12 +218,14 @@ export const useAppStore = defineStore('app', {
       }
     },
     async saveImagePreset(preset: ImagePreset) {
+      const idx = this.imagePresets.findIndex((p) => p.id === preset.id);
+      if (idx >= 0) this.imagePresets[idx] = preset;
+      else this.imagePresets.push(preset);
       await backend.saveImagePreset(preset);
-      await this.loadImagePresets();
     },
     async deleteImagePreset(id: string) {
+      this.imagePresets = this.imagePresets.filter((p) => p.id !== id);
       await backend.deleteImagePreset(id);
-      await this.loadImagePresets();
     },
     async ensureAsset(id: string) {
       const asset = this.data.content.media.find((m) => m.id === id);
@@ -139,11 +234,22 @@ export const useAppStore = defineStore('app', {
       if (mediaUrl(asset)) this.mediaVersion++;
     },
     scheduleRefresh() {
+      if (this.syncPaused) return;
       if (refreshTimer) window.clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => void this.refreshFromBackend(), 250);
     },
+    setSyncPaused(value: boolean) {
+      this.syncPaused = value;
+      // Catch up with anything that changed while the editor was open.
+      if (!value) this.scheduleRefresh();
+    },
     async refreshFromBackend() {
-      if (backend.kind === 'local') return;
+      if (backend.kind === 'local' || this.syncPaused) return;
+      // Never clobber optimistic state while writes are still queued.
+      if (pbOutbox && pbOutbox.size() > 0) {
+        this.scheduleRefresh();
+        return;
+      }
       try {
         const data = await backend.fetchAll();
         if (data) {
@@ -199,16 +305,27 @@ export const useAppStore = defineStore('app', {
       }
     },
     deleteNode(id: string) {
+      const node = this.node(id);
       const doomed = new Set<string>();
       const collect = (rootId: string) => {
         doomed.add(rootId);
         this.data.content.nodes.filter((n) => n.parentId === rootId).forEach((c) => collect(c.id));
       };
       collect(id);
+      const pages = this.data.content.pages.filter((p) => doomed.has(p.bookId));
+      const pageIds = new Set(pages.map((p) => p.id));
+      const records: TrashRecordRef[] = [
+        ...this.data.content.nodes.filter((n) => doomed.has(n.id)).map((n) => ({ collection: 'nodes', id: n.id, record: clone(n) })),
+        ...pages.map((p) => ({ collection: 'pages', id: p.id, record: clone(p) })),
+        ...this.data.content.elements.filter((e) => pageIds.has(e.pageId)).map((e) => ({ collection: 'elements', id: e.id, record: clone(e) })),
+        ...this.data.content.media.filter((m) => doomed.has(m.bookId)).map((m) => ({ collection: 'media', id: m.id, record: clone(m) })),
+      ];
+      this.trashRecords('book', node?.title ?? 'Book', records, `${records.length} item${records.length === 1 ? '' : 's'}`);
       this.data.content.nodes = this.data.content.nodes.filter((n) => !doomed.has(n.id));
       this.data.content.pages = this.data.content.pages.filter((p) => !doomed.has(p.bookId));
+      this.data.content.elements = this.data.content.elements.filter((e) => !pageIds.has(e.pageId));
+      this.data.content.media = this.data.content.media.filter((m) => !doomed.has(m.bookId));
       this.save();
-      backend.nodeDelete(id);
     },
 
     // ---- pages ----
@@ -228,12 +345,15 @@ export const useAppStore = defineStore('app', {
     removePage(pageId: string) {
       const page = this.data.content.pages.find((p) => p.id === pageId);
       if (!page) return;
-      const doomed = this.data.content.elements.filter((e) => e.pageId === pageId).map((e) => e.id);
+      const elements = this.data.content.elements.filter((e) => e.pageId === pageId);
+      const records: TrashRecordRef[] = [
+        { collection: 'pages', id: pageId, record: clone(page) },
+        ...elements.map((e) => ({ collection: 'elements', id: e.id, record: clone(e) })),
+      ];
+      this.trashRecords('page', `Page ${page.index + 1}`, records);
       this.data.content.pages = this.data.content.pages.filter((p) => p.id !== pageId);
       this.data.content.elements = this.data.content.elements.filter((e) => e.pageId !== pageId);
       this.save();
-      backend.pageDelete(pageId);
-      for (const id of doomed) backend.elementDelete(id);
       // keep the remaining indexes contiguous
       this.pagesOf(page.bookId).forEach((p, i) => {
         if (p.index !== i) {
@@ -315,7 +435,8 @@ export const useAppStore = defineStore('app', {
     async removeMedia(id: string) {
       const asset = this.data.content.media.find((m) => m.id === id);
       if (!asset) return;
-      await deleteMedia(asset);
+      // Keep the bytes so the photo can be restored from the trash.
+      this.trashRecords('media', asset.name || 'Photo', [{ collection: 'media', id, record: clone(asset) }]);
       this.data.content.media = this.data.content.media.filter((m) => m.id !== id);
       this.mediaVersion++;
       this.save();
@@ -441,9 +562,11 @@ export const useAppStore = defineStore('app', {
       backend.eventSave(event);
     },
     deleteEvent(id: string) {
+      const event = this.data.events.find((e) => e.id === id);
+      if (!event) return;
+      this.trashRecords('event', event.title || 'Event', [{ collection: 'events', id, record: clone(event) }]);
       this.data.events = this.data.events.filter((e) => e.id !== id);
       this.save();
-      backend.eventDelete(id);
     },
   },
 });

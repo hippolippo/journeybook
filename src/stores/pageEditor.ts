@@ -1,15 +1,18 @@
 import { defineStore } from 'pinia';
-import type { ImageEffects, PageElement, PageElementInput, PageGroup, TapeStyle } from '@/data/types';
+import type {
+  ImageEffects,
+  PageElement,
+  PageElementInput,
+  PageGroup,
+  TapeStyle,
+} from '@/data/types';
 import { useAppStore } from './app';
 import type { Dock } from './editor';
 import { clone } from '@/utils/clone';
 import { NOTE_COLORS, stickerById, tapeById } from '@/scrapbook/decor';
 import { frameAspect, frameById } from '@/scrapbook/frames';
 import { defaultGroupId, ensureGroups } from '@/scrapbook/groups';
-
-function clamp(v: number, lo: number, hi: number) {
-  return Math.min(hi, Math.max(lo, v));
-}
+import { newId } from '@/utils/id';
 
 interface PageDraft {
   background?: string;
@@ -60,9 +63,8 @@ export interface DropPoint {
 
 const UI_KEY = 'journeybook:page-editor-ui:v1';
 
-function pbId(): string {
-  const raw = (Date.now().toString(36) + Math.random().toString(36).slice(2)).replace(/[^a-z0-9]/g, '');
-  return raw.slice(0, 15).padEnd(15, '0');
+function clamp(v: number, lo: number, hi: number) {
+  return Math.min(hi, Math.max(lo, v));
 }
 
 function loadUi(): { dock: Dock; collapsed: boolean } {
@@ -100,13 +102,20 @@ export const usePageEditorStore = defineStore('pageEditor', {
     };
   },
   getters: {
-    elements: (s): PageElement[] => (s.draft ? [...s.draft.elements].sort((a, b) => a.z - b.z) : []),
+    elements: (s): PageElement[] =>
+      s.draft ? [...s.draft.elements].sort((a, b) => a.z - b.z) : [],
     selected: (s): PageElement | null =>
-      s.selectedId && s.draft ? (s.draft.elements.find((e) => e.id === s.selectedId) ?? null) : null,
+      s.selectedId && s.draft
+        ? (s.draft.elements.find((e) => e.id === s.selectedId) ?? null)
+        : null,
     editingImage: (s): PageElement | null =>
-      s.editingImageId && s.draft ? (s.draft.elements.find((e) => e.id === s.editingImageId) ?? null) : null,
+      s.editingImageId && s.draft
+        ? (s.draft.elements.find((e) => e.id === s.editingImageId) ?? null)
+        : null,
     editingNote: (s): PageElement | null =>
-      s.editingNoteId && s.draft ? (s.draft.elements.find((e) => e.id === s.editingNoteId) ?? null) : null,
+      s.editingNoteId && s.draft
+        ? (s.draft.elements.find((e) => e.id === s.editingNoteId) ?? null)
+        : null,
     groups: (s): PageGroup[] => s.draft?.groups ?? [],
     background: (s): string | undefined => s.draft?.background,
     paperColors: (s): Record<string, string> => s.draft?.paperColors ?? {},
@@ -116,7 +125,10 @@ export const usePageEditorStore = defineStore('pageEditor', {
   actions: {
     persistUi() {
       try {
-        localStorage.setItem(UI_KEY, JSON.stringify({ dock: this.dock, collapsed: this.collapsed }));
+        localStorage.setItem(
+          UI_KEY,
+          JSON.stringify({ dock: this.dock, collapsed: this.collapsed }),
+        );
       } catch {
         /* ignore */
       }
@@ -148,7 +160,12 @@ export const usePageEditorStore = defineStore('pageEditor', {
         aspectLocked: el.aspectLocked ?? true,
         groupId: el.groupId ?? defaultGroupId(el.kind),
       }));
-      this.draft = { background: page.background, paperColors: page.paperColors, elements, groups: ensureGroups(page.groups) };
+      this.draft = {
+        background: page.background,
+        paperColors: page.paperColors,
+        elements,
+        groups: ensureGroups(page.groups),
+      };
       this.selectedId = null;
       this.editingImageId = null;
       this.editingNoteId = null;
@@ -158,6 +175,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       this.showExit = false;
       this.history = [];
       this.future = [];
+      app.setSyncPaused(true);
     },
 
     requestExit() {
@@ -179,7 +197,11 @@ export const usePageEditorStore = defineStore('pageEditor', {
           if (!draftIds.has(existing.id)) app.removeElement(existing.id);
         }
         for (const el of this.draft.elements) app.putElement(el);
-        app.updatePage(this.pageId, { background: this.draft.background, paperColors: this.draft.paperColors, groups: this.draft.groups });
+        app.updatePage(this.pageId, {
+          background: this.draft.background,
+          paperColors: this.draft.paperColors,
+          groups: this.draft.groups,
+        });
       }
       this.finish();
     },
@@ -197,6 +219,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       this.dirty = false;
       this.history = [];
       this.future = [];
+      useAppStore().setSyncPaused(false);
     },
 
     // ---- history (undo/redo) ----
@@ -212,8 +235,10 @@ export const usePageEditorStore = defineStore('pageEditor', {
       this.future.push(clone(this.draft));
       this.draft = this.history.pop() as PageDraft;
       this.dirty = true;
-      if (this.selectedId && !this.draft.elements.some((e) => e.id === this.selectedId)) this.selectedId = null;
-      if (this.editingImageId && !this.draft.elements.some((e) => e.id === this.editingImageId)) this.editingImageId = null;
+      if (this.selectedId && !this.draft.elements.some((e) => e.id === this.selectedId))
+        this.selectedId = null;
+      if (this.editingImageId && !this.draft.elements.some((e) => e.id === this.editingImageId))
+        this.editingImageId = null;
     },
     redo() {
       if (!this.draft || !this.future.length) return;
@@ -228,7 +253,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       this.snapshot();
       const z = this.draft.elements.reduce((m, e) => Math.max(m, e.z), 0) + 1;
       const el = {
-        id: pbId(),
+        id: newId(),
         pageId: this.pageId,
         z,
         opacity: 1,
@@ -322,7 +347,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
       if (!el) return;
       this.snapshot();
       const copy = clone(el);
-      copy.id = pbId();
+      copy.id = newId();
       copy.locked = false;
       copy.z = this.draft.elements.reduce((m, e) => Math.max(m, e.z), 0) + 1;
       copy.x = Math.min(0.97, copy.x + 0.04);
@@ -491,12 +516,16 @@ export const usePageEditorStore = defineStore('pageEditor', {
       if (!this.draft) return [];
       const out: PageElement[] = [];
       for (const g of this.draft.groups) {
-        const items = this.draft.elements.filter((e) => e.groupId === g.id).sort((a, b) => b.z - a.z);
+        const items = this.draft.elements
+          .filter((e) => e.groupId === g.id)
+          .sort((a, b) => b.z - a.z);
         out.push(...items);
       }
       // any element without a known group goes last
       const known = new Set(this.draft.groups.map((g) => g.id));
-      out.push(...this.draft.elements.filter((e) => !known.has(e.groupId ?? '')).sort((a, b) => b.z - a.z));
+      out.push(
+        ...this.draft.elements.filter((e) => !known.has(e.groupId ?? '')).sort((a, b) => b.z - a.z),
+      );
       return out;
     },
     reassignZ() {
@@ -546,7 +575,7 @@ export const usePageEditorStore = defineStore('pageEditor', {
     addGroup(name: string) {
       if (!this.draft) return;
       this.snapshot();
-      this.draft.groups.unshift({ id: `g-${pbId()}`, name: name.trim() || 'Group' });
+      this.draft.groups.unshift({ id: `g-${newId()}`, name: name.trim() || 'Group' });
       this.dirty = true;
     },
     renameGroup(id: string, name: string) {

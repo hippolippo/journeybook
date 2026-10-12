@@ -20,9 +20,10 @@ WORKDIR /pb
 
 COPY --from=fetch /pb/pocketbase /pb/pocketbase
 COPY server/pb_migrations /pb/pb_migrations
+COPY server/pb_hooks /pb/pb_hooks
 
 VOLUME /pb/pb_data
 EXPOSE 8090
 
 ENTRYPOINT ["/pb/pocketbase"]
-CMD ["serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
+CMD ["serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations", "--hooksDir=/pb/pb_hooks"]
