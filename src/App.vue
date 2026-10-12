@@ -8,11 +8,12 @@ import RoomStage from '@/room/RoomStage.vue';
 import RoomBar from '@/components/RoomBar.vue';
 import EditorPanel from '@/editor/EditorPanel.vue';
 import EditorExit from '@/editor/EditorExit.vue';
+import rotatePhone from '@/assets/svg/rotate-phone.svg';
 
 const app = useAppStore();
 const editor = useEditorStore();
 const auth = useAuthStore();
-const { width, height, isMobile } = useViewport();
+const { width, height, isMobile, rotate } = useViewport();
 
 onMounted(() => void auth.init());
 watch(
@@ -61,25 +62,33 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
 
 <template>
   <div :class="rootClass">
-    <template v-if="!mobilePreview">
-      <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
-      <div class="app-shell">
-        <RoomBar />
-        <div class="content" @pointerdown="onContentDown">
-          <router-view />
-        </div>
-      </div>
-    </template>
-
-    <div v-else class="preview-backdrop" @pointerdown.self="editor.select(null)">
-      <div class="phone" :style="{ '--phone-scale': phoneScale }">
-        <div class="phone__screen">
-          <RoomStage layout="mobile" embedded interactive />
-        </div>
-      </div>
+    <div v-if="rotate" class="rotate-gate">
+      <img :src="rotatePhone" alt="" aria-hidden="true" />
+      <p class="rotate-gate__title">Please rotate your phone</p>
+      <p class="rotate-gate__sub">this little room is best standing up</p>
     </div>
 
-    <EditorPanel v-if="editor.isEditing" />
-    <EditorExit v-if="editor.showExit" />
+    <template v-else>
+      <template v-if="!mobilePreview">
+        <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
+        <div class="app-shell">
+          <RoomBar />
+          <div class="content" @pointerdown="onContentDown">
+            <router-view />
+          </div>
+        </div>
+      </template>
+
+      <div v-else class="preview-backdrop" @pointerdown.self="editor.select(null)">
+        <div class="phone" :style="{ '--phone-scale': phoneScale }">
+          <div class="phone__screen">
+            <RoomStage layout="mobile" embedded interactive />
+          </div>
+        </div>
+      </div>
+
+      <EditorPanel v-if="editor.isEditing" />
+      <EditorExit v-if="editor.showExit" />
+    </template>
   </div>
 </template>

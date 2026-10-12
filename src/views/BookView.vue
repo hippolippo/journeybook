@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import Icon from '@/components/Icon.vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '@/stores/app';
 import { usePageEditorStore } from '@/stores/pageEditor';
@@ -172,7 +173,7 @@ function onPageTap(index: number, e: PointerEvent) {
 <template>
   <div class="book-head">
     <button class="backlink" type="button" @click="back">
-      <span class="icon icon--back"></span>{{ book ? 'Back' : 'Scrapbooks' }}
+      <Icon name="back" />{{ book ? 'Back' : 'Scrapbooks' }}
     </button>
     <span class="tag">{{ book ? book.title : 'Book' }}</span>
     <span v-if="book && !published" class="tag tag--draft">Draft</span>
@@ -197,7 +198,7 @@ function onPageTap(index: number, e: PointerEvent) {
         title="Edit this page"
         @click.stop="editPage(index)"
       >
-        <span class="icon icon--pencil"></span>
+        <Icon name="pencil" />
       </button>
     </div>
 
@@ -217,20 +218,20 @@ function onPageTap(index: number, e: PointerEvent) {
   <div class="book-controls">
     <div class="page-nav">
       <button class="page-nav__btn" type="button" :disabled="atStart" @click="prev">
-        <span class="icon icon--chev-left"></span>
+        <Icon name="chev-left" />
       </button>
       <span class="page-nav__label">{{ label }}</span>
       <button class="page-nav__btn" type="button" :disabled="atEnd" @click="next">
-        <span class="icon icon--chev-right"></span>
+        <Icon name="chev-right" />
       </button>
     </div>
     <div v-if="!isMobile && !published" class="add-bar pages-tools">
       <button class="btn btn--small" type="button" @click="app.addPage(bookId)">
-        <span class="icon icon--plus"></span>Add page
+        <Icon name="plus" />Add page
       </button>
       <div class="pages-menu">
         <button class="btn btn--small" type="button" :aria-expanded="pagesMenu" @click="pagesMenu = !pagesMenu">
-          <span class="icon icon--menu"></span>Manage pages
+          <Icon name="menu" />Manage pages
         </button>
         <div v-if="pagesMenu" class="pages-menu__pop">
           <div v-for="(p, idx) in pages" :key="p.id" class="pages-menu__row">
@@ -241,13 +242,13 @@ function onPageTap(index: number, e: PointerEvent) {
             </span>
             <span class="pages-menu__label">Page {{ idx + 1 }}</span>
             <button class="layer-mini" type="button" title="Move earlier" :disabled="idx === 0" @click.stop="app.movePage(p.id, -1)">
-              <span class="icon icon--chev-right rot-up"></span>
+              <Icon name="chev-right" class="rot-up" />
             </button>
             <button class="layer-mini" type="button" title="Move later" :disabled="idx === pages.length - 1" @click.stop="app.movePage(p.id, 1)">
-              <span class="icon icon--chev-right rot-down"></span>
+              <Icon name="chev-right" class="rot-down" />
             </button>
             <button class="layer-mini" type="button" title="Remove page" @click.stop="app.removePage(p.id)">
-              <span class="icon icon--trash"></span>
+              <Icon name="trash" />
             </button>
           </div>
           <p v-if="pages.length === 0" class="editor__muted">No pages yet.</p>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
+import Icon from '@/components/Icon.vue';
 import type { PageElement } from '@/data/types';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { elementLabel } from '@/scrapbook/groups';
@@ -104,7 +105,7 @@ function commitRename(el: PageElement, value: string) {
           @drop.prevent="onDropGroup(g.id)"
         >
           <button class="layer-toggle" type="button" :title="g.collapsed ? 'Expand' : 'Collapse'" @click="pe.toggleGroup(g.id)">
-            <span class="icon icon--chev-right" :class="{ 'is-open': !g.collapsed }"></span>
+            <Icon name="chev-right" :class="{ 'is-open': !g.collapsed }" />
           </button>
           <input
             class="layer-group__name"
@@ -112,13 +113,13 @@ function commitRename(el: PageElement, value: string) {
             @change="pe.renameGroup(g.id, ($event.target as HTMLInputElement).value)"
           />
           <button class="layer-mini" type="button" title="Move up" @click="pe.moveGroup(g.id, -1)">
-            <span class="icon icon--chev-right rot-up"></span>
+            <Icon name="chev-right" class="rot-up" />
           </button>
           <button class="layer-mini" type="button" title="Move down" @click="pe.moveGroup(g.id, 1)">
-            <span class="icon icon--chev-right rot-down"></span>
+            <Icon name="chev-right" class="rot-down" />
           </button>
           <button class="layer-mini" type="button" title="Delete group" @click="pe.deleteGroup(g.id)">
-            <span class="icon icon--trash"></span>
+            <Icon name="trash" />
           </button>
         </div>
 
@@ -141,7 +142,7 @@ function commitRename(el: PageElement, value: string) {
             @drop.prevent="onDropAt(el.id, g.id)"
             @click="pe.select(el.id)"
           >
-            <span class="icon icon--grip layer-row__grip" aria-hidden="true"></span>
+            <Icon name="grip" class="layer-row__grip" aria-hidden="true" />
             <span class="icon layer-row__icon" :class="KIND_ICON[el.kind]" aria-hidden="true"></span>
             <input
               v-if="editingNameId === el.id"
@@ -153,7 +154,7 @@ function commitRename(el: PageElement, value: string) {
             />
             <span v-else class="layer-row__label" @dblclick.stop="startRename(el)">{{ elementLabel(el) }}</span>
             <button class="layer-mini" type="button" :title="el.locked ? 'Unlock' : 'Lock'" @click.stop="pe.setLocked(el.id, !el.locked)">
-              <span class="icon" :class="el.locked ? 'icon--lock' : 'icon--unlock'"></span>
+              <Icon :name="el.locked ? 'lock' : 'unlock'" />
             </button>
           </li>
           <li v-if="itemsOf(g.id).length === 0" class="layer-empty">Drop items here</li>
