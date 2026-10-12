@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import Icon from '@/components/Icon.vue';
 import type { Category } from '@/catalog/types';
+import type { RoomItem } from '@/data/types';
 import { CATALOG, getCatalogItem } from '@/catalog/catalog';
 import { FLOORS, WALLS } from '@/catalog/options';
 import { bandFor, deriveMobile } from '@/room/geometry';
@@ -34,8 +35,19 @@ const selectedEmitsLight = computed(() => !!selectedCat.value && emitsLight(sele
 const items = computed(() => [...editor.items].sort((a, b) => b.z - a.z));
 const topLevel = computed(() => items.value.filter((i) => !i.attachTo || !editor.itemById(i.attachTo)));
 const night = computed(() => editor.timeOfDay === 'night');
-function childrenOf(hostId: string) {
-  return items.value.filter((i) => i.attachTo === hostId);
+/** Host id -> attached children, indexed once instead of filtering per render. */
+const childrenByHost = computed(() => {
+  const map = new Map<string, RoomItem[]>();
+  for (const item of items.value) {
+    if (!item.attachTo) continue;
+    const list = map.get(item.attachTo);
+    if (list) list.push(item);
+    else map.set(item.attachTo, [item]);
+  }
+  return map;
+});
+function childrenOf(hostId: string): RoomItem[] {
+  return childrenByHost.value.get(hostId) ?? [];
 }
 function itemLabel(catalogId: string): string {
   return getCatalogItem(catalogId)?.label ?? catalogId;

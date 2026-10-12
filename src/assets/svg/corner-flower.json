@@ -1,0 +1,8 @@
+{
+  "kind": "sticker",
+  "id": "corner",
+  "label": "Blossoms",
+  "tint": false,
+  "aspect": 1,
+  "art": { "day": "corner-flower.svg" }
+}

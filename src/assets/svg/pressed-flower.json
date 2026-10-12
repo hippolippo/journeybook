@@ -1,0 +1,8 @@
+{
+  "kind": "sticker",
+  "id": "flower",
+  "label": "Flower",
+  "tint": false,
+  "aspect": 1,
+  "art": { "day": "pressed-flower.svg" }
+}

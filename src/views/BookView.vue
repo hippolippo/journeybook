@@ -8,7 +8,6 @@ import { useViewport } from '@/composables/useViewport';
 import { clampStart, lastStart, pageRange } from '@/room/pagination';
 import PageCanvas from '@/components/PageCanvas.vue';
 import PageEditor from '@/scrapbook/PageEditor.vue';
-import polaroidEmpty from '@/assets/svg/polaroid-empty.svg';
 
 /** The page is authored at this fixed logical size, then uniformly scaled. */
 const PAGE = 480;
@@ -209,7 +208,6 @@ function onPageTap(index: number, e: PointerEvent) {
       <div class="page-scaler">
         <div class="square-page">
           <div class="empty" style="border: none; background: transparent">
-            <img :src="polaroidEmpty" alt="" aria-hidden="true" />
             <h3>A blank book</h3>
             <p>Add your first memory?</p>
           </div>

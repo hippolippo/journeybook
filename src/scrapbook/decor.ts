@@ -2,16 +2,6 @@ import type { TapeStyle } from '@/data/types';
 import type { ColorPreset, ColorSlot } from '@/catalog/types';
 import type { AnimationDef } from '@/catalog/animation';
 import type { ParticleDef } from '@/catalog/particles';
-import heartArt from '@/assets/svg/doodle-heart.svg';
-import starArt from '@/assets/svg/doodle-star.svg';
-import sparkleArt from '@/assets/svg/sparkle.svg';
-import flowerArt from '@/assets/svg/pressed-flower.svg';
-import cornerArt from '@/assets/svg/corner-flower.svg';
-import postcardArt from '@/assets/svg/postcard.svg';
-import paperclipArt from '@/assets/svg/paperclip.svg';
-import catArt from '@/assets/svg/cat-sleeping.svg';
-import washiTape from '@/assets/svg/washi-tape.svg';
-import maskingTape from '@/assets/svg/masking-tape.svg';
 import { loadedStickers, loadedTapes } from '@/catalog/loadDecor';
 
 export const NOTE_COLORS = [
@@ -63,18 +53,8 @@ export interface StickerDef {
   particles?: ParticleDef[];
 }
 
-const BUILTIN_STICKERS: StickerDef[] = [
-  { id: 'heart', label: 'Heart', art: heartArt, tint: true, aspect: 1, defaultColor: '#d98c8c' },
-  { id: 'star', label: 'Star', art: starArt, tint: true, aspect: 1, defaultColor: '#d9a94e' },
-  { id: 'sparkle', label: 'Sparkle', art: sparkleArt, tint: true, aspect: 1, defaultColor: '#d9a94e' },
-  { id: 'flower', label: 'Flower', art: flowerArt, tint: false, aspect: 1 },
-  { id: 'corner', label: 'Blossoms', art: cornerArt, tint: false, aspect: 1 },
-  { id: 'postcard', label: 'Postcard', art: postcardArt, tint: false, aspect: 1.5 },
-  { id: 'paperclip', label: 'Paperclip', art: paperclipArt, tint: false, aspect: 1 },
-  { id: 'cat', label: 'Cat', art: catArt, tint: false, aspect: 1.4 },
-];
-
-export const STICKERS: StickerDef[] = [...BUILTIN_STICKERS, ...loadedStickers];
+/** Every sticker is defined by an artist asset (`kind: "sticker"`). */
+export const STICKERS: StickerDef[] = loadedStickers;
 
 export function stickerById(id: string): StickerDef {
   return STICKERS.find((s) => s.id === id) ?? STICKERS[0];
@@ -95,12 +75,8 @@ export interface TapeDef {
   particles?: ParticleDef[];
 }
 
-const BUILTIN_TAPES: TapeDef[] = [
-  { id: 'washi', label: 'Washi', mask: washiTape, aspect: 220 / 64, defaultColor: '#e8b4af', opacity: 0.85 },
-  { id: 'masking', label: 'Masking', mask: maskingTape, aspect: 220 / 64, defaultColor: '#f2e3c0', opacity: 0.92 },
-];
-
-export const TAPES: TapeDef[] = [...BUILTIN_TAPES, ...loadedTapes];
+/** Every tape is defined by an artist asset (`kind: "tape"`). */
+export const TAPES: TapeDef[] = loadedTapes;
 
 export function tapeById(id: TapeStyle): TapeDef {
   return TAPES.find((t) => t.id === id) ?? TAPES[0];

@@ -18,7 +18,7 @@ import type {
   TrashRecordRef,
 } from '@/data/types';
 import { clearData, loadData } from '@/data/storage';
-import { createSeedData } from '@/data/seed';
+import { createEmptyData } from '@/data/seed';
 import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
@@ -33,6 +33,9 @@ import { auditIntegrity } from '@/data/integrity';
 const COVERS: CoverColor[] = ['rose', 'sage', 'mustard', 'terracotta', 'sky', 'kraft'];
 
 let refreshTimer: number | undefined;
+/** Guards against stacking full refetches when realtime events arrive in bursts. */
+let refreshInFlight = false;
+let refreshQueued = false;
 
 const PERF_KEY = 'journeybook:performance';
 const REMOTE = backend.kind === 'pocketbase';
@@ -53,7 +56,7 @@ export type Viewport = 'desktop' | 'mobile';
 
 export const useAppStore = defineStore('app', {
   state: () => ({
-    data: (loadData() ?? createSeedData()) as AppData,
+    data: loadData() ?? createEmptyData(),
     synced: false,
     /** Remote backend: true until the first successful load. */
     loading: REMOTE,
@@ -110,7 +113,7 @@ export const useAppStore = defineStore('app', {
     },
     reset() {
       clearData();
-      this.data = createSeedData();
+      this.data = createEmptyData();
       this.save();
     },
 
@@ -250,6 +253,13 @@ export const useAppStore = defineStore('app', {
         this.scheduleRefresh();
         return;
       }
+      // A burst of realtime events must not stack full fetches: queue one and
+      // let the in-flight refresh pick it up when it finishes.
+      if (refreshInFlight) {
+        refreshQueued = true;
+        return;
+      }
+      refreshInFlight = true;
       try {
         const data = await backend.fetchAll();
         if (data) {
@@ -258,6 +268,12 @@ export const useAppStore = defineStore('app', {
         }
       } catch (e) {
         console.error('refreshFromBackend', e);
+      } finally {
+        refreshInFlight = false;
+        if (refreshQueued) {
+          refreshQueued = false;
+          this.scheduleRefresh();
+        }
       }
     },
 

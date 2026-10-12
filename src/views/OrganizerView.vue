@@ -6,7 +6,9 @@ import type { ScrapNode } from '@/data/types';
 import { useAppStore } from '@/stores/app';
 import { useViewport } from '@/composables/useViewport';
 import { duplicateBook, exportBookData, importBookData } from '@/data/bookTransfer';
-import pressedFlower from '@/assets/svg/pressed-flower.svg';
+import { stickerById } from '@/scrapbook/decor';
+
+const pressedFlower = stickerById('flower').art;
 
 const props = defineProps<{ folderId?: string }>();
 const app = useAppStore();
@@ -25,6 +27,23 @@ const newInput = ref<HTMLInputElement | null>(null);
 const menuOpen = ref<string | null>(null);
 const menuPos = ref({ top: 0, left: 0 });
 const menuNode = computed(() => (menuOpen.value ? app.node(menuOpen.value) : undefined));
+
+/** Direct-child and page totals indexed once, so tiles don't refilter per render. */
+const childCountByParent = computed(() => {
+  const map = new Map<string, number>();
+  for (const node of app.data.content.nodes) {
+    const key = node.parentId ?? '';
+    map.set(key, (map.get(key) ?? 0) + 1);
+  }
+  return map;
+});
+const pageCountByBook = computed(() => {
+  const map = new Map<string, number>();
+  for (const page of app.data.content.pages) {
+    map.set(page.bookId, (map.get(page.bookId) ?? 0) + 1);
+  }
+  return map;
+});
 
 interface Entry {
   key: string;
@@ -52,10 +71,10 @@ function rotFor(key: string): string {
   return `${(((h % 5) - 2) * 0.5).toFixed(2)}deg`;
 }
 function contentCount(id: string): number {
-  return app.childrenOf(id).length;
+  return childCountByParent.value.get(id) ?? 0;
 }
 function pageCount(id: string): number {
-  return app.pagesOf(id).length;
+  return pageCountByBook.value.get(id) ?? 0;
 }
 
 function openFolder(id: string | null) {

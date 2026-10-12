@@ -1,0 +1,9 @@
+{
+  "kind": "tape",
+  "id": "washi",
+  "label": "Washi",
+  "aspect": 3.4375,
+  "defaultColor": "#e8b4af",
+  "opacity": 0.85,
+  "art": { "day": "washi-tape.svg" }
+}

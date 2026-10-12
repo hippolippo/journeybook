@@ -1,0 +1,9 @@
+{
+  "kind": "tape",
+  "id": "masking",
+  "label": "Masking",
+  "aspect": 3.4375,
+  "defaultColor": "#f2e3c0",
+  "opacity": 0.92,
+  "art": { "day": "masking-tape.svg" }
+}

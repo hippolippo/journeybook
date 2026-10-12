@@ -5,7 +5,9 @@ import { useRouter } from 'vue-router';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
 import { togetherStatus } from '@/calendar/events';
-import pressedFlower from '@/assets/svg/pressed-flower.svg';
+import { stickerById } from '@/scrapbook/decor';
+
+const pressedFlower = stickerById('flower').art;
 
 const router = useRouter();
 const app = useAppStore();

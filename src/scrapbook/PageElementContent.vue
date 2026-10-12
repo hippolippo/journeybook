@@ -8,7 +8,7 @@ import { noteInnerStyle, noteTextStyle } from '@/scrapbook/notes';
 import { effectsFilter } from '@/scrapbook/effects';
 import { slotVars } from '@/scrapbook/elementStyle';
 import FxLayer from '@/room/FxLayer.vue';
-import grainArt from '@/assets/svg/film-grain.svg';
+import { assetSrc } from '@/catalog/loadDecor';
 
 const props = withDefaults(defineProps<{ el: PageElement; editable?: boolean }>(), { editable: false });
 const emit = defineEmits<{ text: [value: string] }>();
@@ -126,7 +126,10 @@ onMounted(() => nextTick(growNoteInput));
 const fade = computed(() => (props.el.kind === 'image' ? (props.el.effects?.fade ?? 0) : 0));
 const vignette = computed(() => (props.el.kind === 'image' ? (props.el.effects?.vignette ?? 0) : 0));
 const grain = computed(() => (props.el.kind === 'image' ? (props.el.effects?.grain ?? 0) : 0));
-const grainUri = computed(() => `url("${grainArt}")`);
+const grainUri = computed(() => {
+  const src = assetSrc('film-grain.svg');
+  return src ? `url("${src}")` : 'none';
+});
 </script>
 
 <template>
@@ -145,7 +148,7 @@ const grainUri = computed(() => `url("${grainArt}")`);
       <span v-if="frameDef.stack" class="frame__stack frame__stack--a"></span>
       <span v-if="frameDef.stack" class="frame__stack frame__stack--b"></span>
       <div class="frame__window" :class="windowClasses">
-        <img v-if="imgUrl" ref="imgEl" class="frame__img" :src="imgUrl" :style="imgStyle" alt="" draggable="false" @load="onLoad" />
+        <img v-if="imgUrl" ref="imgEl" class="frame__img" :src="imgUrl" :style="imgStyle" alt="" draggable="false" loading="lazy" decoding="async" @load="onLoad" />
         <span v-if="fade" class="frame__fade" :style="{ opacity: fade * 0.4 }"></span>
         <span v-if="vignette" class="frame__vignette" :style="{ opacity: vignette * 0.6 }"></span>
         <span v-if="grain" class="frame__grain" :style="{ opacity: grain * 0.5, backgroundImage: grainUri }"></span>

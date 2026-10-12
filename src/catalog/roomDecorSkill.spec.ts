@@ -155,7 +155,7 @@ describe('room-decor-json skill: check', () => {
       'desk.json',
       'beanbag.json',
       'rug.json',
-      'raccoon-sleeping.json',
+      'raccoon.json',
       'coffee-cup.json',
       'pencil-cup.json',
       'laptop.json',
