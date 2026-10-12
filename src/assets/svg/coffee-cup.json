@@ -7,7 +7,6 @@
   "band": "floor",
   "aspect": 1.159,
   "defaultScale": 0.24,
-  "defaultRotation": -4,
   "attach": "furniture",
   "colorSlots": [
     {
