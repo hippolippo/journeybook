@@ -369,6 +369,37 @@ test('profile menu works without accounts and settings toggle night mode', async
   );
 });
 
+test('desktop settings keeps the management sections', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await expect(page.getByText('Back up everything')).toBeVisible();
+  await expect(page.locator('.settings__label', { hasText: 'Trash' })).toBeVisible();
+  // Content reaches the bottom of the screen, not just above the room floor.
+  const box = (await page.locator('.settings').boundingBox())!;
+  expect(box.y + box.height).toBeGreaterThan(900 - 40);
+});
+
+test('mobile settings scrolls and hides the management sections', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await expect(page.locator('.settings__title')).toHaveText('Settings');
+  // Device preferences stay.
+  await expect(page.getByRole('button', { name: 'Auto', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Performance lighting' })).toBeVisible();
+  // Management sections are hidden.
+  await expect(page.getByText('Back up everything')).toHaveCount(0);
+  await expect(page.locator('.settings__label', { hasText: 'Trash' })).toHaveCount(0);
+  // The view is its own vertical scroller.
+  await expect(page.locator('.settings')).toHaveCSS('overflow-y', 'auto');
+  // And its content reaches the bottom of the screen.
+  const box = (await page.locator('.settings').boundingBox())!;
+  expect(box.y + box.height).toBeGreaterThan(844 - 40);
+});
+
 test('mobile header stays on a single row', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');

@@ -2178,7 +2178,15 @@ img[alt=''] {
   width: 100%;
   max-width: 560px;
   margin: 0 auto;
-  padding: 0 0.2rem;
+  padding: 0 0.2rem 0.6rem;
+  /* Its own vertical scroller so a long card list is never clipped. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.settings::-webkit-scrollbar {
+  display: none;
 }
 .settings__head {
   display: flex;
@@ -2690,4 +2698,10 @@ img[alt=''] {
   .toast-leave-active {
     transition: none;
   }
+}
+
+/* Settings only: its scroller may reach the bottom edge (still respecting the
+   device safe area) instead of stopping above the room floor. */
+.app-shell--full {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
