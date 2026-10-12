@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import Icon from '@/components/Icon.vue';
 import { useRouter } from 'vue-router';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
@@ -37,7 +38,7 @@ const greeting = computed(() =>
       </button>
     </div>
     <button class="together-link" type="button" @click="router.push({ name: 'calendar' })">
-      <span class="icon icon--calendar" aria-hidden="true"></span>
+      <Icon name="calendar" aria-hidden="true" />
       <span>{{ togetherText }}</span>
     </button>
   </section>

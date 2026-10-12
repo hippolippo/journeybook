@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import Icon from '@/components/Icon.vue';
 import type { Category } from '@/catalog/types';
 import { CATALOG, getCatalogItem } from '@/catalog/catalog';
 import { FLOORS, WALLS } from '@/catalog/options';
@@ -325,11 +326,11 @@ async function saveNamed() {
               @pointerdown="onRowDown($event, it.id, '')"
               @click="onRowClick(it.id)"
             >
-              <span class="icon icon--grip item-list__grip" aria-hidden="true"></span>
+              <Icon name="grip" class="item-list__grip" aria-hidden="true" />
               <span class="item-list__thumb"><RoomThumb :item="it" :night="night" /></span>
               <span class="item-list__label">{{ itemLabel(it.catalogId) }}</span>
               <button class="layer-mini" type="button" :title="it.locked ? 'Unlock' : 'Lock'" @pointerdown.stop @click.stop="editor.snapshot(); editor.setLocked(it.id, !it.locked)">
-                <span class="icon" :class="it.locked ? 'icon--lock' : 'icon--unlock'"></span>
+                <Icon :name="it.locked ? 'lock' : 'unlock'" />
               </button>
             </div>
             <ul v-if="childrenOf(it.id).length" class="item-list item-list--children">
@@ -347,11 +348,11 @@ async function saveNamed() {
                   @pointerdown="onRowDown($event, child.id, it.id)"
                   @click="onRowClick(child.id)"
                 >
-                  <span class="icon icon--grip item-list__grip" aria-hidden="true"></span>
+                  <Icon name="grip" class="item-list__grip" aria-hidden="true" />
                   <span class="item-list__thumb"><RoomThumb :item="child" :night="night" /></span>
                   <span class="item-list__label">{{ itemLabel(child.catalogId) }}</span>
                   <button class="layer-mini" type="button" :title="child.locked ? 'Unlock' : 'Lock'" @pointerdown.stop @click.stop="editor.snapshot(); editor.setLocked(child.id, !child.locked)">
-                    <span class="icon" :class="child.locked ? 'icon--lock' : 'icon--unlock'"></span>
+                    <Icon :name="child.locked ? 'lock' : 'unlock'" />
                   </button>
                 </div>
               </li>
@@ -476,7 +477,7 @@ async function saveNamed() {
 
         <div class="editor__row" style="margin-top: 0.4rem">
           <button class="btn btn--small" type="button" @click="editor.duplicateItem(selected.id)">Duplicate</button>
-          <button class="btn btn--small" type="button" :disabled="!!selected.locked" @click="editor.removeItem(selected.id)"><span class="icon icon--trash"></span>Remove</button>
+          <button class="btn btn--small" type="button" :disabled="!!selected.locked" @click="editor.removeItem(selected.id)"><Icon name="trash" />Remove</button>
         </div>
       </section>
       <section v-else>
@@ -494,7 +495,7 @@ async function saveNamed() {
             <span>{{ layout.name }}</span>
             <span class="editor__row">
               <button class="btn btn--small" type="button" @click="editor.loadLayout(layout.id)">Load</button>
-              <button class="btn btn--small" type="button" @click="editor.deleteLayout(layout.id)"><span class="icon icon--trash"></span></button>
+              <button class="btn btn--small" type="button" @click="editor.deleteLayout(layout.id)"><Icon name="trash" /></button>
             </span>
           </li>
         </ul>
@@ -502,7 +503,7 @@ async function saveNamed() {
 
       <section>
         <button class="btn btn--small clear-room" type="button" title="Remove all items (undoable)" @click="editor.clearItems()">
-          <span class="icon icon--trash"></span>Clear room
+          <Icon name="trash" />Clear room
         </button>
       </section>
     </div>

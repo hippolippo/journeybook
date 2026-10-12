@@ -7,10 +7,10 @@ export interface KindMeta {
 }
 
 export const KIND_META: Record<EventKind, KindMeta> = {
-  visit: { label: 'Visit', icon: 'icon--plane', color: 'var(--rose)' },
-  anniversary: { label: 'Anniversary', icon: 'icon--gift', color: 'var(--terracotta)' },
-  birthday: { label: 'Birthday', icon: 'icon--gift', color: 'var(--mustard)' },
-  occasion: { label: 'Occasion', icon: 'icon--calendar', color: 'var(--sky)' },
+  visit: { label: 'Visit', icon: 'plane', color: 'var(--rose)' },
+  anniversary: { label: 'Anniversary', icon: 'gift', color: 'var(--terracotta)' },
+  birthday: { label: 'Birthday', icon: 'gift', color: 'var(--mustard)' },
+  occasion: { label: 'Occasion', icon: 'calendar', color: 'var(--sky)' },
 };
 
 export const EVENT_KINDS: EventKind[] = ['visit', 'anniversary', 'birthday', 'occasion'];
