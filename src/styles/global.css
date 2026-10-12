@@ -1552,6 +1552,8 @@ img[alt=''] {
   color: #fff;
   line-height: 1;
   cursor: pointer;
+  display: grid;
+  place-items: center;
 }
 .chip-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem; }
 .chip {
@@ -1662,7 +1664,11 @@ img[alt=''] {
 .eslider__row input[type='range'] { flex: 1; }
 .eslider__row input[type='number'] { width: 62px; }
 .preset { position: relative; display: inline-flex; }
-.preset__del { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--rose, #d98c8c); color: #fff; cursor: pointer; line-height: 1; }
+.preset__del { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--rose, #d98c8c); color: #fff; cursor: pointer; line-height: 1; display: grid; place-items: center; }
+.album__del .icon,
+.preset__del .icon { width: 0.62em; height: 0.62em; }
+.page-zoom__close .icon { width: 0.64em; height: 0.64em; }
+.countdown__heart { color: var(--rose); }
 .album__thumb.is-active { border-color: var(--rose, #d98c8c); box-shadow: 0 0 0 2px var(--rose, #d98c8c); }
 .swatch--transparent {
   background-image:

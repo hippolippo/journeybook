@@ -292,8 +292,8 @@ async function saveNamed() {
       <h2 v-if="!editor.collapsed">Room editor</h2>
       <span v-if="editor.dirty && !editor.collapsed" class="editor__dot" title="Unsaved changes"></span>
       <template v-if="!editor.collapsed">
-        <button class="btn btn--small" type="button" title="Undo (⌘Z)" :disabled="!editor.canUndo" @click="editor.undo()">↶</button>
-        <button class="btn btn--small" type="button" title="Redo (⌘Y)" :disabled="!editor.canRedo" @click="editor.redo()">↷</button>
+        <button class="btn btn--small" type="button" title="Undo (⌘Z)" :disabled="!editor.canUndo" @click="editor.undo()"><Icon name="undo" /></button>
+        <button class="btn btn--small" type="button" title="Redo (⌘Y)" :disabled="!editor.canRedo" @click="editor.redo()"><Icon name="redo" /></button>
         <button class="btn btn--small btn--primary" type="button" @click="editor.requestExit()">Done</button>
       </template>
       <div v-if="!editor.collapsed" class="editor__docks">

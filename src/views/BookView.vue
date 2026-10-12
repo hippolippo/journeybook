@@ -282,7 +282,7 @@ function onPageTap(index: number, e: PointerEvent) {
         @pointerdown.stop
         @click="closeZoom"
       >
-        ×
+        <Icon name="close" />
       </button>
     </div>
   </Teleport>

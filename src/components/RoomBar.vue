@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
 const status = computed(() => togetherStatus(app.data.events, now.value));
 const countdown = computed(() => {
   const s = status.value;
-  if (s.state === 'together') return { num: '♥', txt: 'together right now' };
+  if (s.state === 'together') return { num: '', txt: 'together right now' };
   if (s.state === 'apart') {
     return {
       num: String(s.days),
@@ -72,7 +72,10 @@ function home() {
     </button>
     <div class="roombar__right">
       <button class="countdown" type="button" title="Our calendar" @click="openCalendar">
-        <span class="countdown__num">{{ countdown.num }}</span>
+        <span class="countdown__num">
+          <Icon v-if="status.state === 'together'" name="heart" class="countdown__heart" aria-hidden="true" />
+          <template v-else>{{ countdown.num }}</template>
+        </span>
         <span class="countdown__txt">{{ countdown.txt }}</span>
         <Icon name="calendar-solid" class="countdown__cal" aria-hidden="true" />
       </button>
