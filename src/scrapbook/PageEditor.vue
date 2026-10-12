@@ -281,8 +281,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
         <header class="editor__head">
           <h2>Page editor</h2>
           <span v-if="pe.dirty" class="editor__dot" title="Unsaved changes"></span>
-          <button class="btn btn--small" type="button" title="Undo (⌘Z)" :disabled="!pe.canUndo" @click="pe.undo()">↶</button>
-          <button class="btn btn--small" type="button" title="Redo (⌘Y)" :disabled="!pe.canRedo" @click="pe.redo()">↷</button>
+          <button class="btn btn--small" type="button" title="Undo (⌘Z)" :disabled="!pe.canUndo" @click="pe.undo()"><Icon name="undo" /></button>
+          <button class="btn btn--small" type="button" title="Redo (⌘Y)" :disabled="!pe.canRedo" @click="pe.redo()"><Icon name="redo" /></button>
           <button class="btn btn--small btn--primary" type="button" @click="pe.requestExit()">Done</button>
         </header>
 
@@ -337,7 +337,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                 >
                   <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" />
                 </button>
-                <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)">×</button>
+                <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)"><Icon name="close" /></button>
               </div>
             </div>
             <p v-else class="editor__muted">Upload a photo to start this book's album.</p>

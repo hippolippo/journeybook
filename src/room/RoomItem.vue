@@ -190,7 +190,12 @@ const art = computed(() => {
 });
 
 // ---- effects (configured on the asset, no code change) ----
-const visuals = computed(() => (!props.ghost && cat.value ? resolveVisuals(cat.value, night.value) : EMPTY_VISUALS));
+// Freeze animations for the item being dragged too, so the translucent preview
+// and the real (animated) item sit at the same base transform and line up.
+const draggingHere = computed(() => !props.ghost && editor.draggingId === props.item.id);
+const visuals = computed(() =>
+  !props.ghost && !draggingHere.value && cat.value ? resolveVisuals(cat.value, night.value) : EMPTY_VISUALS,
+);
 
 // The emissive bloom of a light-emitting item, surfaced in the lights layer
 // that renders above the night overlay so its light is not swallowed.

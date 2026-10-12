@@ -8,6 +8,7 @@ import { FRAMES, frameAspect, frameById } from '@/scrapbook/frames';
 import { EFFECT_SLIDERS, isBuiltinPreset, mergedPresets } from '@/scrapbook/effects';
 import PageElementContent from '@/scrapbook/PageElementContent.vue';
 import ColorSlotsEditor from '@/scrapbook/ColorSlotsEditor.vue';
+import Icon from '@/components/Icon.vue';
 
 const pe = usePageEditorStore();
 const app = useAppStore();
@@ -307,7 +308,7 @@ async function onFiles(e: Event) {
             <div class="chip-row">
               <span v-for="p in presets" :key="p.id" class="preset">
                 <button class="chip chip--wide" :class="{ 'is-active': (el.preset ?? 'custom') === p.id }" type="button" @click="applyPreset(p)">{{ p.name }}</button>
-                <button v-if="!isBuiltinPreset(p.id)" class="preset__del" type="button" title="Delete preset" @click="deletePreset(p)">×</button>
+                <button v-if="!isBuiltinPreset(p.id)" class="preset__del" type="button" title="Delete preset" @click="deletePreset(p)"><Icon name="close" /></button>
               </span>
             </div>
             <div class="editor__row" style="margin-top: 0.4rem">
