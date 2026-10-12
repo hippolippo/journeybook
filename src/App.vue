@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { usePageEditorStore } from '@/stores/pageEditor';
@@ -16,6 +17,7 @@ const app = useAppStore();
 const editor = useEditorStore();
 const pageEditor = usePageEditorStore();
 const auth = useAuthStore();
+const route = useRoute();
 const { width, height, isMobile, rotate } = useViewport();
 
 onMounted(() => void auth.init());
@@ -44,6 +46,8 @@ const mainLayout = computed<Viewport>(() =>
   editor.isEditing ? 'desktop' : isMobile.value ? 'mobile' : 'desktop',
 );
 const mainInteractive = computed(() => editor.isEditing && editor.viewport === 'desktop');
+/** Settings is a full-height view: its content may reach the bottom edge. */
+const fullHeight = computed(() => route.name === 'settings');
 const rootClass = computed(() =>
   editor.isEditing
     ? {
@@ -96,7 +100,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
     <template v-else>
       <template v-if="!mobilePreview">
         <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
-        <div class="app-shell">
+        <div class="app-shell" :class="{ 'app-shell--full': fullHeight }">
           <RoomBar />
           <div class="content" @pointerdown="onContentDown">
             <router-view />

@@ -203,7 +203,7 @@ onMounted(() => void app.loadTrash());
       </template>
     </div>
 
-    <div class="settings__card">
+    <div v-if="!isMobile" class="settings__card">
       <div class="settings__row settings__row--field">
         <div class="settings__text">
           <span class="settings__label">
@@ -234,7 +234,7 @@ onMounted(() => void app.loadTrash());
       </ul>
     </div>
 
-    <div class="settings__card">
+    <div v-if="!isMobile" class="settings__card">
       <div class="settings__row settings__row--field">
         <div class="settings__text">
           <span class="settings__label">
