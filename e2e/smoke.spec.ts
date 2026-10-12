@@ -855,6 +855,27 @@ test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   expect(center).toBeLessThan(shelfBox.x + shelfBox.width + 5);
 });
 
+test('a trinket dropped on the window attaches to it and stays on the wall', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await page.getByTitle('Edit room').click();
+  const win = page.locator('.room-item[data-catalog=window]').first();
+  const wb = (await win.boundingBox())!;
+  const palette = page.locator('.palette__item[title="Coffee cup"]').first();
+  await palette.scrollIntoViewIfNeeded();
+  const pbox = (await palette.boundingBox())!;
+  await page.mouse.move(pbox.x + pbox.width / 2, pbox.y + pbox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(wb.x + wb.width / 2, wb.y + wb.height * 0.9, { steps: 12 });
+  await page.mouse.up();
+
+  const onWindow = page.locator('.room-item[data-catalog=window] .room-item[data-catalog=coffee-cup]');
+  await expect(onWindow).toHaveCount(1);
+  const box = (await onWindow.boundingBox())!;
+  // Still on the wall (above the wall/floor line).
+  expect(box.y + box.height / 2).toBeLessThan(900 * 0.74);
+});
+
 test('surface items can be dragged from the floor up onto the wall', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
@@ -1299,8 +1320,8 @@ test('room editor: shows a live attach preview and a badge while over a host', a
   await page.mouse.down();
   await page.mouse.move(259, 783, { steps: 10 }); // over the desk centre
   await expect(page.locator('.room-item__attach-badge')).toHaveCount(1);
-  // Previewed in its attached orientation: host 30° + mug's own -4°.
-  expect(await mug.evaluate((el) => (el as HTMLElement).style.transform)).toContain('rotate(26deg)');
+  // Previewed in its attached orientation: host 30° (the mug has no own rotation).
+  expect(await mug.evaluate((el) => (el as HTMLElement).style.transform)).toContain('rotate(30deg)');
   await page.mouse.up();
   expect(await mug.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(true);
 });
