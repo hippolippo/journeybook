@@ -1,0 +1,31 @@
+{
+  "kind": "room",
+  "id": "fairy-lights-photos",
+  "label": "Photo string lights",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 4.48,
+  "defaultScale": 0.08,
+  "colorSlots": [
+    {
+      "id": "bulb",
+      "label": "Bulbs",
+      "default": "#FEEB9A",
+      "palette": ["#feeb9a", "#fdeed7", "#f6e8a8", "#f2b25c", "#e88f9f", "#9dbfc9", "#cfe3c5", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "warm", "label": "Warm", "colors": { "bulb": "#feeb9a" } },
+    { "id": "candy", "label": "Candy", "colors": { "bulb": "#e88f9f" } },
+    { "id": "ice", "label": "Ice", "colors": { "bulb": "#9dbfc9" } },
+    { "id": "mint", "label": "Mint", "colors": { "bulb": "#cfe3c5" } }
+  ],
+  "lights": [
+    { "type": "string", "slot": "bulb", "x": 24.5, "y": 53.9, "radius": 40 },
+    { "type": "string", "slot": "bulb", "x": 41.9, "y": 60.8, "radius": 40 },
+    { "type": "string", "slot": "bulb", "x": 58.1, "y": 61.1, "radius": 40 },
+    { "type": "string", "slot": "bulb", "x": 75.6, "y": 55.4, "radius": 40 }
+  ]
+}

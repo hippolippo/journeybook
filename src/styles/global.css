@@ -8,6 +8,11 @@
   --ink: #4a3b2e;
   --ink-2: #6f5c49;
   --ink-soft: #9a8770;
+  /* Ink for text sitting directly on the room stage (no card behind it).
+     Lightens at night so it stays readable over the dark room. */
+  --ink-room: var(--ink);
+  --ink-room-2: var(--ink-2);
+  --ink-room-soft: var(--ink-soft);
   --kraft: #d3b184;
   --kraft-2: #b99362;
   --craft-3: #a9865b;
@@ -58,6 +63,14 @@ body {
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Night mode: text with no card behind it sits over the darkened room, so it
+   switches to a warm light ink. Text on opaque cards keeps the dark ink. */
+.is-night {
+  --ink-room: #f4ecdc;
+  --ink-room-2: #ddd0b8;
+  --ink-room-soft: #c6b69a;
 }
 
 /* Text is only selectable inside fields the user can edit. */
@@ -645,7 +658,6 @@ img[alt=''] {
   font-size: 1rem;
   opacity: 0.8;
 }
-.account__signout { margin-top: 0.45rem; }
 .account__item {
   display: flex;
   align-items: center;
@@ -694,7 +706,7 @@ img[alt=''] {
 }
 .crumb:hover { background: rgba(217, 140, 140, 0.55); }
 .crumb[aria-current='true'] { background: var(--mustard); color: #3f3122; }
-.crumb-sep { color: var(--ink-soft); font-family: var(--font-hand); font-size: 1.2rem; }
+.crumb-sep { color: var(--ink-room-soft); font-family: var(--font-hand); font-size: 1.2rem; }
 .toolbar { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center; flex: 0 0 auto; margin-bottom: 0.8rem; }
 
 .items-wrap { position: relative; flex: 1 1 auto; min-height: 0; }
@@ -870,7 +882,10 @@ img[alt=''] {
 .tag--draft {
   background: transparent;
   border: 1px dashed rgba(74, 59, 46, 0.5);
-  color: var(--ink-2);
+  color: var(--ink-room-2);
+}
+.is-night .tag--draft {
+  border-color: rgba(244, 236, 220, 0.5);
 }
 /* floating tile menu (escapes the shelf's scroll clipping) */
 .tile-backdrop { position: fixed; inset: 0; z-index: 59; }
@@ -932,8 +947,8 @@ img[alt=''] {
 
 /* ---------------- home ---------------- */
 .home { text-align: center; padding-top: 0.5rem; }
-.home__greeting { font-family: var(--font-serif); font-weight: 600; font-size: clamp(1.9rem, 5vw, 3rem); margin: 0.4rem 0 0; }
-.home__tagline { font-family: var(--font-hand); font-size: clamp(1.3rem, 3.5vw, 1.7rem); color: var(--ink-2); margin: 0.1rem 0 0; }
+.home__greeting { font-family: var(--font-serif); font-weight: 600; font-size: clamp(1.9rem, 5vw, 3rem); margin: 0.4rem 0 0; color: var(--ink-room); }
+.home__tagline { font-family: var(--font-hand); font-size: clamp(1.3rem, 3.5vw, 1.7rem); color: var(--ink-room-2); margin: 0.1rem 0 0; }
 .shelf { position: relative; margin: 1.7rem auto 0.8rem; max-width: 620px; padding: 1.8rem 1rem 3rem; }
 .shelf::after {
   content: '';
@@ -1156,7 +1171,7 @@ img[alt=''] {
   color: var(--ink-2);
 }
 .page-nav__btn:disabled { opacity: 0.4; cursor: default; }
-.page-nav__label { font-family: var(--font-hand); font-size: 1.3rem; color: var(--ink-2); min-width: 130px; text-align: center; }
+.page-nav__label { font-family: var(--font-hand); font-size: 1.3rem; color: var(--ink-room-2); min-width: 130px; text-align: center; }
 .pages-menu { position: relative; }
 .pages-menu__pop {
   position: absolute;
@@ -1927,7 +1942,6 @@ img[alt=''] {
 .cal-day__chips {
   display: flex;
   gap: 3px;
-  margin-top: auto;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -1969,7 +1983,7 @@ img[alt=''] {
   font-family: var(--font-hand);
   font-size: 1.4rem;
   margin: 0.2rem 0;
-  color: var(--ink);
+  color: var(--ink-room);
 }
 .calendar__side-title {
   margin-top: 0.6rem;
@@ -2053,7 +2067,7 @@ img[alt=''] {
   white-space: nowrap;
 }
 .calendar__empty {
-  color: var(--ink-soft);
+  color: var(--ink-room-soft);
   font-size: 1.1rem;
   margin: 0.3rem 0;
 }
@@ -2589,6 +2603,12 @@ img[alt=''] {
   .calendar__side-head h2,
   .calendar__side-title {
     font-size: 1.2rem;
+    /* On mobile these sit on cards (the day view and the upcoming pane), so
+       they keep the dark ink instead of the night room ink. */
+    color: var(--ink);
+  }
+  .calendar__empty {
+    color: var(--ink-soft);
   }
 }
 
@@ -2685,6 +2705,15 @@ img[alt=''] {
   gap: 0.75rem;
   text-align: center;
   padding: 2rem;
+  background: var(--paper);
+}
+/* Signed out with accounts configured: only the login card, no room or bar. */
+.locked-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
   background: var(--paper);
 }
 .boot-gate__title {

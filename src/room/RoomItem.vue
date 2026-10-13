@@ -164,11 +164,23 @@ const style = computed(() => {
   const base = resolveItemStyle(positionBand.value, z, placement.value, cat.value, cat.value.band);
   return { ...base, ...colorVars.value };
 });
+const dayNight = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay));
+const night = computed(() => dayNight.value === 'night');
+const art = computed(() => {
+  if (!cat.value) return '';
+  return night.value && cat.value.art.night ? cat.value.art.night : cat.value.art.day;
+});
+/** Inline SVG for recoloured assets, picking the day or night variant. */
+const rawArt = computed(() => {
+  const c = cat.value;
+  if (!c) return '';
+  return night.value && c.rawNight ? c.rawNight : (c.raw ?? '');
+});
 // Tiled background; recoloured by substituting the slots into the inline SVG.
 const repeatImage = computed(() => {
   if (!cat.value?.repeat) return '';
-  if (cat.value.raw && cat.value.colorSlots.length) {
-    return svgToDataUrl(colorizeSvg(cat.value.raw, props.item.color, cat.value.colorSlots));
+  if (rawArt.value && cat.value.colorSlots.length) {
+    return svgToDataUrl(colorizeSvg(rawArt.value, props.item.color, cat.value.colorSlots));
   }
   return `url("${art.value}")`;
 });
@@ -181,12 +193,6 @@ const repeatStyle = computed(() => {
     backgroundSize: 'auto 100%',
     backgroundPosition: '0 0',
   };
-});
-const dayNight = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay));
-const night = computed(() => dayNight.value === 'night');
-const art = computed(() => {
-  if (!cat.value) return '';
-  return night.value && cat.value.art.night ? cat.value.art.night : cat.value.art.day;
 });
 
 // ---- effects (configured on the asset, no code change) ----
@@ -493,7 +499,7 @@ function onUp(event: PointerEvent) {
     <template v-if="props.light">
       <span v-if="bloom" class="room-light__glow" :style="lightStyle" aria-hidden="true"></span>
       <span v-if="bloom" class="room-light__body" aria-hidden="true">
-        <span v-if="cat.raw" class="room-item__svg" v-html="cat.raw"></span>
+        <span v-if="rawArt" class="room-item__svg" v-html="rawArt"></span>
         <img v-else-if="!cat.repeat && !cat.component" :src="art" alt="" draggable="false" />
       </span>
       <slot />
@@ -503,7 +509,7 @@ function onUp(event: PointerEvent) {
         <FxLayer :animations="visuals.animations" :particles="visuals.particles" :seed="props.item.id" :light-level="props.item.lightLevel ?? 1">
           <span v-if="cat.repeat" class="room-item__repeat" :style="repeatStyle"></span>
           <WallClock v-else-if="cat.component === 'clock'" />
-          <span v-else-if="cat.raw" class="room-item__svg" v-html="cat.raw"></span>
+          <span v-else-if="rawArt" class="room-item__svg" v-html="rawArt"></span>
           <img v-else :src="art" alt="" draggable="false" />
         </FxLayer>
       </span>

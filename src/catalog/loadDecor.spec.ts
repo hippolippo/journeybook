@@ -7,6 +7,7 @@ import {
   loadedRoomItems,
   loadedStickers,
   loadedTapes,
+  mergeArtFrame,
 } from './loadDecor';
 
 function firstEffect(effect: unknown): EffectDef | undefined {
@@ -14,14 +15,20 @@ function firstEffect(effect: unknown): EffectDef | undefined {
   return Array.isArray(effect) ? (effect[0] as EffectDef) : (effect as EffectDef);
 }
 
+function viewBoxOfDataUri(uri: string): { w: number; h: number } {
+  const svg = decodeURIComponent(uri.replace(/^data:image\/svg\+xml,/, ''));
+  const m = /viewBox="([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+)"/.exec(svg);
+  if (!m) throw new Error('no viewBox');
+  return { w: Number(m[3]), h: Number(m[4]) };
+}
+
 describe('asset loader', () => {
-  it('loads a sidecar-defined room item (recolor + presets + sway + inlined svg)', () => {
-    const plant = loadedRoomItems.find((i) => i.id === 'trailing-plant');
-    expect(plant).toBeTruthy();
-    expect(plant?.colorSlots.length).toBe(2);
-    expect(firstEffect(plant?.effect)?.type).toBe('sway');
-    expect(plant?.presets?.length).toBeGreaterThan(0);
-    expect(plant?.raw).toContain('--c-leaves');
+  it('loads a sidecar-defined room item (recolor + presets + inlined svg)', () => {
+    const camera = loadedRoomItems.find((i) => i.id === 'camera');
+    expect(camera).toBeTruthy();
+    expect(camera?.colorSlots.length).toBe(2);
+    expect(camera?.presets?.length).toBeGreaterThan(0);
+    expect(camera?.raw).toContain('--c-body');
   });
 
   it('loads the chai cup (smoke effect) from a sidecar', () => {
@@ -32,29 +39,21 @@ describe('asset loader', () => {
     expect(chai?.layer).toBe('surface');
   });
 
-  it('supports repeating textures with recolouring', () => {
-    const lights = loadedRoomItems.find((i) => i.id === 'fairy-lights');
-    expect(lights?.repeat).toBe('x');
-    expect(lights?.raw).toContain('--c-bulbs');
-    expect(lights?.presets?.length).toBeGreaterThan(0);
-  });
-
-  it('auto-detects night variants and multiple effects', () => {
-    const lantern = loadedRoomItems.find((i) => i.id === 'paper-lantern');
-    expect(lantern).toBeTruthy();
-    expect(lantern?.art.day).toBeTruthy();
-    expect(lantern?.art.night).toBeTruthy();
-    expect(Array.isArray(lantern?.effect)).toBe(true);
+  it('auto-detects (and merges) a day/night pair', () => {
+    const puppy = loadedRoomItems.find((i) => i.id === 'bernese-mountain-puppy');
+    expect(puppy).toBeTruthy();
+    expect(puppy?.art.day).toBeTruthy();
+    expect(puppy?.art.night).toBeTruthy();
   });
 
   it('loads per-variant particles and resolves bare svg shape names', () => {
-    const plant = loadedRoomItems.find((i) => i.id === 'trailing-plant');
-    const night = plant?.artVariants?.night?.particles;
+    const puppy = loadedRoomItems.find((i) => i.id === 'bernese-mountain-puppy');
+    const night = puppy?.artVariants?.night?.particles;
     expect(night?.length).toBe(1);
-    expect(night?.[0].name).toBe('firefly');
+    expect(night?.[0].name).toBe('zzz');
     const shape = night?.[0].shape?.svg ?? '';
     expect(shape).toBeTruthy();
-    expect(shape).not.toBe('particle-firefly.svg');
+    expect(shape).not.toBe('particle-zzz.svg');
   });
 
   it('loads the migrated built-in stickers from sidecars', () => {
@@ -109,12 +108,30 @@ describe('asset loader', () => {
     for (const id of [
       'window',
       'curtain',
-      'string-lights',
-      'wall-shelf',
+      'medium-wall-shelf',
+      'large-wall-shelf',
+      'short-shelf',
+      'medium-shelf',
+      'tall-shelf',
+      'circular-rug',
+      'rectangle-rug',
+      'camera',
+      'bernese-mountain-puppy',
+      'bedside-table',
+      'desk-lamp',
+      'books-1',
+      'books-2',
+      'records-stack',
+      'conch',
+      'nautilus',
+      'scallop-shell',
+      'snail-shell',
+      'candle-warmer',
+      'record-player',
+      'fairy-lights-photos',
       'corkboard',
       'desk',
       'beanbag',
-      'rug',
       'raccoon',
       'coffee-cup',
       'pencil-cup',
@@ -132,20 +149,86 @@ describe('asset loader', () => {
     expect(new Set(aliasedArts).size).toBe(3);
     // The window has a day/night pair (window-day / window-night).
     expect(byId.get('window')?.art.night).toBeTruthy();
-    // Furniture can host surface items; the beanbag's art has no recolour slots.
+    // Furniture can host surface items; the beanbag recolours its fabric.
     expect(byId.get('beanbag')?.host).toBe(true);
-    expect(byId.get('beanbag')?.colorSlots).toEqual([]);
-    expect(byId.get('rug')?.colorSlots.map((s) => s.id)).toEqual([
-      'band1',
-      'band2',
-      'band3',
-      'band4',
-    ]);
-    expect(byId.get('rug')?.raw).toContain('--c-band1');
+    expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['fabric']);
+    expect(byId.get('beanbag')?.raw).toContain('--c-fabric');
+    expect(byId.get('circular-rug')?.colorSlots.map((s) => s.id)).toEqual(['rug']);
+    expect(byId.get('circular-rug')?.raw).toContain('--c-rug');
+    expect(byId.get('medium-shelf')?.host).toBe(true);
+    expect(byId.get('bernese-mountain-puppy')?.artVariants?.night?.particles?.[0].name).toBe('zzz');
     // Particles survive the move to data (per-variant on the day art).
     expect(byId.get('raccoon')?.artVariants?.day?.particles?.[0].name).toBe('zzz');
     // The wall clock stays built-in so its live component still renders.
     expect(CATALOG.find((i) => i.id === 'wall-clock')?.component).toBe('clock');
+  });
+
+  it('loads the pinned postcards as recolorable wall surface items', () => {
+    const byId = new Map(loadedRoomItems.map((i) => [i.id, i]));
+    for (const id of ['postcard-01', 'postcard-02', 'postcard-03', 'postcard-04']) {
+      const card = byId.get(id);
+      expect(card, `${id} should load from a sidecar`).toBeTruthy();
+      expect(card?.category).toBe('trinket');
+      expect(card?.layer).toBe('surface');
+      expect(card?.band).toBe('wall');
+      expect(card?.attach).toBe('shelf');
+      expect(card?.colorSlots.map((s) => s.id)).toEqual(['paper', 'art', 'pin']);
+      expect(card?.raw).toContain('--c-paper');
+      expect(card?.raw).toContain('--c-art');
+      expect(card?.raw).toContain('--c-pin');
+      expect(card?.presets?.length).toBeGreaterThan(0);
+    }
+    // The corkboard hosts the pinned cards.
+    expect(byId.get('corkboard')?.host).toBe(true);
+  });
+
+  it('adds light and music to the new decor', () => {
+    const warmer = loadedRoomItems.find((i) => i.id === 'candle-warmer');
+    expect(warmer?.colorSlots.map((s) => s.id)).toEqual(['shade', 'metal']);
+    expect(warmer?.lights?.length).toBe(1);
+
+    const string = loadedRoomItems.find((i) => i.id === 'fairy-lights-photos');
+    expect(string?.repeat).toBeUndefined();
+    expect(string?.lights?.length).toBeGreaterThan(0);
+    expect(string?.lights?.[0].slot).toBe('bulb');
+
+    const player = loadedRoomItems.find((i) => i.id === 'record-player');
+    expect(player?.particles?.length).toBe(1);
+    expect(player?.particles?.[0].name).toBe('music');
+    expect(player?.particles?.[0].shape?.svg ?? '').not.toBe('particle-music.svg');
+
+    const deskLamp = loadedRoomItems.find((i) => i.id === 'desk-lamp');
+    expect(deskLamp?.attach).toBe('furniture');
+    expect(deskLamp?.lights?.length).toBe(1);
+
+    const table = loadedRoomItems.find((i) => i.id === 'bedside-table');
+    expect(table?.host).toBe(true);
+  });
+
+  it('loads the otter barrel as a floor-only pet with a single barrel colour', () => {
+    const otter = loadedRoomItems.find((i) => i.id === 'otter-barrel');
+    expect(otter).toBeTruthy();
+    expect(otter?.category).toBe('pet');
+    expect(otter?.layer).toBe('floor');
+    expect(otter?.band).toBe('floor');
+    expect(otter?.attach).toBeUndefined();
+    expect(otter?.colorSlots.map((s) => s.id)).toEqual(['barrel']);
+    expect(otter?.raw).toContain('--c-barrel');
+    expect(otter?.raw).not.toContain('--c-water');
+    // The lighter rim and the water tint are derived from the barrel colour.
+    expect(otter?.raw).toContain('color-mix');
+  });
+
+  it('makes the corkboard recolourable (cork + derived patches, fixed frame, configurable rim)', () => {
+    const board = loadedRoomItems.find((i) => i.id === 'corkboard');
+    expect(board?.host).toBe(true);
+    expect(board?.colorSlots.map((s) => s.id)).toEqual(['cork', 'rim']);
+    expect(board?.raw).toContain('--c-cork');
+    expect(board?.raw).toContain('--c-rim');
+    expect(board?.raw).not.toContain('--c-frame');
+    // Patches are derived slightly darker than the cork colour.
+    expect(board?.raw).toContain('color-mix');
+    expect(board?.presets?.length).toBeGreaterThan(0);
   });
 
   it('loads an asset-driven frame with recolour slots', () => {
@@ -164,5 +247,48 @@ describe('asset loader', () => {
     expect(paper?.corners?.colorSlots?.length).toBe(2);
     expect(paper?.colorSlots?.length).toBe(4);
     expect(paper?.fill?.raw).toContain('--c-dot');
+  });
+});
+
+describe('day/night variant merging', () => {
+  const day = '<svg viewBox="0 0 100 50"></svg>';
+  const night = '<svg viewBox="0 0 40 80"></svg>';
+
+  it('unions mismatched viewBoxes into one shared frame, preserving baked size', () => {
+    const frame = mergeArtFrame(day, night, 1, 1)!;
+    expect(frame.aspect).toBeCloseTo(100 / 80, 5);
+    // The wider day art fills the width; it is bottom-aligned by default.
+    expect(frame.day).toMatchObject({ x: 0, y: -30, w: 100, h: 80 });
+    // The taller night art keeps its 40-unit width, centred horizontally.
+    expect(frame.night).toMatchObject({ x: -30, y: 0, w: 100, h: 80 });
+  });
+
+  it('overlays the variants by the requested anchor', () => {
+    const centered = mergeArtFrame(day, night, 1, 1, 'center')!;
+    expect(centered.day).toMatchObject({ x: 0, y: -15, w: 100, h: 80 });
+    expect(centered.night).toMatchObject({ x: -30, y: 0, w: 100, h: 80 });
+
+    const bottomLeft = mergeArtFrame(day, night, 1, 1, 'bottom-left')!;
+    expect(bottomLeft.day).toMatchObject({ x: 0, y: -30, w: 100, h: 80 });
+    expect(bottomLeft.night).toMatchObject({ x: 0, y: 0, w: 100, h: 80 });
+  });
+
+  it('honours per-variant scale offsets', () => {
+    const frame = mergeArtFrame(day, night, 1, 2, 'center')!;
+    // Scaling night up by 2 makes it the dominant, taller variant.
+    expect(frame.aspect).toBeCloseTo(100 / 160, 5);
+    expect(frame.night.h).toBeCloseTo(80, 5);
+  });
+
+  it('normalises the shipped raccoon into a shared viewBox', () => {
+    const raccoon = loadedRoomItems.find((i) => i.id === 'raccoon')!;
+    expect(raccoon.art.day.startsWith('data:image/svg+xml')).toBe(true);
+    expect(raccoon.art.night?.startsWith('data:image/svg+xml')).toBe(true);
+    const dayBox = viewBoxOfDataUri(raccoon.art.day);
+    const nightBox = viewBoxOfDataUri(raccoon.art.night!);
+    // Both variants share the merged frame's aspect; the data URIs round their
+    // viewBox to 3 decimals, so allow for that rounding here.
+    expect(dayBox.w / dayBox.h).toBeCloseTo(nightBox.w / nightBox.h, 4);
+    expect(raccoon.aspect).toBeCloseTo(dayBox.w / dayBox.h, 4);
   });
 });

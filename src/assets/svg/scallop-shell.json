@@ -1,0 +1,27 @@
+{
+  "kind": "room",
+  "id": "scallop-shell",
+  "label": "Scallop shell",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.145,
+  "defaultScale": 0.18,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "shell",
+      "label": "Shell",
+      "default": "#E6957D",
+      "palette": ["#e6957d", "#f1c58a", "#f5dab9", "#d98c8c", "#e8b4af", "#d9a94e", "#9caf88", "#9dbfc9", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "coral", "label": "Coral", "colors": { "shell": "#e6957d" } },
+    { "id": "sand", "label": "Sand", "colors": { "shell": "#f1c58a" } },
+    { "id": "rose", "label": "Rose", "colors": { "shell": "#d98c8c" } },
+    { "id": "sky", "label": "Sky", "colors": { "shell": "#9dbfc9" } },
+    { "id": "pearl", "label": "Pearl", "colors": { "shell": "#f5dab9" } }
+  ]
+}

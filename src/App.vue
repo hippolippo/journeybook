@@ -48,15 +48,19 @@ const mainLayout = computed<Viewport>(() =>
 const mainInteractive = computed(() => editor.isEditing && editor.viewport === 'desktop');
 /** Settings is a full-height view: its content may reach the bottom edge. */
 const fullHeight = computed(() => route.name === 'settings');
-const rootClass = computed(() =>
-  editor.isEditing
+/** Accounts are configured but nobody is signed in: show only the login card. */
+const locked = computed(() => auth.enabled && auth.ready && !auth.isAuthed);
+const night = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay) === 'night');
+const rootClass = computed(() => ({
+  'is-night': night.value && !locked.value,
+  ...(editor.isEditing
     ? {
         'is-editing': true,
         [`dock-${editor.dock}`]: true,
         'editor-collapsed': editor.collapsed,
       }
-    : {},
-);
+    : {}),
+}));
 const phoneScale = computed(() => {
   const panelW = editor.collapsed ? 46 : 340;
   const availW = width.value - panelW - 48;
@@ -85,6 +89,10 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
       <img :src="rotatePhone" alt="" aria-hidden="true" />
       <p class="rotate-gate__title">Please rotate your phone</p>
       <p class="rotate-gate__sub">this little room is best standing up</p>
+    </div>
+
+    <div v-else-if="locked" class="locked-shell">
+      <router-view />
     </div>
 
     <div v-else-if="app.loading" class="boot-gate">

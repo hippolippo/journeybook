@@ -1,0 +1,40 @@
+{
+  "kind": "room",
+  "label": "Bloom postcard",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "wall",
+  "aspect": 0.782,
+  "defaultScale": 0.05,
+  "attach": "shelf",
+  "colorSlots": [
+    {
+      "id": "paper",
+      "label": "Paper",
+      "default": "#F6E6CC",
+      "palette": ["#F6E6CC", "#FCF7EC", "#E8D9C0", "#E4EEF4", "#E8B4AF", "#CFE3C5", "#D3B184", "#4A3B2E"],
+      "allowCustom": true
+    },
+    {
+      "id": "art",
+      "label": "Art",
+      "default": "#D99171",
+      "palette": ["#D99171", "#D98C8C", "#E8B4AF", "#D9A94E", "#F6E8A8", "#9D9BC9", "#9DBFC9", "#9CAF88"],
+      "allowCustom": true
+    },
+    {
+      "id": "pin",
+      "label": "Push pin",
+      "default": "#8F9169",
+      "palette": ["#8F9169", "#9CAF88", "#7E8F6B", "#D98C8C", "#D9A94E", "#9DBFC9", "#B99362", "#4A3B2E"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "bloom", "label": "Bloom", "colors": { "paper": "#F6E6CC", "art": "#D99171", "pin": "#8F9169" } },
+    { "id": "daisy", "label": "Daisy", "colors": { "paper": "#FCF7EC", "art": "#F6E8A8", "pin": "#D9A94E" } },
+    { "id": "poppy", "label": "Poppy", "colors": { "paper": "#F6E6CC", "art": "#D98C8C", "pin": "#C97B5A" } },
+    { "id": "lavender", "label": "Lavender", "colors": { "paper": "#E4EEF4", "art": "#9D9BC9", "pin": "#E8B4AF" } },
+    { "id": "sage", "label": "Sage", "colors": { "paper": "#CFE3C5", "art": "#7E8F6B", "pin": "#B99362" } }
+  ]
+}

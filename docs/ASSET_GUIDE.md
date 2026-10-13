@@ -1,10 +1,11 @@
 # Journeybook — Asset & Decoration Guide
 
 This guide is for designers/artists adding **new art** to Journeybook: room decor,
-scrapbook stickers, tape, frames, and papers — including **animations** (things
-that sway, glow, drift), **particle effects** (smoke, fireflies, zzz…), optional
-**day/night variants** (room items), and **recolorable** parts with suggested
-**color presets**.
+scrapbook stickers, tape, frames, papers and note papers — including
+**animations** (things that sway, glow, drift), **particle effects** (smoke,
+fireflies, zzz…), **lights** (lamps, candles, strings), optional **day/night
+variants** (room items), and **recolorable** parts with suggested **color
+presets**.
 
 You do **not** need to edit application code. You add SVG files (and, optionally,
 a small JSON definition next to them) and they appear in the app automatically.
@@ -20,29 +21,33 @@ a small JSON definition next to them) and they appear in the app automatically.
 On build/dev, Journeybook scans `src/assets/svg/`:
 
 - Every `*.svg` is available as art.
-- A `*.json` **sidecar** file (same base name, e.g. `paper-lantern.json`) registers
+- A `*.json` **sidecar** file (same base name, e.g. `camera.json`) registers
   that SVG as an asset, OR
 - an SVG can embed its own definition inside a `<metadata>` block.
 
 If an SVG has **neither** a sidecar JSON nor embedded metadata, it is ignored by
 the decor system (so UI icons and one-off art are unaffected).
 
-The **id** defaults to the file base name (`paper-lantern.svg` → `paper-lantern`),
+The **id** defaults to the file base name (`camera.svg` → `camera`),
 and the **art** defaults to `<id>.svg`.
 
 **Examples shipped with the app** (use these as templates):
 
-| File                                                                           | Shows                                                                    |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| `trailing-plant.{svg,json}`                                                    | sway animation, 2 color slots, presets, **night-only firefly particles** |
-| `paper-lantern.{svg,json}` + `paper-lantern-night.svg`                         | day/night variants, night glow + flicker                                 |
-| `chai-cup.{svg,json}`                                                           | smoke (particle)                                                        |
-| `fairy-lights.{svg,json}`                                                      | **repeating** texture across the wall, recolour presets                  |
-| `sticker-moon.{svg,json}`                                                      | **sticker** with 2 slots, presets, twinkle animation                     |
-| `sticker-heart-burst.{svg,json}`                                               | **sticker** with a particle system (heart sparks)                        |
-| `frame-stitched.{svg,json}`                                                    | **frame** overlay with a recolourable border                             |
-| `paper-meadow.{svg,json}` + `paper-tile-dots/border-stitch/corner-blossom.svg` | **paper** with fill tile + edge border + corner motifs, 4 slots          |
-| `demo-light-*.{svg,json}`                                                      | **lights**: one simple lamp per `distribution` (demo/reference, §10)     |
+| File                                                                           | Shows                                                                      |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `bernese-mountain-puppy.{svg,json}` + `-night.svg`                             | day/night variants with **different poses**, per-variant merge (§5.2), night-only `zzz` particles |
+| `chai-cup.{svg,json}`                                                          | smoke (particle)                                                           |
+| `camera.{svg,json}`                                                            | a **trinket** with 4 recolour slots (per-usage fallbacks) + presets        |
+| `medium-shelf.{svg,json}` / `tall-shelf.{svg,json}`                            | **furniture** that is a `host` (holds surface items), 2 slots              |
+| `medium-wall-shelf.{svg,json}` / `large-wall-shelf.{svg,json}`                 | **wall** shelf `host`, 2 slots                                            |
+| `circular-rug.{svg,json}` / `rectangle-rug.{svg,json}`                         | **floor** decor with 3 recolour slots + presets                           |
+| `sticker-moon.{svg,json}`                                                      | **sticker** with 2 slots, presets, twinkle animation                       |
+| `sticker-heart-burst.{svg,json}`                                               | **sticker** with a particle system (heart sparks)                          |
+| `frame-stitched.{svg,json}`                                                    | **frame** overlay with a recolourable border                               |
+| `paper-meadow.{svg,json}` + `paper-tile-dots/border-stitch/corner-blossom.svg` | **paper** with fill tile + edge border + corner motifs, 4 slots            |
+| `note-paper-index.{svg,json}` + `note-paper-*.{svg,json}`                      | **note paper** with a margin rule, ruled/grid/dot patterns, palettes (§15) |
+| `window-day.{svg,json}` + `window-night.svg`                                   | explicit **day/night** pair, `host: true`                                  |
+| `raccoon.{svg,json}` + `raccoon-night.svg`                                     | variant **particles** + per-variant merge (§5.2)                           |
 
 ---
 
@@ -55,6 +60,10 @@ Set `"kind"` in the definition (default `"room"`):
 - `"tape"` — a washi/masking strip placed on a scrapbook page.
 - `"frame"` — a photo frame overlay (scrapbook image elements).
 - `"paper"` — a scrapbook page paper (base colour + optional tile/border/corners).
+- `"notePaper"` — a note's paper style (sticky/kraft/ruled/grid/dot, §15).
+
+> Almost everything is asset-driven. The only built-in room item is the live
+> **wall clock**, which needs bespoke animation code.
 
 ---
 
@@ -109,13 +118,14 @@ That's it. No code changes.
 | `attach`          | `furniture` \| `shelf` \| `any`                                               | For `surface` items (things that rest on furniture/shelves).                                                               |
 | `host`            | boolean                                                                       | Marks this item as a **resting surface** that can hold `surface` items (desk, shelf).                                      |
 | `repeat`          | `"x"` \| `"y"` \| `"both"`                                                    | Tile across the band instead of one instance (see §9).                                                                     |
-| `effect`          | object \| array \| null                                                       | Shortcut recipes, see §7.1.                                                                                                |
+| `effect`          | object \| array \| null                                                       | Shortcut recipes, see §7.2.                                                                                                |
 | `animations`      | array                                                                         | Generic animations, see §7.                                                                                                |
 | `particles`       | array                                                                         | Generic particle systems, see §8.                                                                                          |
 | `lights`          | array                                                                         | Emissive light sources, see §10.                                                                                           |
 | `colorSlots`      | array                                                                         | See §6.                                                                                                                    |
 | `presets`         | array                                                                         | See §6.3.                                                                                                                  |
 | `art`             | `{ day, night }`                                                              | See §5.                                                                                                                    |
+| `artAnchor`       | `top\|center\|bottom` × `left\|center\|right` (or `center`)                   | Day/night overlay point (default `bottom-center`, see §5.2).                                                               |
 | `raw`             | boolean                                                                       | Force inlining the SVG (needed for recolor). Auto-on when `colorSlots` exist.                                              |
 
 ### 4.1 Surface items & hosting (wall **or** floor)
@@ -174,7 +184,7 @@ The simplest form uses file names:
 
 - **Auto-detect:** name a file `<id>-night.svg` next to `<id>.svg`. Nothing else needed.
 - If no night art exists, the day art is used at night.
-- Night art should be a slightly dimmer / warmer version (see `paper-lantern-night.svg`).
+- Night art should be a slightly dimmer / warmer version (see `raccoon-night.svg`).
 - Recolour slots carry across both variants.
 
 ### 5.1 Different animations/particles per variant
@@ -185,17 +195,44 @@ that time of day:
 
 ```json
 "art": {
-  "day": "trailing-plant.svg",
+  "day": "bernese-mountain-puppy.svg",
   "night": {
-    "src": "trailing-plant.svg",
+    "src": "bernese-mountain-puppy-night.svg",
     "particles": [
-      { "name": "firefly", "count": 5, "duration": 5, "size": 8, "jitter": 0.7,
-        "spawn": { "x": 50, "y": 62, "spreadX": 20, "spreadY": 18 },
-        "shape": { "kind": "svg", "svg": "particle-firefly.svg", "color": "#ffd76b" } }
+      { "name": "zzz", "count": 3, "duration": 4, "size": 12, "jitter": 0.5,
+        "spawn": { "x": 70, "y": 42, "spreadX": 8, "spreadY": 6 },
+        "shape": { "kind": "svg", "svg": "particle-zzz.svg", "color": "#9dbfc9" } }
     ]
   }
 }
 ```
+
+### 5.2 Different sizes & alignment (`scale`, `artAnchor`)
+
+Day and night art may use **different viewBoxes**. At load the two are merged into
+one shared frame so the item never jumps or rescales between day and night: each
+variant keeps the size baked into its own SVG, the frame becomes their tight
+union, and the item's `aspect` is derived from it.
+
+Nudge a variant's size with `scale` and control how the two boxes overlay with
+`artAnchor`:
+
+```json
+"art": {
+  "day":   { "src": "raccoon.svg",       "scale": 1.0 },
+  "night": { "src": "raccoon-night.svg", "scale": 1.1 }
+},
+"artAnchor": "bottom-center"
+```
+
+- `scale` (default `1`) is relative to the SVG's native size — use it when a
+  variant should read a little larger/smaller than the other.
+- `artAnchor` (default `bottom-center`) — `top|center|bottom` × `left|center|right`
+  (or just `center`). The named point of each variant's box lands on the same spot
+  in the shared frame; the default keeps both resting on one baseline with a
+  shared horizontal centre.
+- `art.day` / `art.night` may each be a **file name** or an **object**; mix them
+  freely (e.g. a day object with a plain night file name).
 
 ---
 
@@ -296,7 +333,7 @@ are all just keyframes you write.
       { "at": 100, "transform": "translateY(0)" }
     ]
   }
-]
+}
 ```
 
 ### 7.1 Animation definition (`AnimationDef`)
@@ -343,7 +380,7 @@ shortcut just saves typing.
 | `float`   | Vertical bobbing                 | `amplitude` (px), `duration` (s)                             |
 | `flicker` | Small brightness flicker         | `duration` (s)                                               |
 | `twinkle` | Opacity pulse                    | `duration` (s)                                               |
-| `glow`    | Soft bloom **at night only**     | `color`, `duration` (s)                                      |
+| `glow`    | Soft bloom **at night only**     | `color` or `slot`, `duration` (s)                            |
 | `smoke`   | Rising puffs (a particle system) | `count` (1–8), `duration` (s)                                |
 
 Combine several with an array (e.g. a lantern that glows and flickers):
@@ -356,6 +393,10 @@ Combine several with an array (e.g. a lantern that glows and flickers):
 ```
 
 `effect` recipes and generic `animations`/`particles` can be mixed freely.
+
+`glow` accepts a **`slot`** (a `colorSlots` id) in place of `color`, so the bloom
+follows recolouring. A `glow` with no explicit `lights` also synthesizes a light
+on the night lightmap (§10).
 
 ### 7.3 Notes
 
@@ -410,6 +451,7 @@ configurations.
 | `jitter`   | number       | 0–1. Randomises each particle's delay, offset and scale.                                      |
 | `opacity`  | number       | Opacity ceiling. Default 1.                                                                   |
 | `blend`    | string       | Optional CSS `mix-blend-mode` (e.g. `"screen"`).                                              |
+| `light`    | boolean      | Emit light at night (fireflies); the colour comes from `shape.color` (see §10.4).             |
 
 ### 8.2 Particle shapes
 
@@ -449,9 +491,8 @@ instance:
   width ÷ height drives the tiling. `defaultScale` is the strip height.
 - Recolouring works (slots are substituted, then tiled). Repeating items ignore
   the drop shadow.
-- `animations`/`particles` still apply.
-
-See `fairy-lights.{svg,json}`.
+- `animations`/`particles` still apply. (No repeating asset ships currently;
+  add one by drawing a seamless segment and setting `"repeat"`.)
 
 ---
 
@@ -499,14 +540,14 @@ default `distribution`:
 
 Override the shape/character per light:
 
-| `distribution` | physics                            | reads as                 | extra fields                     |
-| -------------- | ---------------------------------- | ------------------------ | -------------------------------- |
-| `point`        | omni, hot core, steep falloff      | crisp sparkle            | —                                |
-| `semi`         | omni with a gentle hotspot         | shaded lamp              | —                                |
-| `diffuse`      | omni area emitter, broad, low peak | soft even pool           | —                                |
-| `spot`         | directional cone, hard-ish edge    | aimed beam / downlight   | `angle`, `direction`, `penumbra` |
-| `wash`         | wide directional flood             | wall-wash / flood        | `angle`, `direction`, `penumbra` |
-| `ambient`      | flat, distance-independent fill    | moonlight / screen fill  | —                                |
+| `distribution` | physics                            | reads as                | extra fields                     |
+| -------------- | ---------------------------------- | ----------------------- | -------------------------------- |
+| `point`        | omni, hot core, steep falloff      | crisp sparkle           | —                                |
+| `semi`         | omni with a gentle hotspot         | shaded lamp             | —                                |
+| `diffuse`      | omni area emitter, broad, low peak | soft even pool          | —                                |
+| `spot`         | directional cone, hard-ish edge    | aimed beam / downlight  | `angle`, `direction`, `penumbra` |
+| `wash`         | wide directional flood             | wall-wash / flood       | `angle`, `direction`, `penumbra` |
+| `ambient`      | flat, distance-independent fill    | moonlight / screen fill | —                                |
 
 Directional fields (only for `spot` / `wash`):
 
@@ -542,30 +583,25 @@ light colour:
 ]
 ```
 
-### 10.5 Demo items
+### 10.5 Examples in the app
 
-All demos are labelled **`DEMO · …`** and are for experimenting: drop them in the
-room, switch **Time of day → Night**, and tune their JSON.
+- Any asset with a `glow` effect and no `lights` still lights the night scene
+  (a light is synthesized from the glow).
+- No emissive asset ships with the app right now; add lights to any room asset by
+  declaring `"lights"` in its sidecar (see the tables above and the recipes below).
 
-**Distribution demos** — one simple lamp per `distribution`:
-`demo-light-point`, `demo-light-semi`, `demo-light-diffuse`, `demo-light-spot`,
-`demo-light-wash`, `demo-light-ambient`.
+Recipes to copy:
 
-**Parameter recipes** — realistic fixtures, each showing what to tune and why:
-
-| Demo                   | Key parameters                                                            | What it shows                     |
-| ---------------------- | ------------------------------------------------------------------------- | --------------------------------- |
-| `demo-light-reading`   | `distribution: "spot"`, `angle: 28`, `direction: 90`, `penumbra: 0.12`     | a tight, aimed task-light pool    |
-| `demo-light-street`    | `distribution: "spot"`, `angle: 100`, `penumbra: 0.55`                     | a wide, soft downlight wash       |
-| `demo-light-beacon`    | `distribution: "spot"`, `angle: 16`, `penumbra: 0`, `intensity: 1.8`       | a hard, narrow stage beam         |
-| `demo-light-uplight`   | `distribution: "wash"`, `direction: 270`                                   | light aimed **up** (grazing wash) |
-| `demo-light-candle`    | `type: "candle"`, `distribution: "point"`, `flicker: true`, small `radius` | a tight flickering point source   |
-| `demo-light-chandelier`| three `"point"` lights in one asset                                       | **several sources** on one item   |
-| `demo-light-neon`      | six `"point"` lights sharing one `slot`                                   | many small coloured sources       |
-| `demo-light-moonlight` | `type: "window"`, `distribution: "wash"`, cool `color`, `angle: 150`      | a broad, cool fill                |
-| `demo-light-screen`    | `type: "screen"`, `distribution: "diffuse"`                                | a soft, even area glow            |
-
-Copy any of them as a starting point for a new fixture.
+| Goal                         | Key parameters                                                          |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| Aimed task light             | `distribution: "spot"`, small `angle`, `direction: 90`, low `penumbra`  |
+| Soft downlight wash          | `distribution: "spot"`, wide `angle`, high `penumbra`                   |
+| Hard stage beam              | `distribution: "spot"`, tiny `angle`, `penumbra: 0`, higher `intensity` |
+| Upward graze                 | `distribution: "wash"`, `direction: 270`                                |
+| Flickering candle            | `type: "candle"`, `flicker: true`, small `radius`                       |
+| Several sources on one asset | multiple `"point"` lights in the `lights` array                         |
+| Many coloured sources        | several `"point"` lights sharing one `slot`                             |
+| Broad cool fill              | `type: "window"`, `distribution: "wash"`, cool `color`, wide `angle`    |
 
 ---
 
@@ -798,14 +834,64 @@ Notes:
 
 ---
 
-## 15. Embedding the definition in the SVG (advanced)
+## 15. Note papers
+
+A **note paper** is the paper style behind a handwritten note in the scrapbook.
+Every real note paper is a `kind: "notePaper"` asset; the special "No paper"
+option is built in (a bare note with no background).
+
+```json
+{
+  "kind": "notePaper",
+  "id": "index",
+  "label": "Index card",
+  "color": "#fdf8ef",
+  "radius": 3,
+  "shadow": true,
+  "colorable": true,
+  "lines": "lined",
+  "margin": "#d98c8c",
+  "order": 6,
+  "palette": ["#fdf8ef", "#ffffff", "#f7e6e2", "#e4eef4", "#e6efe4"]
+}
+```
+
+| Field       | Type                              | Notes                                                                      |
+| ----------- | --------------------------------- | -------------------------------------------------------------------------- |
+| `id`        | string                            | **Required**; the paper id used by notes.                                  |
+| `label`     | string                            | Shown in the note-paper picker.                                            |
+| `color`     | string                            | Paper background colour. Default `#ffffff`.                                |
+| `radius`    | number                            | Corner radius (px). Default `3`.                                           |
+| `shadow`    | boolean                           | Drop shadow. Default `true`.                                               |
+| `lines`     | `"lined"` \| `"grid"` \| `"dots"` | Ruled pattern (omit for blank).                                            |
+| `lineColor` | string                            | Override the rule colour (default: a soft ink).                            |
+| `spacing`   | number                            | Line-spacing multiplier; `1` = one rule per text line, `2` = wide rule.    |
+| `colorable` | boolean                           | Let the user tint the paper (shows `palette`). Default `false`.            |
+| `palette`   | string[]                          | Tint swatches shown when `colorable` is on.                                |
+| `sheen`     | boolean                           | Soft diagonal highlight (sticky notes).                                    |
+| `margin`    | string                            | Colour of a vertical margin rule (index cards).                            |
+| `texture`   | string                            | Bare `assets/svg` file name tiled over the paper (e.g. `paper-grain.svg`). |
+| `order`     | number                            | Sort position in the picker.                                               |
+
+Notes:
+
+- Ruled/grid/dot rules are positioned to sit on the text baselines, so keep the
+  defaults unless you have a reason.
+- `texture` is tiled at 140 px; draw it as a seamless, mostly-transparent overlay.
+- Recolour here is the `colorable` tint (the background); there are no `colorSlots`.
+- Examples: `note-paper-sticky`, `note-paper-index`, `note-paper-kraft`,
+  `note-paper-wide`.
+
+---
+
+## 16. Embedding the definition in the SVG (advanced)
 
 Instead of (or on top of) a sidecar JSON, put a JSON `<metadata>` block in the
 SVG. This keeps art + config in one file:
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <metadata>{"kind":"room","label":"Chai cup","category":"trinket","layer":"surface","band":"floor","aspect":1,"defaultScale":0.17,"attach":"furniture","effect":{"type":"smoke","count":3}}</metadata>
+  <metadata>{"kind":"room","label":"Woven basket","category":"trinket","layer":"surface","band":"floor","aspect":1,"defaultScale":0.18,"attach":"furniture"}</metadata>
   … your art …
 </svg>
 ```
@@ -814,7 +900,7 @@ If both exist, the **sidecar JSON wins** for the fields it sets (they are merged
 
 ---
 
-## 16. SVG authoring guidelines
+## 17. SVG authoring guidelines
 
 - Set a `viewBox` and **omit** fixed `width`/`height` so the art scales cleanly
   (e.g. `<svg viewBox="0 0 120 200">`). The `aspect` = viewBox width ÷ height.
@@ -827,7 +913,7 @@ If both exist, the **sidecar JSON wins** for the fields it sets (they are merged
 
 ---
 
-## 17. Icons (UI glyphs)
+## 18. Icons (UI glyphs)
 
 Small UI icons (buttons, layer rows) live in `src/assets/svg/icon-*.svg` and are
 worn as CSS masks using a colour, so draw them as **single-colour silhouettes**.
@@ -840,37 +926,38 @@ Wiring one up requires one tiny CSS line, e.g.:
 ```
 
 Then use `<span class="icon icon--basket"></span>`. (Decor, stickers, tape,
-frames and papers do not need this — they are data-driven via §2–§14.)
+frames, papers and note papers do not need this — they are data-driven via
+§2–§15.)
 
 ---
 
-## 18. Testing your art
+## 19. Testing your art
 
 1. `pnpm dev` and open the app.
 2. Room editor: click the pencil (desktop) → your item is in its category.
    - Toggle **Time of day** between _Day_ and _Night_ to check variants, glow and
      night-only particles.
-   - For a **light** (§10), switch to **Night** and try the `demo-light-*` items to
-     compare distributions; tune `radius`/`angle`/`direction`/`penumbra` and watch
-     the pool change.
+   - For a **light** (§10), switch to **Night** and tune
+     `radius`/`angle`/`direction`/`penumbra` and watch the pool change.
    - Select it to see colour slots and presets; watch the animation/particles.
    - For a `surface` item, drop it onto a host (a desk/shelf with `"host": true`)
      to attach it, and drag it off to detach; a loose one can go anywhere on the
      stage. Use **Depth** to layer it, and the **Items** list (or repeated clicks)
      to select something buried.
 3. Scrapbook: **Add to page** shows your stickers and tape; the image editor's
-   **Frame** row shows your frames; the **Paper** swatches show your papers.
+   **Frame** row shows your frames; the **Paper** swatches show your papers; the
+   note editor's paper picker shows your **note papers** (§15).
    - Select a recolourable sticker/tape to see its slots and presets.
    - Pick a paper, then set its **paper colors** (slots/presets).
 4. Confirm motion is subtle and that recolouring affects the right parts.
 
 ---
 
-## 19. Definition reference (all fields)
+## 20. Definition reference (all fields)
 
 ```jsonc
 {
-  "kind": "room", // "room" | "sticker" | "tape" | "frame" | "paper"
+  "kind": "room", // "room" | "sticker" | "tape" | "frame" | "paper" | "notePaper"
   "id": "woven-basket", // default: file name
   "label": "Woven basket", // default: id
 
@@ -908,9 +995,24 @@ frames and papers do not need this — they are data-driven via §2–§14.)
   "border": { "art": "border.svg", "opacity": 1, "colorSlots": [], "presets": [] },
   "corners": { "art": "corner.svg", "opacity": 1, "colorSlots": [], "presets": [] },
 
+  // notePaper only (§15)
+  "color": "#fdf8ef", // paper colour (shared name with paper)
+  "radius": 3,
+  "shadow": true,
+  "lines": "lined", // "lined" | "grid" | "dots"
+  "colorable": true, // tint the paper; show "palette"
+  "palette": ["#fdf8ef"],
+  "sheen": false, // sticky-note highlight
+  "margin": "#d98c8c", // vertical margin rule
+  "lineColor": "rgba(74,59,46,0.16)",
+  "spacing": 1, // line-spacing multiplier
+  "texture": "paper-grain.svg", // tiled overlay
+  "order": 6, // picker sort
+
   // shared
   "art": { "day": "woven-basket.svg", "night": "woven-basket-night.svg" },
-  // each value: file name OR { src, animations, particles }
+  // each value: a file name OR { src, scale, animations, particles }
+  "artAnchor": "bottom-center", // day/night overlay point (default bottom-center)
   "raw": false, // room: force inline (auto-on with colorSlots)
   "colorSlots": [
     {
@@ -925,6 +1027,7 @@ frames and papers do not need this — they are data-driven via §2–§14.)
 
   // motion (all kinds; §7 and §8)
   "effect": { "type": "sway", "amplitude": 2, "duration": 5, "origin": "top" },
+  // glow also accepts { "type": "glow", "slot": "glass" } to follow a slot
   "animations": [
     {
       "name": "bob",
@@ -943,6 +1046,7 @@ frames and papers do not need this — they are data-driven via §2–§14.)
       "duration": 2.6,
       "size": 12,
       "jitter": 0.8,
+      "light": false, // true = emit light at night (fireflies)
       "spawn": { "x": 50, "y": 40, "spreadX": 15, "spreadY": 10 },
       "shape": { "kind": "svg", "svg": "doodle-heart.svg", "color": "#d98c8c" },
       "motion": {

@@ -1,0 +1,28 @@
+{
+  "kind": "room",
+  "id": "medium-wall-shelf",
+  "label": "Wall shelf",
+  "category": "wallDecor",
+  "layer": "wall",
+  "band": "wall",
+  "aspect": 2,
+  "defaultScale": 0.13,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "wood",
+      "label": "Wood",
+      "default": "#DEA573",
+      "palette": ["#dea573", "#d3b184", "#c9a06a", "#b99362", "#8e5e42", "#9caf88", "#9dbfc9", "#d98c8c", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "oak", "label": "Oak", "colors": { "wood": "#dea573" } },
+    { "id": "walnut", "label": "Walnut", "colors": { "wood": "#b99362" } },
+    { "id": "cream", "label": "Cream", "colors": { "wood": "#d3b184" } },
+    { "id": "mint", "label": "Mint", "colors": { "wood": "#9caf88" } },
+    { "id": "sky", "label": "Sky", "colors": { "wood": "#9dbfc9" } },
+    { "id": "blush", "label": "Blush", "colors": { "wood": "#d98c8c" } }
+  ]
+}

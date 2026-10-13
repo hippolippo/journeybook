@@ -5,6 +5,30 @@
   "category": "wallDecor",
   "layer": "wall",
   "band": "wall",
-  "aspect": 1.36,
-  "defaultScale": 0.38
+  "aspect": 1.521,
+  "defaultScale": 0.24,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "cork",
+      "label": "Cork",
+      "default": "#D9A97E",
+      "palette": ["#D9A97E", "#E0B88F", "#CD9474", "#D3B184", "#C8A06A", "#9DBFC9", "#CFE3C5", "#E8B4AF"],
+      "allowCustom": true
+    },
+    {
+      "id": "rim",
+      "label": "Rim",
+      "default": "#E0B88F",
+      "palette": ["#E0B88F", "#D9A97E", "#CD9474", "#D3B184", "#B99362", "#C8A06A", "#F7E6E2", "#CFE3C5"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "cork", "label": "Cork", "colors": { "cork": "#D9A97E", "rim": "#E0B88F" } },
+    { "id": "walnut", "label": "Walnut", "colors": { "cork": "#D3B184", "rim": "#B99362" } },
+    { "id": "slate", "label": "Slate", "colors": { "cork": "#CFE0EA", "rim": "#9DBFC9" } },
+    { "id": "mint", "label": "Mint", "colors": { "cork": "#E6EFE4", "rim": "#CFE3C5" } },
+    { "id": "blush", "label": "Blush", "colors": { "cork": "#F7E6E2", "rim": "#E8B4AF" } }
+  ]
 }

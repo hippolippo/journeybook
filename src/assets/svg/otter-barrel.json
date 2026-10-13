@@ -1,0 +1,26 @@
+{
+  "kind": "room",
+  "label": "Otter barrel",
+  "category": "pet",
+  "layer": "floor",
+  "band": "floor",
+  "aspect": 0.825,
+  "defaultScale": 0.58,
+  "colorSlots": [
+    {
+      "id": "barrel",
+      "label": "Barrel",
+      "default": "#CE7D55",
+      "palette": ["#CE7D55", "#D79E6A", "#B99362", "#C97B5A", "#9E694A", "#8E5E42", "#A9865B", "#9C6B4B", "#9DBFC9", "#9CAF88"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "classic", "label": "Classic", "colors": { "barrel": "#CE7D55" } },
+    { "id": "walnut", "label": "Walnut", "colors": { "barrel": "#8E5E42" } },
+    { "id": "honey", "label": "Honey", "colors": { "barrel": "#D79E6A" } },
+    { "id": "autumn", "label": "Autumn", "colors": { "barrel": "#B99362" } },
+    { "id": "night", "label": "Night", "colors": { "barrel": "#6A4A3A" } },
+    { "id": "ocean", "label": "Ocean", "colors": { "barrel": "#9DBFC9" } }
+  ]
+}

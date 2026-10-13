@@ -109,10 +109,11 @@ function home() {
           </button>
           <button
             v-if="authed"
-            class="btn btn--small account__signout"
+            class="account__item"
             type="button"
             @click="signOut"
           >
+            <Icon name="back" />
             Sign out
           </button>
         </div>

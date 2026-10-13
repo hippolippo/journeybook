@@ -1,0 +1,27 @@
+{
+  "kind": "room",
+  "id": "snail-shell",
+  "label": "Snail shell",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.097,
+  "defaultScale": 0.15,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "shell",
+      "label": "Shell",
+      "default": "#F6DCB9",
+      "palette": ["#f6dcb9", "#f3d0a3", "#9a9b7a", "#d3b184", "#9caf88", "#9dbfc9", "#e8b4af", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "dune", "label": "Dune", "colors": { "shell": "#f6dcb9" } },
+    { "id": "moss", "label": "Moss", "colors": { "shell": "#9a9b7a" } },
+    { "id": "sage", "label": "Sage", "colors": { "shell": "#9caf88" } },
+    { "id": "sky", "label": "Sky", "colors": { "shell": "#9dbfc9" } },
+    { "id": "rose", "label": "Rose", "colors": { "shell": "#e8b4af" } }
+  ]
+}

@@ -3,6 +3,7 @@ import type { DayNightMode, Placement, Room, RoomItem, StoredLayout } from '@/da
 import { useAppStore, type Viewport } from './app';
 import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
+import { detachedLoosePlacement } from '@/room/transform';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
 import { clone } from '@/utils/clone';
 import { newId } from '@/utils/id';
@@ -243,11 +244,40 @@ export const useEditorStore = defineStore('editor', {
       this.dirty = true;
       return item;
     },
-    removeItem(id: string) {
+    removeItem(id: string, stageAspect?: number) {
       if (!this.draft) return;
       const item = this.itemById(id);
       if (!item || item.locked) return;
       this.snapshot();
+      // Detach items resting on the removed host first, holding their on-screen
+      // centre, so they don't jump back to their old loose coordinates.
+      const aspect = stageAspect ?? window.innerHeight / window.innerWidth;
+      for (const child of this.draft.items.filter((i) => i.attachTo === id)) {
+        const childCat = getCatalogItem(child.catalogId);
+        const hostCat = getCatalogItem(item.catalogId);
+        if (!childCat || !hostCat) {
+          child.attachTo = undefined;
+          continue;
+        }
+        const mobile = this.viewport === 'mobile';
+        const hostPlacement = mobile ? (item.mobile ?? deriveMobile(item.desktop)) : item.desktop;
+        const childPlacement = mobile
+          ? (child.mobile ?? deriveMobile(child.desktop))
+          : child.desktop;
+        const { x, y } = detachedLoosePlacement(
+          hostCat,
+          hostPlacement,
+          childCat,
+          childPlacement,
+          aspect,
+        );
+        this.detach(
+          child.id,
+          this.viewport,
+          Math.min(0.98, Math.max(0.02, x)),
+          Math.min(1, Math.max(0, y)),
+        );
+      }
       this.draft.items = this.draft.items.filter((i) => i.id !== id);
       if (this.selectedId === id) this.selectedId = null;
       this.dirty = true;

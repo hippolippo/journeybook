@@ -16,6 +16,11 @@ export function colorizeSvg(raw: string, colors: Record<string, string>, slots: 
   return svg;
 }
 
+/** A bare `data:` URL usable as an `<img src>`. */
+export function svgToDataUri(svg: string): string {
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 export function svgToDataUrl(svg: string): string {
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  return `url("${svgToDataUri(svg)}")`;
 }
