@@ -41,7 +41,8 @@ reference the skill generates against.
 | `attach`          | `furniture` \| `shelf` \| `any` | Surface items only.                                     |
 | `host`            | boolean                         | Marks a resting surface; wall/floor only.               |
 | `repeat`          | `"x"` \| `"y"` \| `"both"`      | Tiling.                                                 |
-| `art`             | `{ day, night }`                | Optional; a lone day SVG auto-detects `<id>-night.svg`. |
+| `art`             | `{ day, night }`                | Each is a file name or `{ src, scale?, particles?, animations? }`. A lone day SVG auto-detects `<id>-night.svg`. |
+| `artAnchor`       | enum                            | Day/night overlay: `top/center/bottom` × `left/center/right` (default `bottom-center`). |
 | `colorSlots`      | array                           | One per `var(--c-<id>, …)` in the art.                  |
 | `presets`         | array                           | Named multi-slot colour combos.                         |
 | `effect`          | object \| array                 | Shortcut motion recipes (§7.2 of the guide).            |
@@ -64,13 +65,30 @@ reference the skill generates against.
 
   ```json
   "art": {
-    "day": "trailing-plant.svg",
+    "day": "bernese-mountain-puppy.svg",
     "night": {
-      "src": "trailing-plant.svg",
-      "particles": [ { "name": "firefly", "count": 5, "duration": 5 } ]
+      "src": "bernese-mountain-puppy-night.svg",
+      "particles": [ { "name": "zzz", "count": 3, "duration": 4 } ]
     }
   }
   ```
+
+- Day and night viewBoxes do **not** have to match. At load the two viewBoxes are
+  merged into one shared frame, keeping the size baked into each SVG (so the
+  item never jumps or rescales between day and night). Tune the relative size
+  with a per-variant `scale` offset (default `1`); the item `aspect` is derived
+  from the merged frame:
+
+  ```json
+  "art": {
+    "day":   { "src": "raccoon.svg",       "scale": 1.0 },
+    "night": { "src": "raccoon-night.svg", "scale": 1.1 }
+  }
+  ```
+
+- `artAnchor` controls how the two boxes overlay in that frame:
+  `top-left` … `bottom-right` (or `center`). Default `bottom-center` (both rest
+  on the same baseline and share a horizontal centre):
 
 ## Color slots & presets
 

@@ -118,6 +118,8 @@ export interface CatalogItem {
   host?: boolean;
   component?: 'clock';
   raw?: string;
+  /** Inlined night-variant SVG (recolourable assets with a day/night pair). */
+  rawNight?: string;
   effect?: EffectDef | EffectDef[] | null;
   presets?: ColorPreset[];
   /** Generic, data-defined whole-object animations (all variants). */

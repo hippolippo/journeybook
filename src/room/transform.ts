@@ -199,3 +199,44 @@ export function attachedResizeRatio(
   const ratioY = w / Math.max(1, childHeightPx);
   return Math.max(ratioX, ratioY);
 }
+
+/**
+ * Convert an attached child's host-relative placement into loose (band) x/y so
+ * that detaching it — e.g. when its host is removed — keeps its on-screen
+ * centre. Positions are stage fractions; `stageAspect` is height / width, which
+ * converts the host-local offsets (measured off the height) into width units.
+ */
+export function detachedLoosePlacement(
+  hostCat: Pick<CatalogItem, 'band' | 'aspect' | 'defaultScale'>,
+  hostPlacement: Placement,
+  childCat: Pick<CatalogItem, 'band' | 'aspect' | 'layer'>,
+  childPlacement: Placement,
+  stageAspect: number,
+): { x: number; y: number } {
+  const hostRange = bandFor(hostCat.band);
+  const hostH = hostPlacement.scale * hostRange.height;
+  const hostW = hostH * hostCat.aspect;
+  const childH =
+    childPlacement.scale *
+    bandFor(childCat.band).height *
+    (hostPlacement.scale / hostCat.defaultScale);
+  const ax = childPlacement.ax ?? 0.5;
+  const ay = childPlacement.ay ?? 0;
+  let cx = (ax - 0.5) * hostW;
+  const cy = (ay - 0.5) * hostH - childH / 2;
+  if (hostPlacement.flip) cx = -cx;
+  const rad = toRadians(hostPlacement.rotation);
+  const rx = cx * Math.cos(rad) - cy * Math.sin(rad);
+  const ry = cx * Math.sin(rad) + cy * Math.cos(rad);
+  // The host pivots about its centre; child offsets live in height units and
+  // are scaled into width units by the stage aspect to find the centre-x.
+  const centerX = hostPlacement.x + rx * stageAspect;
+  const centerY = hostRange.top + hostPlacement.y * hostRange.height - hostH / 2 + ry;
+  const positionBand: Band = childCat.layer === 'surface' ? 'both' : childCat.band;
+  const posRange = bandFor(positionBand);
+  const looseH = childPlacement.scale * bandFor(childCat.band).height;
+  return {
+    x: centerX,
+    y: (centerY + looseH / 2 - posRange.top) / posRange.height,
+  };
+}

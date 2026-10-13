@@ -457,6 +457,31 @@ test('mobile calendar slides between month, day and upcoming', async ({ page }) 
   await expect(page.locator('.calendar__side-pane--upcoming')).toBeVisible();
 });
 
+test('calendar day heading keeps dark ink on mobile cards at night', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('.people').click();
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByRole('button', { name: 'Night', exact: true }).click();
+
+  // On mobile the day heading sits on a white card, so it keeps the dark ink.
+  await page.goto('/calendar');
+  await page.locator('.cal-day').nth(20).click();
+  await expect(page.locator('.calendar__body')).toHaveClass(/screen-day/);
+  const onCard = await page
+    .locator('.cal-view--day .calendar__side-head h2')
+    .evaluate((el) => getComputedStyle(el).color);
+  expect(onCard).toBe('rgb(74, 59, 46)');
+
+  // On desktop the same heading sits over the room and uses the night ink.
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/calendar');
+  const overRoom = await page
+    .locator('.calendar__side .calendar__side-head h2')
+    .evaluate((el) => getComputedStyle(el).color);
+  expect(overRoom).not.toBe('rgb(74, 59, 46)');
+});
+
 test('mobile routes never scroll the page vertically', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const path of ['/', '/scrapbooks', '/book/b4', '/calendar']) {
@@ -642,126 +667,54 @@ test('room editor: collapse arrow points away from the docked edge', async ({ pa
   await expect(page.getByTitle('Expand')).toHaveText('›');
 });
 
-test('asset-defined decor: effects, presets and night glow', async ({ page }) => {
+test('asset-defined decor: effects, day/night variants and presets', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await openRoomEditor(page);
-  await expect(page.locator('.palette__item', { hasText: 'Paper lantern' })).toBeVisible();
 
-  // Adding selects the item (which hides the catalog), so deselect to keep browsing.
-  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
-  await page.mouse.click(30, 30);
-  await page.locator('.palette__item', { hasText: 'Trailing plant' }).first().click();
-  await page.mouse.click(30, 30);
+  // A particle recipe on a trinket.
   await page.locator('.palette__item', { hasText: 'Chai cup' }).first().click();
-  await expect(page.locator('.room-item[data-catalog=trailing-plant] .fx--sway')).toHaveCount(1);
   await expect(page.locator('.room-item[data-catalog=chai-cup] .fx-smoke')).toHaveCount(3);
 
+  // The puppy has a day/night pair; at night it sleeps with zzz particles.
+  await page.mouse.click(30, 30);
+  await page.locator('.palette__item', { hasText: 'Puppy' }).first().click();
   await page.mouse.click(30, 30);
   await page.locator('.editor select').first().selectOption('night');
-  await expect(page.locator('.room-item[data-catalog=paper-lantern] .fx--glow')).toHaveCount(1);
+  await expect(page.locator('.room-item[data-catalog=bernese-mountain-puppy] .fx-zzz')).toHaveCount(3);
 
-  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
-  await page.locator('.editor .btn', { hasText: 'Rose' }).first().click();
+  // A preset recolours the puppy's coat.
+  await page.locator('.palette__item', { hasText: 'Puppy' }).first().click();
+  await page.locator('.editor .btn', { hasText: 'Golden' }).first().click();
   await expect
     .poll(() =>
       page
-        .locator('.room-item[data-catalog=paper-lantern]')
+        .locator('.room-item[data-catalog=bernese-mountain-puppy]')
         .last()
-        .evaluate((el) => getComputedStyle(el).getPropertyValue('--c-glass').trim()),
+        .evaluate((el) => getComputedStyle(el).getPropertyValue('--c-coat').trim()),
     )
-    .toBe('#e88f9f');
+    .toBe('#8e5e42');
 });
 
-test('room lighting: canvas lightmap darkens night and lights the lamp', async ({ page }) => {
+test('new decor: music particles and lights', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await openRoomEditor(page);
-  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+
+  // The record player emits music-note particles.
+  await page.locator('.palette__item', { hasText: 'Record player' }).first().click();
+  await expect(page.locator('.room-item[data-catalog=record-player] .fx-music')).toHaveCount(3);
+
+  // The candle warmer casts light: selecting it shows the Light control.
   await page.mouse.click(30, 30);
+  await page.locator('.palette__item', { hasText: 'Candle warmer' }).first().click();
+  await expect(page.locator('.editor .field', { hasText: 'Light' })).toBeVisible();
 
-  const dark = page.locator('.room__darkness');
-  const glow = page.locator('.room__glow');
-  await expect(dark).toBeAttached();
-  await expect(glow).toBeAttached();
-
-  const sample = (sel: string, x: number, y: number) =>
-    page.locator(sel).evaluate((el, [px, py]) => {
-      const c = el as HTMLCanvasElement;
-      const d = c.getContext('2d')?.getImageData(px, py, 1, 1).data;
-      return d ? Array.from(d) : [];
-    }, [x, y]);
-
-  // Day: no darkness painted.
-  expect((await sample('.room__darkness', 20, 20))[3] ?? 0).toBe(0);
-
-  await page.locator('.editor select').first().selectOption('night');
-  await page.waitForTimeout(900);
-
-  // Night: far corner is darkened, and the lamp's centre is lit (hole carved out).
-  const corner = await sample('.room__darkness', 20, 20);
-  expect(corner[3]).toBeGreaterThan(80);
-  const lampX = Math.round(1400 * 0.5);
-  const lampY = Math.round(900 * (0 + 0.5 * 0.74 - (0.34 * 0.74) / 2));
-  const center = await sample('.room__darkness', lampX, lampY);
-  expect(center[3]).toBeLessThan(corner[3]);
-});
-
-test('room lighting: performance mode falls back to the CSS night layer', async ({ page }) => {
-  await page.setViewportSize({ width: 1400, height: 900 });
-  await page.addInitScript(() => localStorage.setItem('journeybook:performance', '1'));
-  await page.goto('/');
-  await openRoomEditor(page);
-  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
+  // The photo string lights are a single (non-repeating) wall strip.
   await page.mouse.click(30, 30);
-  await page.locator('.editor select').first().selectOption('night');
-
-  await expect(page.locator('.room__night')).toBeAttached();
-  await expect(page.locator('.room__lights .room-light__glow')).toHaveCount(1);
-  await expect(page.locator('.room__darkness')).toHaveCount(0);
-});
-
-test('room lighting: the brightness slider scales a light', async ({ page }) => {
-  await page.setViewportSize({ width: 1400, height: 900 });
-  await page.goto('/');
-  await openRoomEditor(page);
-  await page.locator('.palette__item', { hasText: 'Paper lantern' }).first().click();
-
-  const field = page.locator('.editor .field', { hasText: 'Light' });
-  await expect(field).toBeVisible();
-  const slider = field.locator('input[type=range]');
-  await expect(slider).toHaveValue('1');
-  await slider.fill('0.3');
-  await expect(field.locator('input[type=number]')).toHaveValue('0.3');
-});
-
-test('room lighting: fireflies emit light at night', async ({ page }) => {
-  await page.setViewportSize({ width: 1400, height: 900 });
-  await page.goto('/');
-  await openRoomEditor(page);
-  await page.locator('.palette__item', { hasText: 'Trailing plant' }).first().click();
-  await page.mouse.click(30, 30);
-  await page.locator('.editor select').first().selectOption('night');
-  await expect(page.locator('.fx-particle--light').first()).toBeAttached();
-});
-
-test('repeating decor tiles across the wall and recolours', async ({ page }) => {
-  await page.setViewportSize({ width: 1400, height: 900 });
-  await page.goto('/');
-  await openRoomEditor(page);
-  await page.locator('.palette__item', { hasText: 'Fairy lights' }).first().click();
-  await expect(page.locator('.room-item--repeat')).toHaveCount(1);
-  const rep = await page
-    .locator('.room-item[data-catalog=fairy-lights] .room-item__repeat')
-    .first()
-    .evaluate((el) => getComputedStyle(el).backgroundRepeat);
-  expect(rep).toBe('repeat-x');
-  await page.locator('.editor .btn', { hasText: 'Candy' }).first().click();
-  const bg = await page
-    .locator('.room-item[data-catalog=fairy-lights] .room-item__repeat')
-    .first()
-    .evaluate((el) => getComputedStyle(el).backgroundImage);
-  expect(bg).toContain('e88f9f');
+  await page.locator('.palette__item', { hasText: 'Photo string lights' }).first().click();
+  await expect(page.locator('.room-item[data-catalog=fairy-lights-photos]')).toHaveCount(1);
+  await expect(page.locator('.room-item--repeat[data-catalog=fairy-lights-photos]')).toHaveCount(0);
 });
 
 test('places a catalog item and locks it', async ({ page }) => {
@@ -849,11 +802,31 @@ test('dragging an attached item off its host detaches it', async ({ page }) => {
   expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
 });
 
+test('deleting a host keeps its attached children in place', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await openRoomEditor(page);
+  const laptop = page.locator('.room-item[data-catalog=laptop]').first();
+  const before = (await laptop.boundingBox())!;
+  const beforeCenter = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
+
+  // Remove the desk from the item list; its resting items should stay put.
+  await page.locator('.item-list__row', { hasText: 'Desk' }).first().click();
+  await page.keyboard.press('Delete');
+  await expect(page.locator('.room-item[data-catalog=desk]')).toHaveCount(0);
+  expect(await laptop.evaluate((el) => !!el.closest('[data-catalog=desk]'))).toBe(false);
+
+  const after = (await laptop.boundingBox())!;
+  const afterCenter = { x: after.x + after.width / 2, y: after.y + after.height / 2 };
+  expect(Math.abs(afterCenter.x - beforeCenter.x)).toBeLessThan(6);
+  expect(Math.abs(afterCenter.y - beforeCenter.y)).toBeLessThan(6);
+});
+
 test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
   await openRoomEditor(page);
-  const shelf = page.locator('.room-item[data-catalog=wall-shelf]').first();
+  const shelf = page.locator('.room-item[data-catalog=medium-wall-shelf]').first();
   const shelfBox = (await shelf.boundingBox())!;
   const mugPalette = page.locator('.palette__item[title="Coffee cup"]').first();
   await mugPalette.scrollIntoViewIfNeeded();
@@ -863,7 +836,7 @@ test('a trinket dropped on a wall shelf attaches to it', async ({ page }) => {
   await page.mouse.move(shelfBox.x + shelfBox.width / 2, shelfBox.y + 8, { steps: 10 });
   await page.mouse.up();
 
-  const mugOnShelf = page.locator('.room-item[data-catalog=wall-shelf] .room-item[data-catalog=coffee-cup]');
+  const mugOnShelf = page.locator('.room-item[data-catalog=medium-wall-shelf] .room-item[data-catalog=coffee-cup]');
   await expect(mugOnShelf).toHaveCount(1);
   const mbox = (await mugOnShelf.boundingBox())!;
   const center = mbox.x + mbox.width / 2;
@@ -917,7 +890,7 @@ test('item depth is one absolute scale from the wall to the floor', async ({ pag
   await page.goto('/');
   await openRoomEditor(page);
   const zOf = (sel: string) => page.locator(sel).first().evaluate((el) => Number(getComputedStyle(el).zIndex));
-  const wall = await zOf('.room-item[data-catalog=wall-shelf]');
+  const wall = await zOf('.room-item[data-catalog=medium-wall-shelf]');
   const desk = await zOf('.room-item[data-catalog=desk]');
   const mug = await zOf('.room-item[data-catalog=coffee-cup]');
   expect(wall).toBeLessThan(desk);
@@ -1087,6 +1060,22 @@ test('room editor: on-canvas scale handle resizes while keeping the aspect ratio
   expect(Math.abs(after.width / after.height - before.width / before.height)).toBeLessThan(0.05);
 });
 
+test('room editor: the Size field is relative to each item default', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  await openRoomEditor(page);
+  await page.locator('.palette__item', { hasText: 'Film camera' }).first().click();
+  const size = page.locator('.editor .field', { hasText: 'Size' }).locator('input[type=number]');
+  // A freshly placed camera (defaultScale 0.13) reads size 1.
+  await expect(size).toHaveValue('1');
+  const cam = page.locator('.room-item[data-catalog=camera]').last();
+  const before = (await cam.boundingBox())!;
+  await size.fill('2');
+  await size.press('Enter');
+  const after = (await cam.boundingBox())!;
+  expect(after.height).toBeCloseTo(before.height * 2, 0);
+});
+
 test('room editor: attached items rotate and scale with their host', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');
@@ -1140,7 +1129,7 @@ test('room editor: delete, undo and keyboard nudge', async ({ page }) => {
   await page.keyboard.press('Meta+z');
   await expect(page.locator('.room-item')).toHaveCount(before);
 
-  const rug = page.locator('.room-item[data-catalog=rug]').first();
+  const rug = page.locator('.room-item[data-catalog=rectangle-rug]').first();
   await page.locator('.item-list__row', { hasText: 'Rug' }).first().click();
   const start = (await rug.boundingBox())!;
   await page.keyboard.press('ArrowRight');

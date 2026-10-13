@@ -6,13 +6,31 @@ import type { StickerDef, TapeDef } from '@/scrapbook/decor';
 import type { FrameDef, FrameInsets } from '@/scrapbook/frames';
 import type { Paper, PaperLayer } from '@/scrapbook/paper';
 import type { NotePaper, NotePaperLines } from '@/scrapbook/notes';
+import { svgToDataUri } from './svgColor';
 
 /** One time-of-day art variant: a source file plus optional visuals. */
 export interface ArtVariantDef {
   src?: string;
+  /** Relative-size offset (default 1); lets day/night share one merged frame. */
+  scale?: number;
   animations?: AnimationDef[];
   particles?: ParticleDef[];
 }
+
+/**
+ * How the day and night boxes are overlaid inside the merged frame:
+ * `<vertical>-<horizontal>` (or just `center`). Default `bottom-center`.
+ */
+export type ArtAnchor =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'center-left'
+  | 'center'
+  | 'center-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
 
 type ArtValue = string | ArtVariantDef;
 
@@ -54,6 +72,8 @@ export interface AssetDefinition {
   particles?: ParticleDef[];
   /** Day/night art; each may be a file name or a variant with its own visuals. */
   art?: { day?: ArtValue; night?: ArtValue };
+  /** How the day/night boxes overlay in the merged frame. Default `bottom-center`. */
+  artAnchor?: ArtAnchor;
   raw?: boolean;
   /** room: tile the art across the band — "x" | "y" | "both". */
   repeat?: 'x' | 'y' | 'both';
@@ -113,6 +133,92 @@ function hasSvg(name: string): boolean {
 /** Resolve a bare `assets/svg` file name to its built URL (e.g. effect textures). */
 export function assetSrc(name: string): string | undefined {
   return urlOf(name);
+}
+
+export interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+function round(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
+/** Parse a `viewBox` (x y w h) from an SVG string. */
+function viewBoxOf(raw: string): Box | null {
+  const m = /viewBox\s*=\s*["']\s*([-\d.eE+]+)[\s,]+([-\d.eE+]+)[\s,]+([-\d.eE+]+)[\s,]+([-\d.eE+]+)\s*["']/.exec(raw);
+  if (!m) return null;
+  const [x, y, w, h] = [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])];
+  if (![x, y, w, h].every(Number.isFinite) || w <= 0 || h <= 0) return null;
+  return { x, y, w, h };
+}
+
+/** Return a copy of the SVG with its viewBox and intrinsic size rewritten. */
+function withViewBox(raw: string, box: Box): string {
+  const vb = `${round(box.x)} ${round(box.y)} ${round(box.w)} ${round(box.h)}`;
+  const w = `${round(box.w)}`;
+  const h = `${round(box.h)}`;
+  const set = (svg: string, attr: string, value: string): string =>
+    new RegExp(`\\s${attr}\\s*=\\s*["'][^"']*["']`).test(svg)
+      ? svg.replace(new RegExp(`\\s${attr}\\s*=\\s*["'][^"']*["']`), ` ${attr}="${value}"`)
+      : svg.replace(/<svg\b/, `<svg ${attr}="${value}"`);
+  // Build the frame first, then width/height, so attribute insertion is stable.
+  let svg = /viewBox\s*=\s*["'][^"']*["']/.test(raw)
+    ? raw.replace(/viewBox\s*=\s*["'][^"']*["']/, `viewBox="${vb}"`)
+    : raw.replace(/<svg\b/, `<svg viewBox="${vb}"`);
+  svg = set(svg, 'width', w);
+  svg = set(svg, 'height', h);
+  return svg;
+}
+
+/** Per-variant scale offset (plain-string/absent art means 1). */
+function artScale(value: ArtValue | undefined): number {
+  if (value == null || typeof value === 'string') return 1;
+  const s = value.scale;
+  return typeof s === 'number' && s > 0 ? s : 1;
+}
+
+/** Resolve an anchor to 0/0.5/1 fractions (default `bottom-center`). */
+function anchorFractions(anchor: ArtAnchor | undefined): { ax: number; ay: number } {
+  const raw = (anchor ?? 'bottom-center').toLowerCase().trim();
+  const [a, b] = raw.includes('-') ? raw.split('-') : ['center', raw];
+  const ay = a === 'top' ? 0 : a === 'bottom' ? 1 : 0.5;
+  const ax = b === 'left' ? 0 : b === 'right' ? 1 : 0.5;
+  return { ax, ay };
+}
+
+function sameBox(a: Box, b: Box): boolean {
+  return Math.abs(a.x - b.x) < 1e-3 && Math.abs(a.y - b.y) < 1e-3 && Math.abs(a.w - b.w) < 1e-3 && Math.abs(a.h - b.h) < 1e-3;
+}
+
+/**
+ * Merge two variant viewBoxes into one shared frame. Each variant keeps the size
+ * baked into its own SVG (multiplied by its scale offset); the union of those
+ * boxes becomes the item's frame, with both variants overlaid by `anchor`.
+ */
+export function mergeArtFrame(
+  dayRaw: string,
+  nightRaw: string,
+  dayScale: number,
+  nightScale: number,
+  anchor?: ArtAnchor,
+): { aspect: number; day: Box; night: Box } | null {
+  const d = viewBoxOf(dayRaw);
+  const n = viewBoxOf(nightRaw);
+  if (!d || !n) return null;
+  const { ax, ay } = anchorFractions(anchor);
+  const W = Math.max(d.w * dayScale, n.w * nightScale);
+  const H = Math.max(d.h * dayScale, n.h * nightScale);
+  // Place each variant so the chosen anchor point of its box lands on the same
+  // spot; the frame is the tight union of the two placed boxes (size W×H).
+  const fit = (b: Box, s: number): Box => {
+    const ox = ax * (W - b.w * s);
+    const oy = ay * (H - b.h * s);
+    return { x: b.x - ox / s, y: b.y - oy / s, w: W / s, h: H / s };
+  };
+  return { aspect: W / H, day: fit(d, dayScale), night: fit(n, nightScale) };
 }
 
 /** Resolve a bare `assets/svg` file name referenced inside a definition. */
@@ -185,11 +291,44 @@ function collect(): AssetDefinition[] {
 function toCatalogItem(def: AssetDefinition): CatalogItem | null {
   const id = def.id as string;
   const dayName = artSrc(def.art?.day) ?? `${id}.svg`;
-  const day = urlOf(dayName);
-  if (!day) return null;
+  const dayUrl = urlOf(dayName);
+  if (!dayUrl) return null;
   const nightName = artSrc(def.art?.night) ?? (hasSvg(`${id}-night.svg`) ? `${id}-night.svg` : undefined);
+  const nightUrl = urlOf(nightName);
   const colorSlots = def.colorSlots ?? [];
-  const raw = def.raw || colorSlots.length > 0 ? rawOf(dayName) : undefined;
+
+  const dayRawSrc = rawOf(dayName);
+  const nightRawSrc = rawOf(nightName);
+  const useRaw = !!(def.raw || colorSlots.length > 0);
+
+  // Merge the day/night viewBoxes into one shared frame so both variants keep
+  // their baked relative size (nudged by each variant's scale offset).
+  let aspect = def.aspect ?? 1;
+  let day = dayUrl;
+  let night = nightUrl;
+  let dayRaw = dayRawSrc;
+  let nightRaw = nightRawSrc;
+  if (dayRawSrc && nightRawSrc) {
+    const frame = mergeArtFrame(
+      dayRawSrc,
+      nightRawSrc,
+      artScale(def.art?.day),
+      artScale(def.art?.night),
+      def.artAnchor,
+    );
+    if (frame) {
+      aspect = frame.aspect;
+      const natural = viewBoxOf(dayRawSrc)!;
+      const naturalNight = viewBoxOf(nightRawSrc)!;
+      if (!sameBox(frame.day, natural) || !sameBox(frame.night, naturalNight)) {
+        day = svgToDataUri(withViewBox(dayRawSrc, frame.day));
+        night = svgToDataUri(withViewBox(nightRawSrc, frame.night));
+        dayRaw = withViewBox(dayRawSrc, frame.day);
+        nightRaw = withViewBox(nightRawSrc, frame.night);
+      }
+    }
+  }
+
   const dayVisuals = artVisuals(def.art?.day);
   const nightVisuals = artVisuals(def.art?.night);
   const hasVariants = !!(dayVisuals.animations || dayVisuals.particles || nightVisuals.animations || nightVisuals.particles);
@@ -199,10 +338,10 @@ function toCatalogItem(def: AssetDefinition): CatalogItem | null {
     category: def.category ?? 'trinket',
     layer: def.layer ?? 'surface',
     band: def.band ?? 'floor',
-    aspect: def.aspect ?? 1,
+    aspect,
     defaultScale: def.defaultScale ?? 0.2,
     defaultRotation: def.defaultRotation ?? 0,
-    art: { day, night: urlOf(nightName) },
+    art: { day, night },
     colorSlots,
     attach: def.attach,
     host: def.host,
@@ -213,7 +352,8 @@ function toCatalogItem(def: AssetDefinition): CatalogItem | null {
     artVariants: hasVariants ? { day: dayVisuals, night: nightVisuals } : undefined,
     repeat: def.repeat,
     lights: def.lights,
-    raw,
+    raw: useRaw ? dayRaw : undefined,
+    rawNight: useRaw ? nightRaw : undefined,
   };
 }
 

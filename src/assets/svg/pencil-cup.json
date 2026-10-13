@@ -6,7 +6,7 @@
   "layer": "surface",
   "band": "floor",
   "aspect": 0.784,
-  "defaultScale": 0.32,
+  "defaultScale": 0.15,
   "attach": "furniture",
   "colorSlots": [
     {

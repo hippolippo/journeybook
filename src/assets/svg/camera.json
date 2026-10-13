@@ -1,0 +1,33 @@
+{
+  "kind": "room",
+  "id": "camera",
+  "label": "Film camera",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.269,
+  "defaultScale": 0.13,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#D68252",
+      "palette": ["#d68252", "#c97b5a", "#d98c8c", "#e8b4af", "#d9a94e", "#9caf88", "#7e8f6b", "#9dbfc9", "#6f97bb", "#cbc5c3", "#4a3b2e"],
+      "allowCustom": true
+    },
+    {
+      "id": "leather",
+      "label": "Leather",
+      "default": "#F9DCB7",
+      "palette": ["#f9dcb7", "#fce7ca", "#f2dcc2", "#fcf7ec", "#e8d9c0", "#cfe3c5", "#cfe0ea", "#f7c9c9", "#e6dcf0"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "classic", "label": "Classic", "colors": { "body": "#d68252", "leather": "#f9dcb7" } },
+    { "id": "graphite", "label": "Graphite", "colors": { "body": "#4a3b2e", "leather": "#cbc5c3" } },
+    { "id": "mint", "label": "Mint", "colors": { "body": "#7e8f6b", "leather": "#fcf7ec" } },
+    { "id": "rose", "label": "Rose", "colors": { "body": "#c97b5a", "leather": "#fce7ca" } }
+  ]
+}

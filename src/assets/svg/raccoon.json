@@ -8,19 +8,20 @@
   "art": {
     "day": {
       "src": "raccoon.svg",
+      "scale": 1.07,
       "particles": [
         {
           "name": "zzz",
           "count": 3,
           "duration": 4,
-          "size": 9,
+          "size": 12,
           "opacity": 0.85,
           "jitter": 0.5,
           "spawn": {
-            "x": 76,
-            "y": 14,
-            "spreadX": 5,
-            "spreadY": 4
+            "x": 40,
+            "y": 40,
+            "spreadX": 10,
+            "spreadY": 8
           },
           "shape": {
             "kind": "svg",
@@ -32,7 +33,7 @@
               {
                 "at": 0,
                 "opacity": 0,
-                "transform": "translate(0, 0) scale(0.6)"
+                "transform": "translate(0, 0) scale(1)"
               },
               {
                 "at": 20,
@@ -41,7 +42,7 @@
               {
                 "at": 100,
                 "opacity": 0,
-                "transform": "translate(35%, -120%) scale(1.25)"
+                "transform": "translate(150%, -300%) scale(1.8)"
               }
             ]
           }
@@ -51,6 +52,6 @@
     "night": "raccoon-night.svg"
   },
   "aspect": 1,
-  "defaultScale": 0.4,
+  "defaultScale": 0.44,
   "attach": "furniture"
 }

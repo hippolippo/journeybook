@@ -58,12 +58,26 @@ const placement = computed(() => {
   if (editor.viewport === 'desktop') return item.desktop;
   return item.mobile ?? item.desktop;
 });
+/** The item's catalog default, so the editor can show size relative to it. */
+const defaultScale = computed(() => selectedCat.value?.defaultScale ?? 1);
+/** Size relative to the item's default (1 = the size the asset was authored at). */
+const relSize = computed(() => {
+  const p = placement.value;
+  const d = defaultScale.value || 1;
+  return p ? Math.round((p.scale / d) * 100) / 100 : 1;
+});
 
 function num(value: string) {
   return Number(value);
 }
 function setPlacement(field: 'x' | 'y' | 'scale' | 'rotation', value: string) {
   if (selected.value) editor.updatePlacement(selected.value.id, editor.viewport, { [field]: num(value) });
+}
+/** Size is entered relative to the asset default, stored as an absolute scale. */
+function setSize(value: string) {
+  if (selected.value) {
+    editor.updatePlacement(selected.value.id, editor.viewport, { scale: num(value) * (defaultScale.value || 1) });
+  }
 }
 function setFlip(value: boolean) {
   if (selected.value) editor.updatePlacement(selected.value.id, editor.viewport, { flip: value });
@@ -171,6 +185,17 @@ function isTyping(t: EventTarget | null): boolean {
   if (!el) return false;
   return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable;
 }
+/** Height / width of the active room stage, so detached children keep their spot. */
+function stageAspect(): number {
+  const el = document.querySelector('.room') as HTMLElement | null;
+  const r = el?.getBoundingClientRect();
+  return r && r.width > 0 ? r.height / r.width : window.innerHeight / window.innerWidth;
+}
+function removeSelected() {
+  const sel = editor.selected;
+  if (!sel || sel.locked) return;
+  editor.removeItem(sel.id, stageAspect());
+}
 function onKey(e: KeyboardEvent) {
   if (!editor.isEditing || isTyping(e.target)) return;
   const mod = e.metaKey || e.ctrlKey;
@@ -189,7 +214,7 @@ function onKey(e: KeyboardEvent) {
   if (!sel || sel.locked) return;
   if (e.key === 'Backspace' || e.key === 'Delete') {
     e.preventDefault();
-    editor.removeItem(sel.id);
+    removeSelected();
     return;
   }
   const step = e.shiftKey ? 0.02 : 0.005;
@@ -440,8 +465,8 @@ async function saveNamed() {
         </div>
         <div class="field">
           <span>Size</span>
-          <input type="range" min="0.05" max="1.6" step="0.01" :value="placement.scale" @pointerdown="editor.snapshot()" @input="setPlacement('scale', ($event.target as HTMLInputElement).value)" />
-          <input type="number" min="0.05" max="1.6" step="0.01" :value="placement.scale" @change="editor.snapshot(); setPlacement('scale', ($event.target as HTMLInputElement).value)" />
+          <input type="range" min="0.1" max="3" step="0.05" :value="relSize" @pointerdown="editor.snapshot()" @input="setSize(($event.target as HTMLInputElement).value)" />
+          <input type="number" min="0.1" max="3" step="0.05" :value="relSize" @change="editor.snapshot(); setSize(($event.target as HTMLInputElement).value)" />
         </div>
         <div class="field">
           <span>Rot°</span>
@@ -492,7 +517,7 @@ async function saveNamed() {
 
         <div class="editor__row" style="margin-top: 0.4rem">
           <button class="btn btn--small" type="button" @click="editor.duplicateItem(selected.id)">Duplicate</button>
-          <button class="btn btn--small" type="button" :disabled="!!selected.locked" @click="editor.removeItem(selected.id)"><Icon name="trash" />Remove</button>
+          <button class="btn btn--small" type="button" :disabled="!!selected.locked" @click="removeSelected()"><Icon name="trash" />Remove</button>
         </div>
       </section>
       <section v-else>
