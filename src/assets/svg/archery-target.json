@@ -1,0 +1,38 @@
+{
+  "kind": "sticker",
+  "label": "Archery Target",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "target",
+      "label": "Target",
+      "default": "#FB8E8B",
+      "palette": [
+        "#FB8E8B",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": 0.1908
+        },
+        {
+          "color": "#F9C299",
+          "deltaL": 0.0908
+        },
+        {
+          "color": "#EF6D71",
+          "deltaL": -0.0704
+        }
+      ]
+    }
+  ]
+}

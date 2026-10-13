@@ -1,0 +1,44 @@
+{
+  "kind": "sticker",
+  "label": "Wax Seal Stamp",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "seal",
+      "label": "Seal",
+      "default": "#CC4948",
+      "palette": [
+        "#CC4948",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "emboss",
+      "label": "Emboss",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

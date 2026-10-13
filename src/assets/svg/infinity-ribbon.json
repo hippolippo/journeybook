@@ -1,0 +1,36 @@
+{
+  "kind": "sticker",
+  "label": "Infinity Ribbon",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "ribbon",
+      "label": "Ribbon",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#CCB7EE",
+          "deltaL": -0.0479
+        },
+        {
+          "color": "#F39FAA",
+          "deltaL": -0.0747
+        }
+      ]
+    }
+  ]
+}

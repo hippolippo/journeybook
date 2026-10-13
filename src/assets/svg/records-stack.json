@@ -1,0 +1,26 @@
+{
+  "kind": "room",
+  "id": "records-stack",
+  "label": "Record stack",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.262,
+  "defaultScale": 0.3,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "sleeve",
+      "label": "Sleeves",
+      "default": "#D8AD77",
+      "palette": ["#d8ad77", "#ca7957", "#959d7a", "#d3b184", "#c97b5a", "#d98c8c", "#d9a94e", "#9caf88", "#9dbfc9", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "vintage", "label": "Vintage", "colors": { "sleeve": "#d8ad77" } },
+    { "id": "clay", "label": "Clay", "colors": { "sleeve": "#ca7957" } },
+    { "id": "sage", "label": "Sage", "colors": { "sleeve": "#959d7a" } },
+    { "id": "cream", "label": "Cream", "colors": { "sleeve": "#fcf7ec" } }
+  ]
+}

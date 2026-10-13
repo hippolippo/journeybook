@@ -1,0 +1,92 @@
+{
+  "kind": "sticker",
+  "label": "Books",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "book1",
+      "label": "Book 1",
+      "default": "#F9D37B",
+      "palette": [
+        "#F9D37B",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "pages",
+      "label": "Pages",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "book2",
+      "label": "Book 2",
+      "default": "#9AD7B7",
+      "palette": [
+        "#9AD7B7",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "book3",
+      "label": "Book 3",
+      "default": "#FB8E8B",
+      "palette": [
+        "#FB8E8B",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

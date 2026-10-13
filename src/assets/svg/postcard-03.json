@@ -1,0 +1,40 @@
+{
+  "kind": "room",
+  "label": "Harbor postcard",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "wall",
+  "aspect": 1.011,
+  "defaultScale": 0.05,
+  "attach": "shelf",
+  "colorSlots": [
+    {
+      "id": "paper",
+      "label": "Paper",
+      "default": "#F6E6CB",
+      "palette": ["#F6E6CB", "#FCF7EC", "#E8D9C0", "#E4EEF4", "#E8B4AF", "#CFE3C5", "#D3B184", "#4A3B2E"],
+      "allowCustom": true
+    },
+    {
+      "id": "art",
+      "label": "Art",
+      "default": "#86987E",
+      "palette": ["#86987E", "#6A7145", "#7E8F6B", "#9DBFC9", "#6F97BB", "#EDCC9A", "#DA9270", "#B7A44A"],
+      "allowCustom": true
+    },
+    {
+      "id": "pin",
+      "label": "Push pin",
+      "default": "#EABD76",
+      "palette": ["#EABD76", "#D9A94E", "#B99362", "#D98C8C", "#9CAF88", "#9DBFC9", "#C97B5A", "#4A3B2E"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "harbor", "label": "Harbor", "colors": { "paper": "#F6E6CB", "art": "#86987E", "pin": "#EABD76" } },
+    { "id": "dusk", "label": "Dusk", "colors": { "paper": "#E8D9C0", "art": "#4A3B2E", "pin": "#D98C8C" } },
+    { "id": "sea", "label": "Sea", "colors": { "paper": "#E4EEF4", "art": "#6F97BB", "pin": "#9DBFC9" } },
+    { "id": "sunset", "label": "Sunset", "colors": { "paper": "#FCF7EC", "art": "#C97B5A", "pin": "#D9A94E" } },
+    { "id": "pine", "label": "Pine", "colors": { "paper": "#FCF7EC", "art": "#6A7145", "pin": "#B99362" } }
+  ]
+}

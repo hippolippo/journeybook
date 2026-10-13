@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+<rect x="7.742" y="34.48" width="64.53" height="11.04" fill="oklch(from var(--c-tape, #B6A4E4) calc(l + 0.1509) c h)" />
+  <path d="m7.74 34.48h6.83l-6.83 6.81v-6.81z" fill="var(--c-tape, #B6A4E4)" />
+  <path d="m21.75 34.48h7.51l-11.05 11.04h-7.51l11.05-11.04z" fill="var(--c-tape, #B6A4E4)" />
+  <path d="m36.66 34.48h7.48l-11.09 11.04h-7.51l11.12-11.04z" fill="var(--c-tape, #B6A4E4)" />
+  <path d="m51.5 34.48h7.47l-11 11.04h-7.57l11.1-11.04z" fill="var(--c-tape, #B6A4E4)" />
+  <path d="m66.25 34.48h6.02v1.58l-9.52 9.46h-7.54l11.04-11.04z" fill="var(--c-tape, #B6A4E4)" />
+  <path d="m72.27 43.27v2.25h-2.35l2.35-2.25z" fill="var(--c-tape, #B6A4E4)" />
+</svg>

@@ -1,0 +1,34 @@
+{
+  "kind": "room",
+  "id": "bedside-table",
+  "label": "Bedside table",
+  "category": "furniture",
+  "layer": "floor",
+  "band": "floor",
+  "aspect": 1.147,
+  "defaultScale": 0.7,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#8A9479",
+      "palette": ["#8a9479", "#9caf88", "#7e8f6b", "#cfe3c5", "#9dbfc9", "#6f97bb", "#d98c8c", "#e8b4af", "#d3b184", "#4a3b2e"],
+      "allowCustom": true
+    },
+    {
+      "id": "wood",
+      "label": "Top",
+      "default": "#D8B18B",
+      "palette": ["#d8b18b", "#d3b184", "#b99362", "#e8d9c0", "#8e5e42", "#fcf7ec", "#9caf88", "#9dbfc9"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "sage", "label": "Sage", "colors": { "body": "#8a9479", "wood": "#d8b18b" } },
+    { "id": "mint", "label": "Mint", "colors": { "body": "#cfe3c5", "wood": "#e8d9c0" } },
+    { "id": "sky", "label": "Sky", "colors": { "body": "#9dbfc9", "wood": "#d3b184" } },
+    { "id": "blush", "label": "Blush", "colors": { "body": "#e8b4af", "wood": "#d3b184" } },
+    { "id": "ink", "label": "Ink", "colors": { "body": "#4a3b2e", "wood": "#8e5e42" } }
+  ]
+}

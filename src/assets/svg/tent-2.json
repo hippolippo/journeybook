@@ -1,0 +1,66 @@
+{
+  "kind": "sticker",
+  "label": "Tent 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "tent",
+      "label": "Tent",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "trim",
+      "label": "Trim",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "accent",
+      "label": "Accent",
+      "default": "#FAB39E",
+      "palette": [
+        "#FAB39E",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

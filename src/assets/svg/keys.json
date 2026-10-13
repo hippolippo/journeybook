@@ -1,0 +1,62 @@
+{
+  "kind": "sticker",
+  "label": "Keys",
+  "aspect": 0.9888,
+  "colorSlots": [
+    {
+      "id": "keys",
+      "label": "Keys",
+      "default": "#C2C3C7",
+      "palette": [
+        "#C2C3C7",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#D8B06A",
+          "deltaL": -0.0396
+        },
+        {
+          "color": "#C9A35F",
+          "deltaL": -0.0821
+        },
+        {
+          "color": "#C59F5C",
+          "deltaL": -0.0946
+        },
+        {
+          "color": "#BC9653",
+          "deltaL": -0.1233
+        }
+      ]
+    },
+    {
+      "id": "tag",
+      "label": "Tag",
+      "default": "#C8D4D9",
+      "palette": [
+        "#C8D4D9",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

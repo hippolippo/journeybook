@@ -1,0 +1,68 @@
+{
+  "kind": "sticker",
+  "label": "Landscape",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "sky",
+      "label": "Sky",
+      "default": "#8EB0D6",
+      "palette": [
+        "#8EB0D6",
+        "#4A6C80",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#DCECF2",
+        "#9ED0FA",
+        "#3F9A88"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "water",
+      "label": "Water",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "hills",
+      "label": "Hills",
+      "default": "#AEC3A2",
+      "palette": [
+        "#AEC3A2",
+        "#3F7A63",
+        "#4E8A5F",
+        "#6DA35C",
+        "#7E9560",
+        "#B8935B",
+        "#C9A46F",
+        "#8A8278",
+        "#D06E45",
+        "#4A6C80",
+        "#6A97AD"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#B5DFC5",
+          "deltaL": 0.0743
+        }
+      ]
+    }
+  ]
+}

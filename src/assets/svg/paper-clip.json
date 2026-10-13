@@ -1,0 +1,26 @@
+{
+  "kind": "sticker",
+  "label": "Paper Clip",
+  "aspect": 0.8125,
+  "colorSlots": [
+    {
+      "id": "clip",
+      "label": "Clip",
+      "default": "#96A4AD",
+      "palette": [
+        "#96A4AD",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

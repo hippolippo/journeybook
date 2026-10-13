@@ -1,0 +1,39 @@
+{
+  "kind": "room",
+  "label": "Coast postcard",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "wall",
+  "aspect": 0.987,
+  "defaultScale": 0.05,
+  "attach": "shelf",
+  "colorSlots": [
+    {
+      "id": "paper",
+      "label": "Paper",
+      "default": "#F6E7CD",
+      "palette": ["#F6E7CD", "#FCF7EC", "#E8D9C0", "#E4EEF4", "#E8B4AF", "#CFE3C5", "#D3B184", "#4A3B2E"],
+      "allowCustom": true
+    },
+    {
+      "id": "art",
+      "label": "Art",
+      "default": "#91946B",
+      "palette": ["#91946B", "#7E8F6B", "#9CAF88", "#B7A44A", "#C97B5A", "#9DBFC9", "#6F97BB", "#D99171"],
+      "allowCustom": true
+    },
+    {
+      "id": "pin",
+      "label": "Push pin",
+      "default": "#DA9070",
+      "palette": ["#DA9070", "#D98C8C", "#E8B4AF", "#D9A94E", "#9CAF88", "#9DBFC9", "#B99362", "#4A3B2E"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "coast", "label": "Coast", "colors": { "paper": "#F6E7CD", "art": "#91946B", "pin": "#DA9070" } },
+    { "id": "sunset", "label": "Sunset", "colors": { "paper": "#FCF7EC", "art": "#C97B5A", "pin": "#D9A94E" } },
+    { "id": "ocean", "label": "Ocean", "colors": { "paper": "#E4EEF4", "art": "#6F97BB", "pin": "#9DBFC9" } },
+    { "id": "meadow", "label": "Meadow", "colors": { "paper": "#FCF7EC", "art": "#9CAF88", "pin": "#E8B4AF" } }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "sticker",
+  "label": "Bubble Heart",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "bubble",
+      "label": "Bubble",
+      "default": "#F5D7C5",
+      "palette": [
+        "#F5D7C5",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "heart",
+      "label": "Heart",
+      "default": "#FB8E8B",
+      "palette": [
+        "#FB8E8B",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

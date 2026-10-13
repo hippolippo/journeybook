@@ -545,25 +545,45 @@ function checkEntry(def, ctx) {
     if (!nightRaw) errors.push(`night art not found: ${nightRef}`);
   }
 
+  // Per-variant scale offsets (day/night share one merged frame at load).
+  for (const [when, variant] of [
+    ['day', def.art?.day],
+    ['night', def.art?.night],
+  ]) {
+    if (variant && typeof variant === 'object' && variant.scale !== undefined) {
+      if (typeof variant.scale !== 'number' || !(variant.scale > 0))
+        errors.push(`art.${when}.scale must be a positive number`);
+    }
+  }
+  const ANCHORS = [
+    'top-left',
+    'top-center',
+    'top-right',
+    'center-left',
+    'center',
+    'center-right',
+    'bottom-left',
+    'bottom-center',
+    'bottom-right',
+  ];
+  if (def.artAnchor !== undefined && !ANCHORS.includes(def.artAnchor))
+    errors.push(`invalid artAnchor "${def.artAnchor}" (expected one of: ${ANCHORS.join(', ')})`);
+
   // Aspect
+  const dayBox = dayRaw ? parseViewBox(dayRaw) : null;
+  const nightBox = nightRaw ? parseViewBox(nightRaw) : null;
+  const merged = !!(dayBox && nightBox);
   if (def.aspect === undefined) {
-    warnings.push('missing "aspect" (derive it from the SVG viewBox)');
+    if (!merged) warnings.push('missing "aspect" (derive it from the SVG viewBox)');
   } else if (typeof def.aspect !== 'number' || !(def.aspect > 0)) {
     errors.push('"aspect" must be a positive number');
-  } else if (dayRaw) {
-    const box = parseViewBox(dayRaw);
-    if (box && Math.abs(box.aspect - def.aspect) > 0.02)
-      warnings.push(
-        `aspect ${def.aspect} differs from the viewBox ratio (${round(box.aspect)} suggested)`,
-      );
+  } else if (dayBox && !merged && Math.abs(dayBox.aspect - def.aspect) > 0.02) {
+    warnings.push(
+      `aspect ${def.aspect} differs from the viewBox ratio (${round(dayBox.aspect)} suggested)`,
+    );
   }
-  if (nightRaw && dayRaw) {
-    const dayBox = parseViewBox(dayRaw);
-    const nightBox = parseViewBox(nightRaw);
-    if (dayBox && nightBox && Math.abs(dayBox.aspect - nightBox.aspect) > 0.01)
-      errors.push(
-        `night art viewBox ratio (${round(nightBox.aspect)}) must match day (${round(dayBox.aspect)})`,
-      );
+  if (merged) {
+    infos.push('day/night viewBoxes are merged into one shared frame at load ("aspect" is derived)');
   }
 
   // Recolor slots

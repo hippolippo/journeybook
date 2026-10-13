@@ -1,0 +1,37 @@
+{
+  "kind": "room",
+  "id": "desk-lamp",
+  "label": "Desk lamp",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.735,
+  "defaultScale": 0.5,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "shade",
+      "label": "Shade",
+      "default": "#8D9A74",
+      "palette": ["#8d9a74", "#9caf88", "#7e8f6b", "#cfe3c5", "#9dbfc9", "#6f97bb", "#d98c8c", "#e8b4af", "#d9a94e", "#4a3b2e"],
+      "allowCustom": true
+    },
+    {
+      "id": "stand",
+      "label": "Stand",
+      "default": "#DFB583",
+      "palette": ["#dfb583", "#d8b18b", "#d3b184", "#b99362", "#e8d9c0", "#8e5e42", "#9aa0a6", "#fcf7ec"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "sage", "label": "Sage", "colors": { "shade": "#8d9a74", "stand": "#dfb583" } },
+    { "id": "mint", "label": "Mint", "colors": { "shade": "#cfe3c5", "stand": "#e8d9c0" } },
+    { "id": "sky", "label": "Sky", "colors": { "shade": "#9dbfc9", "stand": "#9aa0a6" } },
+    { "id": "blush", "label": "Blush", "colors": { "shade": "#e8b4af", "stand": "#d3b184" } },
+    { "id": "ink", "label": "Ink", "colors": { "shade": "#4a3b2e", "stand": "#8e5e42" } }
+  ],
+  "lights": [
+    { "type": "lamp", "distribution": "semi", "x": 58, "y": 26, "radius": 260, "intensity": 1, "color": "#ffcf8a" }
+  ]
+}

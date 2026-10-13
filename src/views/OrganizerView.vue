@@ -8,7 +8,7 @@ import { useViewport } from '@/composables/useViewport';
 import { duplicateBook, exportBookData, importBookData } from '@/data/bookTransfer';
 import { stickerById } from '@/scrapbook/decor';
 
-const pressedFlower = stickerById('flower').art;
+const pressedFlower = stickerById('daisy').art;
 
 const props = defineProps<{ folderId?: string }>();
 const app = useAppStore();

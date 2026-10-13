@@ -1,0 +1,27 @@
+{
+  "kind": "room",
+  "id": "short-shelf",
+  "label": "Low shelf",
+  "category": "furniture",
+  "layer": "floor",
+  "band": "floor",
+  "aspect": 1.228,
+  "defaultScale": 0.6,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "wood",
+      "label": "Wood",
+      "default": "#A36131",
+      "palette": ["#a36131", "#a66434", "#a76435", "#8e5e42", "#b99362", "#d3b184", "#7e8f6b", "#6f97bb", "#c97b5a", "#4a3b2e"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "oak", "label": "Oak", "colors": { "wood": "#a36131" } },
+    { "id": "walnut", "label": "Walnut", "colors": { "wood": "#8e5e42" } },
+    { "id": "cream", "label": "Cream", "colors": { "wood": "#d3b184" } },
+    { "id": "mint", "label": "Mint", "colors": { "wood": "#7e8f6b" } },
+    { "id": "sky", "label": "Sky", "colors": { "wood": "#6f97bb" } }
+  ]
+}

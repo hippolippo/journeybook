@@ -8,6 +8,7 @@ import {
   centerPx,
   childCenterScreen,
   childPivotScreen,
+  detachedLoosePlacement,
   heightFrac,
   hostFrame,
   hostLocalToScreen,
@@ -143,5 +144,44 @@ describe('childPivotScreen', () => {
     const pivot = childPivotScreen(0, 1, frame);
     expect(pivot.x).toBeCloseTo(200 + frame.widthPx / 2, 4);
     expect(pivot.y).toBeCloseTo(1000 - frame.heightPx, 4);
+  });
+});
+
+describe('detachedLoosePlacement', () => {
+  const host = { band: 'floor' as Band, aspect: 2, defaultScale: 1 };
+  const child = { band: 'floor' as Band, aspect: 1.5, layer: 'floor' as const };
+
+  /** The child's on-screen centre while attached, using the px-space helpers. */
+  function attachedCenter(
+    hostPlacement: Placement,
+    childPlacement: Placement,
+    rect: StageRect,
+  ) {
+    const frame = hostFrame(host, hostPlacement, rect);
+    const { heightPct } = attachedPct(child, childPlacement, host);
+    const childH = (heightPct / 100) * frame.heightPx;
+    return childCenterScreen(childPlacement.ax ?? 0.5, childPlacement.ay ?? 0, childH, frame);
+  }
+
+  it('keeps the child centre when detached (axis-aligned host)', () => {
+    const rect: StageRect = { left: 0, top: 0, width: 800, height: 1000 };
+    const hp = place({ x: 0.3, y: 0.8, scale: 0.6, rotation: 0 });
+    const cp = place({ scale: 0.2, ax: 0.7, ay: 0.9, rotation: 0 });
+    const detached = detachedLoosePlacement(host, hp, child, cp, rect.height / rect.width);
+    const loose = centerPx('floor', 'floor', { ...cp, ...detached }, rect);
+    const attached = attachedCenter(hp, cp, rect);
+    expect(loose.x).toBeCloseTo(attached.x, 4);
+    expect(loose.y).toBeCloseTo(attached.y, 4);
+  });
+
+  it('keeps the child centre for a rotated host on a non-square stage', () => {
+    const rect: StageRect = { left: 0, top: 0, width: 1200, height: 900 };
+    const hp = place({ x: 0.42, y: 0.6, scale: 0.5, rotation: 24, flip: true });
+    const cp = place({ scale: 0.17, ax: 0.34, ay: 0.8, rotation: 0 });
+    const detached = detachedLoosePlacement(host, hp, child, cp, rect.height / rect.width);
+    const loose = centerPx('floor', 'floor', { ...cp, ...detached }, rect);
+    const attached = attachedCenter(hp, cp, rect);
+    expect(loose.x).toBeCloseTo(attached.x, 4);
+    expect(loose.y).toBeCloseTo(attached.y, 4);
   });
 });

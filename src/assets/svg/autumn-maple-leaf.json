@@ -1,0 +1,43 @@
+{
+  "kind": "sticker",
+  "label": "Autumn Maple Leaf",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "leaf",
+      "label": "Leaf",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FB8E8B",
+          "deltaL": -0.0908
+        },
+        {
+          "color": "#DA9D80",
+          "deltaL": -0.1061
+        },
+        {
+          "color": "#CF8580",
+          "deltaL": -0.1619
+        }
+      ]
+    }
+  ]
+}

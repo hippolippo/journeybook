@@ -1,0 +1,37 @@
+{
+  "kind": "room",
+  "id": "candle-warmer",
+  "label": "Candle warmer",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 0.695,
+  "defaultScale": 0.44,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "shade",
+      "label": "Shade",
+      "default": "#F0E1CA",
+      "palette": ["#f0e1ca", "#f0dec4", "#e8cbaa", "#ebc89b", "#fcf7ec", "#e8d9c0", "#cfe3c5", "#cfe0ea"],
+      "allowCustom": true
+    },
+    {
+      "id": "metal",
+      "label": "Metal",
+      "default": "#B99552",
+      "palette": ["#b99552", "#c79363", "#e6bc8e", "#d7a879", "#be8b5a", "#9aa0a6", "#7e8f6b", "#9dbfc9", "#4a3b2e"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "brass", "label": "Brass", "colors": { "shade": "#f0e1ca", "metal": "#b99552" } },
+    { "id": "pewter", "label": "Pewter", "colors": { "shade": "#fcf7ec", "metal": "#9aa0a6" } },
+    { "id": "sage", "label": "Sage", "colors": { "shade": "#e6efe4", "metal": "#7e8f6b" } },
+    { "id": "sky", "label": "Sky", "colors": { "shade": "#e4eef4", "metal": "#6f97bb" } },
+    { "id": "blush", "label": "Blush", "colors": { "shade": "#f7e6e2", "metal": "#c97b5a" } }
+  ],
+  "lights": [
+    { "type": "lamp", "distribution": "semi", "x": 50, "y": 68, "radius": 240, "intensity": 1, "color": "#ffcf8a" }
+  ]
+}

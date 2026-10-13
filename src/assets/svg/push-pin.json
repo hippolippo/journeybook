@@ -1,0 +1,51 @@
+{
+  "kind": "sticker",
+  "label": "Push Pin",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "stem",
+      "label": "Stem",
+      "default": "#7BCBFC",
+      "palette": [
+        "#7BCBFC",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "pin",
+      "label": "Pin",
+      "default": "#FB8E8B",
+      "palette": [
+        "#FB8E8B",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FE6DAE",
+          "deltaL": -0.0331
+        }
+      ]
+    }
+  ]
+}

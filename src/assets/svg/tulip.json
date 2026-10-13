@@ -1,0 +1,68 @@
+{
+  "kind": "sticker",
+  "label": "Tulip",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "leaves",
+      "label": "Leaves",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#869A72",
+          "deltaL": -0.069
+        }
+      ]
+    },
+    {
+      "id": "petals",
+      "label": "Petals",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FCC0C6",
+          "deltaL": 0.0747
+        },
+        {
+          "color": "#FB8E8B",
+          "deltaL": -0.0259
+        },
+        {
+          "color": "#EF6D71",
+          "deltaL": -0.0963
+        }
+      ]
+    }
+  ]
+}
