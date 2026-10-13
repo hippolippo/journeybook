@@ -1,0 +1,50 @@
+{
+  "kind": "sticker",
+  "label": "Apple 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "leaf",
+      "label": "Leaf",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "apple",
+      "label": "Apple",
+      "default": "#EF4F55",
+      "palette": [
+        "#EF4F55",
+        "#B23A2E",
+        "#C05A3A",
+        "#D9482F",
+        "#E0607E",
+        "#E5966F",
+        "#EFD070",
+        "#D9A94E",
+        "#7E9560",
+        "#8FB06A",
+        "#A4C07E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

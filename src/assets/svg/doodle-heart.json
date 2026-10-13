@@ -1,9 +1,0 @@
-{
-  "kind": "sticker",
-  "id": "heart",
-  "label": "Heart",
-  "tint": true,
-  "aspect": 1,
-  "defaultColor": "#d98c8c",
-  "art": { "day": "doodle-heart.svg" }
-}

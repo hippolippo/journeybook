@@ -1,0 +1,59 @@
+{
+  "kind": "sticker",
+  "label": "Watering Can",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "can",
+      "label": "Can",
+      "default": "#96A4AD",
+      "palette": [
+        "#96A4AD",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#509997",
+          "deltaL": -0.0751
+        },
+        {
+          "color": "#648EB2",
+          "deltaL": -0.0805
+        }
+      ]
+    },
+    {
+      "id": "handle",
+      "label": "Handle",
+      "default": "#CAC7C0",
+      "palette": [
+        "#CAC7C0",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#D2E6DE",
+          "deltaL": 0.0777
+        }
+      ]
+    }
+  ]
+}

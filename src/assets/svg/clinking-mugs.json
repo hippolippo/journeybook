@@ -1,0 +1,97 @@
+{
+  "kind": "sticker",
+  "label": "Clinking Mugs",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "mug1",
+      "label": "Mug 1",
+      "default": "#FAB39E",
+      "palette": [
+        "#FAB39E",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "mug2",
+      "label": "Mug 2",
+      "default": "#774C3E",
+      "palette": [
+        "#774C3E",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "foam",
+      "label": "Foam",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": -0.0335
+        },
+        {
+          "color": "#F5D7C5",
+          "deltaL": -0.0877
+        }
+      ]
+    },
+    {
+      "id": "leaves",
+      "label": "Leaves",
+      "default": "#AEC3A2",
+      "palette": [
+        "#AEC3A2",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

@@ -1,8 +1,0 @@
-{
-  "kind": "sticker",
-  "id": "paperclip",
-  "label": "Paperclip",
-  "tint": false,
-  "aspect": 1,
-  "art": { "day": "paperclip.svg" }
-}

@@ -1,0 +1,59 @@
+{
+  "kind": "sticker",
+  "label": "Minivan",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "tyres",
+      "label": "Tyres",
+      "default": "#332A24",
+      "palette": [
+        "#332A24",
+        "#1F1915",
+        "#2E241C",
+        "#3A3128",
+        "#4E433A",
+        "#655E55",
+        "#6E6259",
+        "#8A8278"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#B6D3DE",
+      "palette": ["#B6D3DE", "#4A6C80", "#6A97AD", "#8FB4C4", "#DCECF2", "#9ED0FA", "#3F9A88"],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#8FB4C4",
+          "deltaL": -0.1008
+        },
+        {
+          "color": "#688FA3",
+          "deltaL": -0.2204
+        }
+      ]
+    },
+    {
+      "id": "glass",
+      "label": "Glass",
+      "default": "#EFE1C9",
+      "palette": [
+        "#EFE1C9",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

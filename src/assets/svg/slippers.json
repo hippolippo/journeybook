@@ -1,0 +1,61 @@
+{
+  "kind": "sticker",
+  "label": "Slippers",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "slipper1",
+      "label": "Slipper 1",
+      "default": "#CCB7EE",
+      "palette": [
+        "#CCB7EE",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#9F8FC4",
+          "deltaL": -0.1323
+        }
+      ]
+    },
+    {
+      "id": "slipper2",
+      "label": "Slipper 2",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F5D7C5",
+          "deltaL": 0.036
+        }
+      ]
+    }
+  ]
+}

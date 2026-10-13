@@ -1,0 +1,29 @@
+{
+  "kind": "sticker",
+  "label": "Snowflake",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "snowflake",
+      "label": "Snowflake",
+      "default": "#A5BAF9",
+      "palette": [
+        "#A5BAF9",
+        "#4A6C80",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#DCECF2",
+        "#9ED0FA",
+        "#3F9A88"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#AACFF7",
+          "deltaL": 0.0455
+        }
+      ]
+    }
+  ]
+}

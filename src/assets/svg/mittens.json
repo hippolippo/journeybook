@@ -1,0 +1,65 @@
+{
+  "kind": "sticker",
+  "label": "Mittens",
+  "aspect": 1.3385,
+  "colorSlots": [
+    {
+      "id": "mittens",
+      "label": "Mittens",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "cuff",
+      "label": "Cuff",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "string",
+      "label": "String",
+      "default": "#F5D7C5",
+      "palette": [
+        "#F5D7C5",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "kind": "sticker",
+  "label": "Arcade Joystick",
+  "aspect": 0.9899,
+  "colorSlots": [
+    {
+      "id": "base",
+      "label": "Base",
+      "default": "#4E433A",
+      "palette": [
+        "#4E433A",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#332A24",
+          "deltaL": -0.0983
+        },
+        {
+          "color": "#1F1915",
+          "deltaL": -0.1722
+        }
+      ]
+    },
+    {
+      "id": "socket",
+      "label": "Socket",
+      "default": "#EFE1C9",
+      "palette": [
+        "#EFE1C9",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F8F0E0",
+          "deltaL": 0.0424
+        }
+      ]
+    },
+    {
+      "id": "ball",
+      "label": "Ball",
+      "default": "#D9482F",
+      "palette": [
+        "#D9482F",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

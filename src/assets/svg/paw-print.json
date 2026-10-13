@@ -1,0 +1,34 @@
+{
+  "kind": "sticker",
+  "label": "Paw Print",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "paw",
+      "label": "Paw",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FAB39E",
+          "deltaL": -0.0253
+        }
+      ]
+    }
+  ]
+}

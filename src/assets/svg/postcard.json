@@ -1,8 +1,0 @@
-{
-  "kind": "sticker",
-  "id": "postcard",
-  "label": "Postcard",
-  "tint": false,
-  "aspect": 1.5,
-  "art": { "day": "postcard.svg" }
-}
