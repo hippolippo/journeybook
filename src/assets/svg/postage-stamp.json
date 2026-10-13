@@ -1,0 +1,49 @@
+{
+  "kind": "sticker",
+  "label": "Postage Stamp",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "stamp",
+      "label": "Stamp",
+      "default": "#B5DFC5",
+      "palette": [
+        "#B5DFC5",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "border",
+      "label": "Border",
+      "default": "#B6A4E4",
+      "palette": [
+        "#B6A4E4",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

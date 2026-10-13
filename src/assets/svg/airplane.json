@@ -1,0 +1,42 @@
+{
+  "kind": "sticker",
+  "label": "Airplane",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#F8F0E0",
+      "palette": [
+        "#F8F0E0",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "accents",
+      "label": "Accents",
+      "default": "#688FA3",
+      "palette": [
+        "#688FA3",
+        "#4A6C80",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#DCECF2",
+        "#9ED0FA",
+        "#3F9A88"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

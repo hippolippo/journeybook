@@ -1,0 +1,50 @@
+{
+  "kind": "sticker",
+  "label": "Pepperoni Pizza",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "crust",
+      "label": "Crust",
+      "default": "#FDCB75",
+      "palette": [
+        "#FDCB75",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FEE9B3",
+          "deltaL": 0.0695
+        }
+      ]
+    },
+    {
+      "id": "pepperoni",
+      "label": "Pepperoni",
+      "default": "#EF6254",
+      "palette": [
+        "#EF6254",
+        "#B23A2E",
+        "#C05A3A",
+        "#D9482F",
+        "#E0607E",
+        "#E5966F",
+        "#EFD070",
+        "#D9A94E",
+        "#7E9560",
+        "#8FB06A",
+        "#A4C07E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

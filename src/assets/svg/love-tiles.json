@@ -1,0 +1,146 @@
+{
+  "kind": "sticker",
+  "label": "Love Tiles",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "background",
+      "label": "Background",
+      "default": "#FCE5BA",
+      "palette": [
+        "#FCE5BA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "tile1",
+      "label": "Tile 1",
+      "default": "#BB7E59",
+      "palette": [
+        "#BB7E59",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F9D37B",
+          "deltaL": 0.2338
+        }
+      ]
+    },
+    {
+      "id": "tile2",
+      "label": "Tile 2",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F18E45",
+          "deltaL": -0.1243
+        }
+      ]
+    },
+    {
+      "id": "tile3",
+      "label": "Tile 3",
+      "default": "#EF6D71",
+      "palette": [
+        "#EF6D71",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "tile4",
+      "label": "Tile 4",
+      "default": "#B5DFC5",
+      "palette": [
+        "#B5DFC5",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "tile5",
+      "label": "Tile 5",
+      "default": "#869A72",
+      "palette": [
+        "#869A72",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

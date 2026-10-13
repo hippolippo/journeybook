@@ -1,0 +1,48 @@
+{
+  "kind": "sticker",
+  "label": "Film",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "strip",
+      "label": "Film",
+      "default": "#282828",
+      "palette": [
+        "#282828",
+        "#1F1915",
+        "#2E241C",
+        "#3A3128",
+        "#4E433A",
+        "#655E55",
+        "#6E6259",
+        "#8A8278"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "perfs",
+      "label": "Perforations",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": -0.0335
+        }
+      ]
+    }
+  ]
+}

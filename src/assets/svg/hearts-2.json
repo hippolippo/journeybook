@@ -1,0 +1,25 @@
+{
+  "kind": "sticker",
+  "label": "Hearts 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "heart",
+      "label": "Heart",
+      "default": "#FB0605",
+      "palette": [
+        "#FB0605",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

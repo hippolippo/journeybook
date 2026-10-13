@@ -1,0 +1,112 @@
+{
+  "kind": "sticker",
+  "label": "Ice Cream Cone",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "cone",
+      "label": "Cone",
+      "default": "#E8B16B",
+      "palette": [
+        "#E8B16B",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F9D37B",
+          "deltaL": 0.0847
+        }
+      ]
+    },
+    {
+      "id": "scoop",
+      "label": "Scoop",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#F6C9D4",
+        "#F0A0B4",
+        "#E0607E",
+        "#D9A94E",
+        "#E5966F",
+        "#C9A46F",
+        "#987444",
+        "#F8F0E0",
+        "#8E6FC0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "stem",
+      "label": "Stem",
+      "default": "#869A72",
+      "palette": [
+        "#869A72",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "cherry",
+      "label": "Cherry",
+      "default": "#EF4F55",
+      "palette": [
+        "#EF4F55",
+        "#B23A2E",
+        "#C05A3A",
+        "#D9482F",
+        "#E0607E",
+        "#E5966F",
+        "#EFD070",
+        "#D9A94E",
+        "#7E9560",
+        "#8FB06A",
+        "#A4C07E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "highlight",
+      "label": "Highlight",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

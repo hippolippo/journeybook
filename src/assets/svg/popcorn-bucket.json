@@ -1,0 +1,53 @@
+{
+  "kind": "sticker",
+  "label": "Popcorn Bucket",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "popcorn",
+      "label": "Popcorn",
+      "default": "#FCE5BA",
+      "palette": [
+        "#FCE5BA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": 0.0236
+        },
+        {
+          "color": "#F9D37B",
+          "deltaL": -0.0489
+        }
+      ]
+    },
+    {
+      "id": "bucket",
+      "label": "Bucket",
+      "default": "#EF4F55",
+      "palette": [
+        "#EF4F55",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "sticker",
+  "label": "Rounded Oak Leaf",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "leaf",
+      "label": "Leaf",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#B5DFC5",
+          "deltaL": 0.1379
+        }
+      ]
+    },
+    {
+      "id": "vein",
+      "label": "Vein",
+      "default": "#FDE98A",
+      "palette": [
+        "#FDE98A",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

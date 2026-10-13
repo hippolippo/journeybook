@@ -1,0 +1,68 @@
+{
+  "kind": "sticker",
+  "label": "Shipping Tag",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "tag",
+      "label": "Tag",
+      "default": "#D4AA83",
+      "palette": [
+        "#D4AA83",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "string",
+      "label": "String",
+      "default": "#E29590",
+      "palette": [
+        "#E29590",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#DD928C",
+          "deltaL": -0.0119
+        }
+      ]
+    },
+    {
+      "id": "hole",
+      "label": "Hole",
+      "default": "#000000",
+      "palette": [
+        "#000000",
+        "#1F1915",
+        "#2E241C",
+        "#3A3128",
+        "#4E433A",
+        "#655E55",
+        "#6E6259",
+        "#8A8278"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

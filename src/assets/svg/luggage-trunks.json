@@ -1,0 +1,121 @@
+{
+  "kind": "sticker",
+  "label": "Luggage Trunks",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#C09E62",
+      "palette": [
+        "#C09E62",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#DA9D80",
+          "deltaL": 0.0308
+        },
+        {
+          "color": "#CF8580",
+          "deltaL": -0.0251
+        },
+        {
+          "color": "#BB7E59",
+          "deltaL": -0.0695
+        }
+      ]
+    },
+    {
+      "id": "panels",
+      "label": "Panels",
+      "default": "#F5D7C5",
+      "palette": [
+        "#F5D7C5",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": 0.0542
+        },
+        {
+          "color": "#FCE5BA",
+          "deltaL": 0.0306
+        },
+        {
+          "color": "#F9C299",
+          "deltaL": -0.0458
+        }
+      ]
+    },
+    {
+      "id": "straps",
+      "label": "Straps",
+      "default": "#96A4AD",
+      "palette": [
+        "#96A4AD",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#96B187",
+          "deltaL": 0.0182
+        },
+        {
+          "color": "#6D9163",
+          "deltaL": -0.0933
+        }
+      ]
+    },
+    {
+      "id": "trim",
+      "label": "Trim",
+      "default": "#869A72",
+      "palette": [
+        "#869A72",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

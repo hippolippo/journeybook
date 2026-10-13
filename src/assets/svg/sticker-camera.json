@@ -1,0 +1,125 @@
+{
+  "kind": "sticker",
+  "label": "Camera",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#D2B27F",
+      "palette": [
+        "#D2B27F",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#B8935B",
+          "deltaL": -0.0944
+        },
+        {
+          "color": "#987444",
+          "deltaL": -0.1959
+        },
+        {
+          "color": "#77592F",
+          "deltaL": -0.2939
+        }
+      ]
+    },
+    {
+      "id": "lens",
+      "label": "Lens",
+      "default": "#4E433A",
+      "palette": [
+        "#4E433A",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#332A24",
+          "deltaL": -0.0983
+        },
+        {
+          "color": "#1F1915",
+          "deltaL": -0.1722
+        }
+      ]
+    },
+    {
+      "id": "glass",
+      "label": "Glass",
+      "default": "#EFE1C9",
+      "palette": [
+        "#EFE1C9",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F8F0E0",
+          "deltaL": 0.0424
+        }
+      ]
+    },
+    {
+      "id": "shutter",
+      "label": "Shutter",
+      "default": "#D06E45",
+      "palette": [
+        "#D06E45",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "flash",
+      "label": "Flash",
+      "default": "#DCAE4A",
+      "palette": [
+        "#DCAE4A",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

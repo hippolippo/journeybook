@@ -1,0 +1,65 @@
+{
+  "kind": "sticker",
+  "label": "Apple Wedge",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "flesh",
+      "label": "Flesh",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "skin",
+      "label": "Skin",
+      "default": "#EF4F55",
+      "palette": [
+        "#EF4F55",
+        "#B23A2E",
+        "#C05A3A",
+        "#D9482F",
+        "#E0607E",
+        "#E5966F",
+        "#EFD070",
+        "#D9A94E",
+        "#7E9560",
+        "#8FB06A",
+        "#A4C07E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "core",
+      "label": "Core",
+      "default": "#9F6245",
+      "palette": [
+        "#9F6245",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

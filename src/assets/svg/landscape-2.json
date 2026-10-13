@@ -1,0 +1,52 @@
+{
+  "kind": "sticker",
+  "label": "Landscape 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "sky",
+      "label": "Sky",
+      "default": "#AACFF7",
+      "palette": [
+        "#AACFF7",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "hills",
+      "label": "Hills",
+      "default": "#D2E6DE",
+      "palette": [
+        "#D2E6DE",
+        "#3F7A63",
+        "#4E8A5F",
+        "#6DA35C",
+        "#7E9560",
+        "#B8935B",
+        "#C9A46F",
+        "#8A8278",
+        "#D06E45",
+        "#4A6C80",
+        "#6A97AD"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#AEC3A2",
+          "deltaL": -0.1156
+        }
+      ]
+    }
+  ]
+}

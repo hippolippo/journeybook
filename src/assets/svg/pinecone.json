@@ -1,0 +1,83 @@
+{
+  "kind": "sticker",
+  "label": "Pinecone",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "pinecone",
+      "label": "Pinecone",
+      "default": "#DCA581",
+      "palette": [
+        "#DCA581",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#D69B73",
+          "deltaL": -0.0279
+        },
+        {
+          "color": "#D59B74",
+          "deltaL": -0.0288
+        },
+        {
+          "color": "#D59A72",
+          "deltaL": -0.0311
+        },
+        {
+          "color": "#D29871",
+          "deltaL": -0.0383
+        },
+        {
+          "color": "#C18563",
+          "deltaL": -0.0957
+        },
+        {
+          "color": "#B8805D",
+          "deltaL": -0.1166
+        },
+        {
+          "color": "#B47A58",
+          "deltaL": -0.1336
+        },
+        {
+          "color": "#AD7150",
+          "deltaL": -0.1603
+        },
+        {
+          "color": "#A66B4A",
+          "deltaL": -0.1813
+        },
+        {
+          "color": "#9B6143",
+          "deltaL": -0.2152
+        },
+        {
+          "color": "#965D40",
+          "deltaL": -0.2297
+        },
+        {
+          "color": "#925A3C",
+          "deltaL": -0.2413
+        },
+        {
+          "color": "#8E563A",
+          "deltaL": -0.2544
+        },
+        {
+          "color": "#8E5539",
+          "deltaL": -0.2565
+        }
+      ]
+    }
+  ]
+}

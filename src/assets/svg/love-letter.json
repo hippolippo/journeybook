@@ -1,0 +1,94 @@
+{
+  "kind": "sticker",
+  "label": "Love Letter",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "paper",
+      "label": "Paper",
+      "default": "#FDEED9",
+      "palette": [
+        "#FDEED9",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "seal",
+      "label": "Seal",
+      "default": "#D24A47",
+      "palette": [
+        "#D24A47",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F9D8D2",
+          "deltaL": 0.3121
+        }
+      ]
+    },
+    {
+      "id": "flap",
+      "label": "Flap",
+      "default": "#D8A293",
+      "palette": [
+        "#D8A293",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#C1403E",
+          "deltaL": -0.2037
+        }
+      ]
+    },
+    {
+      "id": "edge",
+      "label": "Edge",
+      "default": "#F3D2BE",
+      "palette": [
+        "#F3D2BE",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

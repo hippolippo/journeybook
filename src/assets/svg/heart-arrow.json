@@ -1,0 +1,64 @@
+{
+  "kind": "sticker",
+  "label": "Heart Arrow",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "arrow",
+      "label": "Arrow",
+      "default": "#8EB0D6",
+      "palette": [
+        "#8EB0D6",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "heart",
+      "label": "Heart",
+      "default": "#FB8E8B",
+      "palette": [
+        "#FB8E8B",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "feather",
+      "label": "Feather",
+      "default": "#F9D37B",
+      "palette": [
+        "#F9D37B",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

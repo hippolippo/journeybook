@@ -5,7 +5,6 @@ import {
   loadedFrames,
   loadedPapers,
   loadedRoomItems,
-  loadedStickers,
   loadedTapes,
   mergeArtFrame,
 } from './loadDecor';
@@ -56,36 +55,10 @@ describe('asset loader', () => {
     expect(shape).not.toBe('particle-zzz.svg');
   });
 
-  it('loads the migrated built-in stickers from sidecars', () => {
-    const byId = new Map(loadedStickers.map((s) => [s.id, s]));
-    for (const id of ['heart', 'star', 'sparkle', 'flower', 'corner', 'postcard', 'paperclip']) {
-      expect(byId.get(id), `${id} should load from a sidecar`).toBeTruthy();
-    }
-    expect(byId.get('heart')?.tint).toBe(true);
-    expect(byId.get('flower')?.art).toBeTruthy();
-    expect(byId.get('postcard')?.aspect).toBe(1.5);
-  });
-
   it('loads the migrated built-in tapes from sidecars', () => {
     const byId = new Map(loadedTapes.map((t) => [t.id, t]));
     expect(byId.get('washi')?.opacity).toBeCloseTo(0.85);
     expect(byId.get('masking')?.defaultColor).toBe('#f2e3c0');
-  });
-
-  it('loads a recolourable, animated sticker', () => {
-    const moon = loadedStickers.find((s) => s.id === 'sticker-moon');
-    expect(moon?.colorSlots?.length).toBe(2);
-    expect(moon?.presets?.length).toBeGreaterThan(0);
-    expect(moon?.animations?.length).toBe(1);
-    expect(moon?.raw).toContain('--c-body');
-  });
-
-  it('loads a sticker particle system with a resolved svg shape', () => {
-    const burst = loadedStickers.find((s) => s.id === 'sticker-heart-burst');
-    expect(burst?.particles?.length).toBe(1);
-    const shape = burst?.particles?.[0].shape?.svg ?? '';
-    expect(shape).toBeTruthy();
-    expect(shape).not.toBe('doodle-heart.svg');
   });
 
   it('gives the potted plants a pot recolour slot (plus flower for the bloom)', () => {

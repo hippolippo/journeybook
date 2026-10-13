@@ -1,0 +1,65 @@
+{
+  "kind": "sticker",
+  "label": "Tent",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "tent",
+      "label": "Tent",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#D2E6DE",
+          "deltaL": 0.1791
+        },
+        {
+          "color": "#AEC3A2",
+          "deltaL": 0.0636
+        },
+        {
+          "color": "#869A72",
+          "deltaL": -0.069
+        },
+        {
+          "color": "#6D9163",
+          "deltaL": -0.1115
+        }
+      ]
+    },
+    {
+      "id": "trim",
+      "label": "Trim",
+      "default": "#FCE5BA",
+      "palette": [
+        "#FCE5BA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

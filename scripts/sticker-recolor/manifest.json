@@ -1,0 +1,6336 @@
+{
+  "acorn": {
+    "source": "acorn.svg",
+    "slots": [
+      {
+        "id": "acorn",
+        "label": "Acorn",
+        "default": "#8F4A25",
+        "palette": [
+          "#8F4A25",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#CD8752",
+            "deltaL": 0.1972
+          },
+          {
+            "color": "#A0552F",
+            "deltaL": 0.0448
+          },
+          {
+            "color": "#954F2A",
+            "deltaL": 0.018
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#954F2A": "#954F2A",
+      "#A0552F": "#A0552F",
+      "#CD8752": "#CD8752",
+      "#8F4A25": "#8F4A25"
+    }
+  },
+  "airplane": {
+    "source": "airplane.svg",
+    "slots": [
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#F8F0E0",
+        "palette": [
+          "#F8F0E0",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "accents",
+        "label": "Accents",
+        "default": "#688FA3",
+        "palette": [
+          "#688FA3",
+          "#4A6C80",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#DCECF2",
+          "#9ED0FA",
+          "#3F9A88"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#C6B7EB": "#688FA3",
+      "#B1D5FE": "#F8F0E0"
+    }
+  },
+  "apple-2": {
+    "source": "apple-2.svg",
+    "slots": [
+      {
+        "id": "leaf",
+        "label": "Leaf",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "apple",
+        "label": "Apple",
+        "default": "#EF4F55",
+        "palette": [
+          "#EF4F55",
+          "#B23A2E",
+          "#C05A3A",
+          "#D9482F",
+          "#E0607E",
+          "#E5966F",
+          "#EFD070",
+          "#D9A94E",
+          "#7E9560",
+          "#8FB06A",
+          "#A4C07E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#8FB576": "#96B187",
+      "#ED5457": "#EF4F55"
+    }
+  },
+  "apple-wedge": {
+    "source": "apple-wedge.svg",
+    "slots": [
+      {
+        "id": "flesh",
+        "label": "Flesh",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "skin",
+        "label": "Skin",
+        "default": "#EF4F55",
+        "palette": [
+          "#EF4F55",
+          "#B23A2E",
+          "#C05A3A",
+          "#D9482F",
+          "#E0607E",
+          "#E5966F",
+          "#EFD070",
+          "#D9A94E",
+          "#7E9560",
+          "#8FB06A",
+          "#A4C07E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "core",
+        "label": "Core",
+        "default": "#9F6245",
+        "palette": [
+          "#9F6245",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FEEFCF": "#FBEED8",
+      "#F7575D": "#EF4F55",
+      "#9B6744": "#9F6245"
+    }
+  },
+  "apple": {
+    "source": "apple.svg",
+    "slots": [
+      {
+        "id": "apple",
+        "label": "Apple",
+        "default": "#6D9163",
+        "palette": [
+          "#6D9163",
+          "#B23A2E",
+          "#C05A3A",
+          "#D9482F",
+          "#E0607E",
+          "#E5966F",
+          "#EFD070",
+          "#D9A94E",
+          "#7E9560",
+          "#8FB06A",
+          "#A4C07E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#A4DE5A",
+            "deltaL": 0.2169
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#66974F": "#6D9163",
+      "#A4DE5A": "#A4DE5A"
+    }
+  },
+  "arcade-joystick": {
+    "source": "arcade-joystick.svg",
+    "slots": [
+      {
+        "id": "base",
+        "label": "Base",
+        "default": "#4E433A",
+        "palette": [
+          "#4E433A",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#332A24",
+            "deltaL": -0.0983
+          },
+          {
+            "color": "#1F1915",
+            "deltaL": -0.1722
+          }
+        ]
+      },
+      {
+        "id": "socket",
+        "label": "Socket",
+        "default": "#EFE1C9",
+        "palette": [
+          "#EFE1C9",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F8F0E0",
+            "deltaL": 0.0424
+          }
+        ]
+      },
+      {
+        "id": "ball",
+        "label": "Ball",
+        "default": "#D9482F",
+        "palette": [
+          "#D9482F",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#7DC7B9": "#4E433A",
+      "#A2DDD0": "#332A24",
+      "#CBEFE3": "#EFE1C9",
+      "#94D5C9": "#1F1915",
+      "#B1E4CB": "#D9482F",
+      "#E4F6F0": "#F8F0E0"
+    }
+  },
+  "archery-target": {
+    "source": "archery-target.svg",
+    "slots": [
+      {
+        "id": "target",
+        "label": "Target",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.1908
+          },
+          {
+            "color": "#F9C299",
+            "deltaL": 0.0908
+          },
+          {
+            "color": "#EF6D71",
+            "deltaL": -0.0704
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FD9286": "#FB8E8B",
+      "#FDC896": "#F9C299",
+      "#FEF1DC": "#FBEED8",
+      "#F06C76": "#EF6D71"
+    }
+  },
+  "armchair": {
+    "source": "armchair.svg",
+    "slots": [
+      {
+        "id": "frame",
+        "label": "Frame",
+        "default": "#D9A680",
+        "palette": [
+          "#D9A680",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "upholstery",
+        "label": "Upholstery",
+        "default": "#8EA088",
+        "palette": [
+          "#8EA088",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D9E1CE",
+            "deltaL": 0.2137
+          },
+          {
+            "color": "#C1CEB6",
+            "deltaL": 0.1501
+          },
+          {
+            "color": "#BAC7B1",
+            "deltaL": 0.1288
+          },
+          {
+            "color": "#ACBBA5",
+            "deltaL": 0.0895
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#D9A680": "#D9A680",
+      "#ACBBA5": "#ACBBA5",
+      "#C1CEB6": "#C1CEB6",
+      "#D9E1CE": "#D9E1CE",
+      "#BAC7B1": "#BAC7B1",
+      "#8EA088": "#8EA088"
+    }
+  },
+  "autumn-maple-leaf": {
+    "source": "autumn-maple-leaf.svg",
+    "slots": [
+      {
+        "id": "leaf",
+        "label": "Leaf",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FB8E8B",
+            "deltaL": -0.0908
+          },
+          {
+            "color": "#DA9D80",
+            "deltaL": -0.1061
+          },
+          {
+            "color": "#CF8580",
+            "deltaL": -0.1619
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#F3C182": "#F9C299",
+      "#DE8785": "#CF8580",
+      "#EE9E89": "#FB8E8B",
+      "#EA9A8D": "#DA9D80"
+    }
+  },
+  "beach-umbrella": {
+    "source": "beach-umbrella.svg",
+    "slots": [
+      {
+        "id": "panel1",
+        "label": "Panel 1",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FAFBFA",
+            "deltaL": 0.0335
+          }
+        ]
+      },
+      {
+        "id": "panel2",
+        "label": "Panel 2",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "panel3",
+        "label": "Panel 3",
+        "default": "#B5DFC5",
+        "palette": [
+          "#B5DFC5",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "panel4",
+        "label": "Panel 4",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCEBCD": "#FBEED8",
+      "#FF988F": "#FB8E8B",
+      "#A4DEDE": "#B5DFC5",
+      "#FFE289": "#FDE98A",
+      "#FDF3E4": "#FAFBFA"
+    }
+  },
+  "binder-clip": {
+    "source": "binder-clip.svg",
+    "slots": [
+      {
+        "id": "clip",
+        "label": "Clip",
+        "default": "#171717",
+        "palette": [
+          "#171717",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#CAC7C0",
+            "deltaL": 0.6255
+          },
+          {
+            "color": "#282828",
+            "deltaL": 0.0722
+          },
+          {
+            "color": "#0B0B0B",
+            "deltaL": -0.055
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#0D0D0D": "#0B0B0B",
+      "#171717": "#171717",
+      "#BEC3C8": "#CAC7C0",
+      "#1A1A1A": "#282828"
+    }
+  },
+  "binoculars": {
+    "source": "binoculars.svg",
+    "slots": [
+      {
+        "id": "barrel",
+        "label": "Barrel",
+        "default": "#0B0B0B",
+        "palette": [
+          "#0B0B0B",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#171717",
+            "deltaL": 0.055
+          }
+        ]
+      },
+      {
+        "id": "lens",
+        "label": "Lens",
+        "default": "#AACFF7",
+        "palette": [
+          "#AACFF7",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "glass",
+        "label": "Glass",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#1B1B1B": "#171717",
+      "#0F0F0F": "#0B0B0B",
+      "#A9D1F2": "#AACFF7",
+      "#F5F5F5": "#FAFBFA"
+    }
+  },
+  "boarding-pass": {
+    "source": "boarding-pass.svg",
+    "slots": [
+      {
+        "id": "paper",
+        "label": "Paper",
+        "default": "#D2E6DE",
+        "palette": [
+          "#D2E6DE",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stripe1",
+        "label": "Stripe 1",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stripe2",
+        "label": "Stripe 2",
+        "default": "#91CABE",
+        "palette": [
+          "#91CABE",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "text",
+        "label": "Text",
+        "default": "#393D47",
+        "palette": [
+          "#393D47",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#D3F0E3": "#D2E6DE",
+      "#F9BDBF": "#FCC0C6",
+      "#393D47": "#393D47",
+      "#82CAB0": "#91CABE"
+    }
+  },
+  "books": {
+    "source": "books.svg",
+    "slots": [
+      {
+        "id": "book1",
+        "label": "Book 1",
+        "default": "#F9D37B",
+        "palette": [
+          "#F9D37B",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "pages",
+        "label": "Pages",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "book2",
+        "label": "Book 2",
+        "default": "#9AD7B7",
+        "palette": [
+          "#9AD7B7",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "book3",
+        "label": "Book 3",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCDD76": "#F9D37B",
+      "#FAF2E3": "#FBEED8",
+      "#96D6B4": "#9AD7B7",
+      "#FD928A": "#FB8E8B"
+    }
+  },
+  "bubble-heart": {
+    "source": "bubble-heart.svg",
+    "slots": [
+      {
+        "id": "bubble",
+        "label": "Bubble",
+        "default": "#F5D7C5",
+        "palette": [
+          "#F5D7C5",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "heart",
+        "label": "Heart",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCD1BD": "#F5D7C5",
+      "#F98D8F": "#FB8E8B"
+    }
+  },
+  "bunting-garland": {
+    "source": "bunting-garland.svg",
+    "slots": [
+      {
+        "id": "flag1",
+        "label": "Flag 1",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "flag2",
+        "label": "Flag 2",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "flag3",
+        "label": "Flag 3",
+        "default": "#B5DFC5",
+        "palette": [
+          "#B5DFC5",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "flag4",
+        "label": "Flag 4",
+        "default": "#CCB7EE",
+        "palette": [
+          "#CCB7EE",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#B6A4E4",
+            "deltaL": -0.0586
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDB7C4": "#FCC0C6",
+      "#FFF0A2": "#FDE98A",
+      "#A6E8BE": "#B5DFC5",
+      "#D6BAED": "#CCB7EE",
+      "#BAA6DE": "#B6A4E4"
+    }
+  },
+  "sticker-camera": {
+    "source": "camera.svg",
+    "slots": [
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#D2B27F",
+        "palette": [
+          "#D2B27F",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#B8935B",
+            "deltaL": -0.0944
+          },
+          {
+            "color": "#987444",
+            "deltaL": -0.1959
+          },
+          {
+            "color": "#77592F",
+            "deltaL": -0.2939
+          }
+        ]
+      },
+      {
+        "id": "lens",
+        "label": "Lens",
+        "default": "#4E433A",
+        "palette": [
+          "#4E433A",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#332A24",
+            "deltaL": -0.0983
+          },
+          {
+            "color": "#1F1915",
+            "deltaL": -0.1722
+          }
+        ]
+      },
+      {
+        "id": "glass",
+        "label": "Glass",
+        "default": "#EFE1C9",
+        "palette": [
+          "#EFE1C9",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F8F0E0",
+            "deltaL": 0.0424
+          }
+        ]
+      },
+      {
+        "id": "shutter",
+        "label": "Shutter",
+        "default": "#D06E45",
+        "palette": [
+          "#D06E45",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "flash",
+        "label": "Flash",
+        "default": "#DCAE4A",
+        "palette": [
+          "#DCAE4A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#C7EBDB": "#D2B27F",
+      "#AFDCCB": "#B8935B",
+      "#89CFCC": "#4E433A",
+      "#C2EDE7": "#EFE1C9",
+      "#509997": "#332A24",
+      "#335B59": "#1F1915",
+      "#91C9C2": "#77592F",
+      "#A1D8C2": "#987444",
+      "#FCAA88": "#D06E45",
+      "#FDDA89": "#DCAE4A",
+      "#FDE9C1": "#F8F0E0"
+    }
+  },
+  "camper-van": {
+    "source": "camper-van.svg",
+    "slots": [
+      {
+        "id": "tyres",
+        "label": "Tyres",
+        "default": "#4E433A",
+        "palette": [
+          "#4E433A",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#332A24",
+            "deltaL": -0.0983
+          }
+        ]
+      },
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#F8F0E0",
+        "palette": [
+          "#F8F0E0",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#EFE1C9",
+            "deltaL": -0.0424
+          }
+        ]
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#D06E45",
+        "palette": [
+          "#D06E45",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#535557": "#332A24",
+      "#F3E9D3": "#F8F0E0",
+      "#FAF7F2": "#EFE1C9",
+      "#ABCAB2": "#D06E45",
+      "#5B5E5F": "#4E433A"
+    }
+  },
+  "campfire": {
+    "source": "campfire.svg",
+    "slots": [
+      {
+        "id": "smoke",
+        "label": "Smoke",
+        "default": "#BCAFD0",
+        "palette": [
+          "#BCAFD0",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F5D7C5",
+            "deltaL": 0.1238
+          }
+        ]
+      },
+      {
+        "id": "logs",
+        "label": "Logs",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FB8E8B",
+            "deltaL": -0.0336
+          },
+          {
+            "color": "#BB7E59",
+            "deltaL": -0.1492
+          }
+        ]
+      },
+      {
+        "id": "flame",
+        "label": "Flame",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FDE98A",
+            "deltaL": 0.0766
+          },
+          {
+            "color": "#FAB39E",
+            "deltaL": -0.0253
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#B7ACC3": "#BCAFD0",
+      "#E4CEB9": "#F5D7C5",
+      "#AD785C": "#BB7E59",
+      "#E0B489": "#E8B16B",
+      "#FD8976": "#FB8E8B",
+      "#FDAE6A": "#F9C299",
+      "#FEE88E": "#FDE98A",
+      "#FDAE6F": "#FAB39E"
+    }
+  },
+  "candle": {
+    "source": "candle.svg",
+    "slots": [
+      {
+        "id": "wick",
+        "label": "Wick",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#DA9D80",
+            "deltaL": -0.1061
+          }
+        ]
+      },
+      {
+        "id": "flame",
+        "label": "Flame",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "wax",
+        "label": "Wax",
+        "default": "#F5D7C5",
+        "palette": [
+          "#F5D7C5",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.0542
+          },
+          {
+            "color": "#FCE5BA",
+            "deltaL": 0.0306
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDBC84": "#F9C299",
+      "#FFE798": "#FDE98A",
+      "#FFF6CE": "#F5D7C5",
+      "#FFF2D6": "#FBEED8",
+      "#FFEECE": "#FCE5BA",
+      "#D9976A": "#DA9D80"
+    }
+  },
+  "cherry-blossom-branch": {
+    "source": "cherry-blossom-branch.svg",
+    "slots": [
+      {
+        "id": "branch",
+        "label": "Branch",
+        "default": "#BB7E59",
+        "palette": [
+          "#BB7E59",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "blossoms",
+        "label": "Blossoms",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FCC0C6",
+            "deltaL": -0.0902
+          }
+        ]
+      },
+      {
+        "id": "leaves",
+        "label": "Leaves",
+        "default": "#AEC3A2",
+        "palette": [
+          "#AEC3A2",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#96B187",
+            "deltaL": -0.0636
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#A87D6A": "#BB7E59",
+      "#FBBDC6": "#FCC0C6",
+      "#A4B795": "#AEC3A2",
+      "#A1B593": "#96B187",
+      "#FDEFE0": "#FBEED8"
+    }
+  },
+  "clapperboard": {
+    "source": "clapperboard.svg",
+    "slots": [
+      {
+        "id": "board",
+        "label": "Board",
+        "default": "#171717",
+        "palette": [
+          "#171717",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stripes",
+        "label": "Stripes",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#111111": "#171717",
+      "#F8F7F6": "#FAFBFA"
+    }
+  },
+  "clinking-mugs": {
+    "source": "clinking-mugs.svg",
+    "slots": [
+      {
+        "id": "mug1",
+        "label": "Mug 1",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "mug2",
+        "label": "Mug 2",
+        "default": "#774C3E",
+        "palette": [
+          "#774C3E",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "foam",
+        "label": "Foam",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": -0.0335
+          },
+          {
+            "color": "#F5D7C5",
+            "deltaL": -0.0877
+          }
+        ]
+      },
+      {
+        "id": "leaves",
+        "label": "Leaves",
+        "default": "#AEC3A2",
+        "palette": [
+          "#AEC3A2",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCAEAE": "#FAB39E",
+      "#FFFFFF": "#FAFBFA",
+      "#804A31": "#774C3E",
+      "#F9EAD7": "#FBEED8",
+      "#F2D9BC": "#F5D7C5",
+      "#A2BDA8": "#AEC3A2"
+    }
+  },
+  "compass-rose": {
+    "source": "compass-rose.svg",
+    "slots": [
+      {
+        "id": "face",
+        "label": "Face",
+        "default": "#FCD9B4",
+        "palette": [
+          "#FCD9B4",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FFFFFF",
+            "deltaL": 0.0945
+          }
+        ]
+      },
+      {
+        "id": "points",
+        "label": "Points",
+        "default": "#85B3E4",
+        "palette": [
+          "#85B3E4",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#6191C2",
+            "deltaL": -0.1099
+          },
+          {
+            "color": "#5D8EC0",
+            "deltaL": -0.1197
+          }
+        ]
+      },
+      {
+        "id": "land",
+        "label": "Land",
+        "default": "#98CAB4",
+        "palette": [
+          "#98CAB4",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "center",
+        "label": "Center",
+        "default": "#FDBD9F",
+        "palette": [
+          "#FDBD9F",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCD9B4": "#FCD9B4",
+      "#85B3E4": "#85B3E4",
+      "#98CAB4": "#98CAB4",
+      "#FFFFFF": "#FFFFFF",
+      "#FDBD9F": "#FDBD9F",
+      "#6191C2": "#6191C2",
+      "#5D8EC0": "#5D8EC0"
+    }
+  },
+  "compass": {
+    "source": "compass.svg",
+    "slots": [
+      {
+        "id": "compass",
+        "label": "Compass",
+        "default": "#C2A258",
+        "palette": [
+          "#C2A258",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F6DA93",
+            "deltaL": 0.1703
+          },
+          {
+            "color": "#F4D78F",
+            "deltaL": 0.1619
+          },
+          {
+            "color": "#C9A962",
+            "deltaL": 0.0226
+          },
+          {
+            "color": "#C2985D",
+            "deltaL": -0.0195
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#C2A258": "#C2A258",
+      "#F6DA93": "#F6DA93",
+      "#C9A962": "#C9A962",
+      "#F4D78F": "#F4D78F",
+      "#C2985D": "#C2985D"
+    }
+  },
+  "conch-shell": {
+    "source": "conch-shell.svg",
+    "slots": [
+      {
+        "id": "shell",
+        "label": "Shell",
+        "default": "#FDE6CE",
+        "palette": [
+          "#FDE6CE",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "ridges",
+        "label": "Ridges",
+        "default": "#FC8D83",
+        "palette": [
+          "#FC8D83",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FCB5A3",
+            "deltaL": 0.0742
+          },
+          {
+            "color": "#F6A8A9",
+            "deltaL": 0.0464
+          },
+          {
+            "color": "#FC9187",
+            "deltaL": 0.0072
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDE6CE": "#FDE6CE",
+      "#F6A8A9": "#F6A8A9",
+      "#FC9187": "#FC9187",
+      "#FC8D83": "#FC8D83",
+      "#FCB5A3": "#FCB5A3"
+    }
+  },
+  "controller": {
+    "source": "controller.svg",
+    "slots": [
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#1F1915",
+        "palette": ["#1F1915", "#2E241C", "#3A3128", "#4E433A", "#655E55", "#6E6259", "#8A8278"],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#4E433A",
+            "deltaL": 0.1722
+          },
+          {
+            "color": "#332A24",
+            "deltaL": 0.0739
+          }
+        ]
+      },
+      {
+        "id": "grips",
+        "label": "Grips",
+        "default": "#8A8278",
+        "palette": [
+          "#8A8278",
+          "#3A3128",
+          "#655E55",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "buttons",
+        "label": "Buttons",
+        "default": "#D9482F",
+        "palette": [
+          "#D9482F",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#B0DDB9": "#1F1915",
+      "#C3B2F4": "#332A24",
+      "#BCE8CE": "#8A8278",
+      "#AD9FEB": "#4E433A",
+      "#FFCEBF": "#D9482F"
+    }
+  },
+  "crescent-moon": {
+    "source": "crescent-moon.svg",
+    "slots": [
+      {
+        "id": "moon",
+        "label": "Moon",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stars",
+        "label": "Stars",
+        "default": "#CCB7EE",
+        "palette": [
+          "#CCB7EE",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FFE785": "#FDE98A",
+      "#D2B8FD": "#CCB7EE"
+    }
+  },
+  "daisy": {
+    "source": "daisy.svg",
+    "slots": [
+      {
+        "id": "petals",
+        "label": "Petals",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "center",
+        "label": "Center",
+        "default": "#F9D37B",
+        "palette": [
+          "#F9D37B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FFF3DC": "#FBEED8",
+      "#FDD24E": "#F9D37B"
+    }
+  },
+  "desktop-globe": {
+    "source": "desktop-globe.svg",
+    "slots": [
+      {
+        "id": "stand",
+        "label": "Stand",
+        "default": "#C09E62",
+        "palette": [
+          "#C09E62",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "globe",
+        "label": "Globe",
+        "default": "#91CABE",
+        "palette": [
+          "#91CABE",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "detail",
+        "label": "Detail",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#BCA365": "#C09E62",
+      "#9EC8BF": "#91CABE",
+      "#F8EFD6": "#FBEED8"
+    }
+  },
+  "dog-face": {
+    "source": "dog-face.svg",
+    "slots": [
+      {
+        "id": "fur",
+        "label": "Fur",
+        "default": "#FCE5BA",
+        "palette": [
+          "#FCE5BA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "ears",
+        "label": "Ears",
+        "default": "#774C3E",
+        "palette": [
+          "#774C3E",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#DA9D80",
+            "deltaL": 0.286
+          }
+        ]
+      },
+      {
+        "id": "tongue",
+        "label": "Tongue",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FB8E8B",
+            "deltaL": -0.0654
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FAE1C5": "#FCE5BA",
+      "#E89E84": "#DA9D80",
+      "#FDB9AF": "#FAB39E",
+      "#7D4440": "#774C3E",
+      "#F49296": "#FB8E8B"
+    }
+  },
+  "envelope-hearts": {
+    "source": "envelope-hearts.svg",
+    "slots": [
+      {
+        "id": "envelope",
+        "label": "Envelope",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F5D7C5",
+            "deltaL": 0.036
+          },
+          {
+            "color": "#FAB39E",
+            "deltaL": -0.0351
+          },
+          {
+            "color": "#F39FAA",
+            "deltaL": -0.0747
+          }
+        ]
+      },
+      {
+        "id": "paper",
+        "label": "Paper",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FDDADA": "#F5D7C5",
+      "#F6ABAB": "#FAB39E",
+      "#FBCACA": "#FCC0C6",
+      "#F89E9E": "#F39FAA",
+      "#FEEBE0": "#FBEED8"
+    }
+  },
+  "evergreen": {
+    "source": "evergreen.svg",
+    "slots": [
+      {
+        "id": "trunk",
+        "label": "Trunk",
+        "default": "#BB7E59",
+        "palette": [
+          "#BB7E59",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "foliage",
+        "label": "Foliage",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AEC3A2",
+            "deltaL": 0.1326
+          },
+          {
+            "color": "#96B187",
+            "deltaL": 0.069
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#BC8864": "#BB7E59",
+      "#6F9F71": "#869A72",
+      "#82B080": "#96B187",
+      "#A1C593": "#AEC3A2"
+    }
+  },
+  "film": {
+    "source": "film.svg",
+    "slots": [
+      {
+        "id": "strip",
+        "label": "Film",
+        "default": "#282828",
+        "palette": [
+          "#282828",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "perfs",
+        "label": "Perforations",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": -0.0335
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#242525": "#282828",
+      "#F5F2E9": "#FBEED8",
+      "#FFFFFF": "#FAFBFA"
+    }
+  },
+  "folded-map": {
+    "source": "folded-map.svg",
+    "slots": [
+      {
+        "id": "map",
+        "label": "Map",
+        "default": "#F3E5CE",
+        "palette": [
+          "#F3E5CE",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F0E0C6",
+            "deltaL": -0.0142
+          },
+          {
+            "color": "#EBD8BD",
+            "deltaL": -0.0363
+          }
+        ]
+      },
+      {
+        "id": "route",
+        "label": "Route",
+        "default": "#D68488",
+        "palette": [
+          "#D68488",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "edges",
+        "label": "Edges",
+        "default": "#B9BF9F",
+        "palette": [
+          "#B9BF9F",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F3E5CE": "#F3E5CE",
+      "#EBD8BD": "#EBD8BD",
+      "#F0E0C6": "#F0E0C6",
+      "#D68488": "#D68488",
+      "#B9BF9F": "#B9BF9F"
+    }
+  },
+  "gourd": {
+    "source": "gourd.svg",
+    "slots": [
+      {
+        "id": "gourd",
+        "label": "Gourd",
+        "default": "#F9D37B",
+        "palette": [
+          "#F9D37B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FDE98A",
+            "deltaL": 0.0492
+          }
+        ]
+      },
+      {
+        "id": "stem",
+        "label": "Stem",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FEE277": "#FDE98A",
+      "#FCD85D": "#F9D37B",
+      "#99945D": "#869A72"
+    }
+  },
+  "heart-2": {
+    "source": "heart-2.svg",
+    "slots": [
+      {
+        "id": "heart",
+        "label": "Heart",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FCC0C6",
+            "deltaL": 0.0747
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FBD4E0": "#FCC0C6",
+      "#ED9BAE": "#F39FAA"
+    }
+  },
+  "heart-arrow": {
+    "source": "heart-arrow.svg",
+    "slots": [
+      {
+        "id": "arrow",
+        "label": "Arrow",
+        "default": "#8EB0D6",
+        "palette": [
+          "#8EB0D6",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "heart",
+        "label": "Heart",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "feather",
+        "label": "Feather",
+        "default": "#F9D37B",
+        "palette": [
+          "#F9D37B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#9CBAD1": "#8EB0D6",
+      "#FAD78E": "#F9D37B",
+      "#F88B8F": "#FB8E8B"
+    }
+  },
+  "sticker-heart": {
+    "source": "heart.svg",
+    "slots": [
+      {
+        "id": "heart",
+        "label": "Heart",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCAFC8": "#FCC0C6"
+    }
+  },
+  "hearts-2": {
+    "source": "hearts-2.svg",
+    "slots": [
+      {
+        "id": "heart",
+        "label": "Heart",
+        "default": "#FB0605",
+        "palette": [
+          "#FB0605",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FA0707": "#FB0605"
+    }
+  },
+  "hearts": {
+    "source": "hearts.svg",
+    "slots": [
+      {
+        "id": "hearts",
+        "label": "Hearts",
+        "default": "#FB0202",
+        "palette": [
+          "#FB0202",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FB0805",
+            "deltaL": 0.0011
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FB0202": "#FB0202",
+      "#FB0805": "#FB0805"
+    }
+  },
+  "hiking-boots": {
+    "source": "hiking-boots.svg",
+    "slots": [
+      {
+        "id": "leather",
+        "label": "Leather",
+        "default": "#F5D7C5",
+        "palette": [
+          "#F5D7C5",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9C299",
+            "deltaL": -0.0458
+          },
+          {
+            "color": "#FAB39E",
+            "deltaL": -0.0711
+          },
+          {
+            "color": "#DA9D80",
+            "deltaL": -0.1518
+          },
+          {
+            "color": "#CF8580",
+            "deltaL": -0.2076
+          },
+          {
+            "color": "#9F6245",
+            "deltaL": -0.3424
+          }
+        ]
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#917539",
+        "palette": [
+          "#917539",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "sole",
+        "label": "Sole",
+        "default": "#774C3E",
+        "palette": [
+          "#774C3E",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#869A72",
+            "deltaL": 0.1982
+          },
+          {
+            "color": "#806B58",
+            "deltaL": 0.0812
+          },
+          {
+            "color": "#915333",
+            "deltaL": 0.0463
+          },
+          {
+            "color": "#5E5C6C",
+            "deltaL": 0.0209
+          }
+        ]
+      },
+      {
+        "id": "eyelets",
+        "label": "Eyelets",
+        "default": "#BB7E59",
+        "palette": [
+          "#BB7E59",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#D49C6A": "#DA9D80",
+      "#F0D2B6": "#F5D7C5",
+      "#747761": "#917539",
+      "#8B8E76": "#869A72",
+      "#856655": "#806B58",
+      "#DEC2A9": "#F9C299",
+      "#BE8353": "#BB7E59",
+      "#DBC0A7": "#FAB39E",
+      "#856453": "#915333",
+      "#725344": "#774C3E",
+      "#6B4F43": "#5E5C6C",
+      "#CD745B": "#CF8580",
+      "#A85C48": "#9F6245"
+    }
+  },
+  "ice-cream-cone": {
+    "source": "ice-cream-cone.svg",
+    "slots": [
+      {
+        "id": "cone",
+        "label": "Cone",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9D37B",
+            "deltaL": 0.0847
+          }
+        ]
+      },
+      {
+        "id": "scoop",
+        "label": "Scoop",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#F6C9D4",
+          "#F0A0B4",
+          "#E0607E",
+          "#D9A94E",
+          "#E5966F",
+          "#C9A46F",
+          "#987444",
+          "#F8F0E0",
+          "#8E6FC0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stem",
+        "label": "Stem",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "cherry",
+        "label": "Cherry",
+        "default": "#EF4F55",
+        "palette": [
+          "#EF4F55",
+          "#B23A2E",
+          "#C05A3A",
+          "#D9482F",
+          "#E0607E",
+          "#E5966F",
+          "#EFD070",
+          "#D9A94E",
+          "#7E9560",
+          "#8FB06A",
+          "#A4C07E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "highlight",
+        "label": "Highlight",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F4C260": "#F9D37B",
+      "#E5AA47": "#E8B16B",
+      "#FDBBC5": "#FCC0C6",
+      "#8CA365": "#869A72",
+      "#E64D50": "#EF4F55",
+      "#FFFFFF": "#FAFBFA"
+    }
+  },
+  "ice-cream": {
+    "source": "ice-cream.svg",
+    "slots": [
+      {
+        "id": "cone",
+        "label": "Cone",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "scoop",
+        "label": "Scoop",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#F6C9D4",
+          "#F0A0B4",
+          "#E0607E",
+          "#D9A94E",
+          "#E5966F",
+          "#C9A46F",
+          "#987444",
+          "#F8F0E0",
+          "#8E6FC0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.1908
+          },
+          {
+            "color": "#FCC0C6",
+            "deltaL": 0.1006
+          }
+        ]
+      },
+      {
+        "id": "sprinkles",
+        "label": "Sprinkles",
+        "default": "#9AD7B7",
+        "palette": [
+          "#9AD7B7",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#E8B16B",
+            "deltaL": -0.0323
+          },
+          {
+            "color": "#DA9D80",
+            "deltaL": -0.0812
+          },
+          {
+            "color": "#F18E45",
+            "deltaL": -0.0896
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#F5BB6E": "#F9C299",
+      "#EDB164": "#E8B16B",
+      "#E2A65A": "#F18E45",
+      "#FEF0D6": "#FBEED8",
+      "#FEAFBD": "#FCC0C6",
+      "#8CD8AD": "#9AD7B7",
+      "#FE8BA2": "#FB8E8B",
+      "#E5A95E": "#DA9D80"
+    }
+  },
+  "infinity-ribbon": {
+    "source": "infinity-ribbon.svg",
+    "slots": [
+      {
+        "id": "ribbon",
+        "label": "Ribbon",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#CCB7EE",
+            "deltaL": -0.0479
+          },
+          {
+            "color": "#F39FAA",
+            "deltaL": -0.0747
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#CBB2EF": "#CCB7EE",
+      "#FFC1D4": "#FCC0C6",
+      "#F78CB3": "#F39FAA"
+    }
+  },
+  "keys": {
+    "source": "keys.svg",
+    "slots": [
+      {
+        "id": "keys",
+        "label": "Keys",
+        "default": "#C2C3C7",
+        "palette": [
+          "#C2C3C7",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D8B06A",
+            "deltaL": -0.0396
+          },
+          {
+            "color": "#C9A35F",
+            "deltaL": -0.0821
+          },
+          {
+            "color": "#C59F5C",
+            "deltaL": -0.0946
+          },
+          {
+            "color": "#BC9653",
+            "deltaL": -0.1233
+          }
+        ]
+      },
+      {
+        "id": "tag",
+        "label": "Tag",
+        "default": "#C8D4D9",
+        "palette": [
+          "#C8D4D9",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#C9A35F": "#C9A35F",
+      "#BC9653": "#BC9653",
+      "#D8B06A": "#D8B06A",
+      "#C59F5C": "#C59F5C",
+      "#C2C3C7": "#C2C3C7",
+      "#C8D4D9": "#C8D4D9"
+    }
+  },
+  "landscape-2": {
+    "source": "landscape-2.svg",
+    "slots": [
+      {
+        "id": "sky",
+        "label": "Sky",
+        "default": "#AACFF7",
+        "palette": [
+          "#AACFF7",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "hills",
+        "label": "Hills",
+        "default": "#D2E6DE",
+        "palette": [
+          "#D2E6DE",
+          "#3F7A63",
+          "#4E8A5F",
+          "#6DA35C",
+          "#7E9560",
+          "#B8935B",
+          "#C9A46F",
+          "#8A8278",
+          "#D06E45",
+          "#4A6C80",
+          "#6A97AD"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AEC3A2",
+            "deltaL": -0.1156
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#B8C3ED": "#AACFF7",
+      "#CCDFCB": "#D2E6DE",
+      "#A7C0A5": "#AEC3A2"
+    }
+  },
+  "landscape": {
+    "source": "landscape.svg",
+    "slots": [
+      {
+        "id": "sky",
+        "label": "Sky",
+        "default": "#8EB0D6",
+        "palette": [
+          "#8EB0D6",
+          "#4A6C80",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#DCECF2",
+          "#9ED0FA",
+          "#3F9A88"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "water",
+        "label": "Water",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "hills",
+        "label": "Hills",
+        "default": "#AEC3A2",
+        "palette": [
+          "#AEC3A2",
+          "#3F7A63",
+          "#4E8A5F",
+          "#6DA35C",
+          "#7E9560",
+          "#B8935B",
+          "#C9A46F",
+          "#8A8278",
+          "#D06E45",
+          "#4A6C80",
+          "#6A97AD"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#B5DFC5",
+            "deltaL": 0.0743
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#88B1D7": "#8EB0D6",
+      "#8FB292": "#96B187",
+      "#A7C6A6": "#AEC3A2",
+      "#BED7BD": "#B5DFC5"
+    }
+  },
+  "love-letter": {
+    "source": "love-letter.svg",
+    "slots": [
+      {
+        "id": "paper",
+        "label": "Paper",
+        "default": "#FDEED9",
+        "palette": [
+          "#FDEED9",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "seal",
+        "label": "Seal",
+        "default": "#D24A47",
+        "palette": [
+          "#D24A47",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9D8D2",
+            "deltaL": 0.3121
+          }
+        ]
+      },
+      {
+        "id": "flap",
+        "label": "Flap",
+        "default": "#D8A293",
+        "palette": [
+          "#D8A293",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#C1403E",
+            "deltaL": -0.2037
+          }
+        ]
+      },
+      {
+        "id": "edge",
+        "label": "Edge",
+        "default": "#F3D2BE",
+        "palette": [
+          "#F3D2BE",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F3D2BE": "#F3D2BE",
+      "#FDEED9": "#FDEED9",
+      "#D8A293": "#D8A293",
+      "#D24A47": "#D24A47",
+      "#C1403E": "#C1403E",
+      "#F9D8D2": "#F9D8D2"
+    }
+  },
+  "love-tiles": {
+    "source": "love-tiles.svg",
+    "slots": [
+      {
+        "id": "background",
+        "label": "Background",
+        "default": "#FCE5BA",
+        "palette": [
+          "#FCE5BA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "tile1",
+        "label": "Tile 1",
+        "default": "#BB7E59",
+        "palette": [
+          "#BB7E59",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9D37B",
+            "deltaL": 0.2338
+          }
+        ]
+      },
+      {
+        "id": "tile2",
+        "label": "Tile 2",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F18E45",
+            "deltaL": -0.1243
+          }
+        ]
+      },
+      {
+        "id": "tile3",
+        "label": "Tile 3",
+        "default": "#EF6D71",
+        "palette": [
+          "#EF6D71",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "tile4",
+        "label": "Tile 4",
+        "default": "#B5DFC5",
+        "palette": [
+          "#B5DFC5",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "tile5",
+        "label": "Tile 5",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FAD9AB": "#FCE5BA",
+      "#B98267": "#BB7E59",
+      "#FDC6B7": "#FCC0C6",
+      "#EB7975": "#EF6D71",
+      "#CFDDB2": "#B5DFC5",
+      "#809F67": "#869A72",
+      "#F9D492": "#F9D37B",
+      "#DD8A44": "#F18E45"
+    }
+  },
+  "luggage-trunks": {
+    "source": "luggage-trunks.svg",
+    "slots": [
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#C09E62",
+        "palette": [
+          "#C09E62",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#DA9D80",
+            "deltaL": 0.0308
+          },
+          {
+            "color": "#CF8580",
+            "deltaL": -0.0251
+          },
+          {
+            "color": "#BB7E59",
+            "deltaL": -0.0695
+          }
+        ]
+      },
+      {
+        "id": "panels",
+        "label": "Panels",
+        "default": "#F5D7C5",
+        "palette": [
+          "#F5D7C5",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.0542
+          },
+          {
+            "color": "#FCE5BA",
+            "deltaL": 0.0306
+          },
+          {
+            "color": "#F9C299",
+            "deltaL": -0.0458
+          }
+        ]
+      },
+      {
+        "id": "straps",
+        "label": "Straps",
+        "default": "#96A4AD",
+        "palette": [
+          "#96A4AD",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#96B187",
+            "deltaL": 0.0182
+          },
+          {
+            "color": "#6D9163",
+            "deltaL": -0.0933
+          }
+        ]
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F0DEC5": "#FBEED8",
+      "#E5CBAC": "#F9C299",
+      "#96A58D": "#96A4AD",
+      "#899781": "#869A72",
+      "#D59D95": "#DA9D80",
+      "#C7867B": "#CF8580",
+      "#F0D9BD": "#F5D7C5",
+      "#F0E1CB": "#FCE5BA",
+      "#C28177": "#BB7E59",
+      "#99A890": "#96B187",
+      "#C79B7A": "#C09E62",
+      "#788570": "#6D9163"
+    }
+  },
+  "marshmallow-stick": {
+    "source": "marshmallow-stick.svg",
+    "slots": [
+      {
+        "id": "stick",
+        "label": "Stick",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9C299",
+            "deltaL": 0.0572
+          }
+        ]
+      },
+      {
+        "id": "marshmallow",
+        "label": "Marshmallow",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F3C187": "#E8B16B",
+      "#FFF3DC": "#FBEED8",
+      "#FFBE8F": "#F9C299"
+    }
+  },
+  "meeple": {
+    "source": "meeple.svg",
+    "slots": [
+      {
+        "id": "meeple",
+        "label": "Meeple",
+        "default": "#F9D37B",
+        "palette": [
+          "#F9D37B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F7CA7A": "#F9D37B"
+    }
+  },
+  "minivan": {
+    "source": "minivan.svg",
+    "slots": [
+      {
+        "id": "tyres",
+        "label": "Tyres",
+        "default": "#332A24",
+        "palette": [
+          "#332A24",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#B6D3DE",
+        "palette": ["#B6D3DE", "#4A6C80", "#6A97AD", "#8FB4C4", "#DCECF2", "#9ED0FA", "#3F9A88"],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#8FB4C4",
+            "deltaL": -0.1008
+          },
+          {
+            "color": "#688FA3",
+            "deltaL": -0.2204
+          }
+        ]
+      },
+      {
+        "id": "glass",
+        "label": "Glass",
+        "default": "#EFE1C9",
+        "palette": [
+          "#EFE1C9",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#625A79": "#332A24",
+      "#ABE0B9": "#8FB4C4",
+      "#FAEB9C": "#EFE1C9",
+      "#978FC6": "#B6D3DE",
+      "#9CD4AD": "#688FA3"
+    }
+  },
+  "mittens": {
+    "source": "mittens.svg",
+    "slots": [
+      {
+        "id": "mittens",
+        "label": "Mittens",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "cuff",
+        "label": "Cuff",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "string",
+        "label": "String",
+        "default": "#F5D7C5",
+        "palette": [
+          "#F5D7C5",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F599A6": "#F39FAA",
+      "#F9E7CE": "#FBEED8",
+      "#F6D1BE": "#F5D7C5"
+    }
+  },
+  "monstera": {
+    "source": "monstera.svg",
+    "slots": [
+      {
+        "id": "pot",
+        "label": "Pot",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#AE5231",
+          "#D06E45",
+          "#C9A46F",
+          "#B8935B",
+          "#8A8278",
+          "#3F9A88",
+          "#6A97AD",
+          "#EFE1C9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "leaves",
+        "label": "Leaves",
+        "default": "#9AD7B7",
+        "palette": [
+          "#9AD7B7",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FDE98A",
+            "deltaL": 0.1015
+          },
+          {
+            "color": "#B5DFC5",
+            "deltaL": 0.0378
+          },
+          {
+            "color": "#A4DE5A",
+            "deltaL": 0.0054
+          },
+          {
+            "color": "#91CABE",
+            "deltaL": -0.0325
+          },
+          {
+            "color": "#AEC3A2",
+            "deltaL": -0.0365
+          },
+          {
+            "color": "#96B187",
+            "deltaL": -0.1001
+          },
+          {
+            "color": "#869A72",
+            "deltaL": -0.169
+          },
+          {
+            "color": "#6D9163",
+            "deltaL": -0.2115
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#F9C1B4": "#FCC0C6",
+      "#7F966D": "#869A72",
+      "#6D9665": "#9AD7B7",
+      "#699163": "#6D9163",
+      "#709867": "#91CABE",
+      "#638C60": "#B5DFC5",
+      "#97BB81": "#AEC3A2",
+      "#628B60": "#FDE98A",
+      "#98BB82": "#96B187",
+      "#6F9563": "#A4DE5A"
+    }
+  },
+  "mountain": {
+    "source": "mountain.svg",
+    "slots": [
+      {
+        "id": "sky",
+        "label": "Sky",
+        "default": "#8EB0D6",
+        "palette": [
+          "#8EB0D6",
+          "#4A6C80",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#DCECF2",
+          "#9ED0FA",
+          "#3F9A88"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "mountains",
+        "label": "Mountains",
+        "default": "#BCAFD0",
+        "palette": [
+          "#BCAFD0",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "snow",
+        "label": "Snow",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#90A3CC": "#8EB0D6",
+      "#B9AFD9": "#BCAFD0",
+      "#FBFBFC": "#FAFBFA"
+    }
+  },
+  "movie-ticket": {
+    "source": "movie-ticket.svg",
+    "slots": [
+      {
+        "id": "ticket",
+        "label": "Ticket",
+        "default": "#FCE5BA",
+        "palette": [
+          "#FCE5BA",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "stripe",
+        "label": "Stripe",
+        "default": "#91CABE",
+        "palette": [
+          "#91CABE",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "text",
+        "label": "Text",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCECBB": "#FCE5BA",
+      "#A2CBC8": "#91CABE",
+      "#FA8377": "#FB8E8B"
+    }
+  },
+  "movie-tickets": {
+    "source": "movie-tickets.svg",
+    "slots": [
+      {
+        "id": "ticket",
+        "label": "Ticket",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F39FAA",
+            "deltaL": -0.0396
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FBB99F": "#FAB39E",
+      "#EB9EA9": "#F39FAA"
+    }
+  },
+  "open-book": {
+    "source": "open-book.svg",
+    "slots": [
+      {
+        "id": "cover",
+        "label": "Cover",
+        "default": "#BCAFD0",
+        "palette": [
+          "#BCAFD0",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "pages",
+        "label": "Pages",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F5D7C5",
+            "deltaL": -0.0877
+          }
+        ]
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#C5B2D5": "#BCAFD0",
+      "#FDF4E6": "#FAFBFA",
+      "#F4E2CB": "#F5D7C5",
+      "#F6E7D3": "#FBEED8"
+    }
+  },
+  "padlock": {
+    "source": "padlock.svg",
+    "slots": [
+      {
+        "id": "body",
+        "label": "Body",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "shackle",
+        "label": "Shackle",
+        "default": "#917539",
+        "palette": [
+          "#917539",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#C09E62",
+            "deltaL": 0.1402
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#C7A25B": "#C09E62",
+      "#D8B467": "#E8B16B",
+      "#917539": "#917539"
+    }
+  },
+  "paper-clip": {
+    "source": "paper-clip.svg",
+    "slots": [
+      {
+        "id": "clip",
+        "label": "Clip",
+        "default": "#96A4AD",
+        "palette": [
+          "#96A4AD",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#A2A5A8": "#96A4AD"
+    }
+  },
+  "passport": {
+    "source": "passport.svg",
+    "slots": [
+      {
+        "id": "cover",
+        "label": "Cover",
+        "default": "#1E3F73",
+        "palette": [
+          "#1E3F73",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "emblem",
+        "label": "Emblem",
+        "default": "#CCE4F3",
+        "palette": [
+          "#CCE4F3",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "globe",
+        "label": "Globe",
+        "default": "#DFEED5",
+        "palette": [
+          "#DFEED5",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#1E3F73": "#1E3F73",
+      "#CCE4F3": "#CCE4F3",
+      "#DFEED5": "#DFEED5"
+    }
+  },
+  "paw-print-trail": {
+    "source": "paw-print-trail.svg",
+    "slots": [
+      {
+        "id": "paw1",
+        "label": "Paw 1",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "paw2",
+        "label": "Paw 2",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "paw3",
+        "label": "Paw 3",
+        "default": "#9AD7B7",
+        "palette": [
+          "#9AD7B7",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "paw4",
+        "label": "Paw 4",
+        "default": "#AACFF7",
+        "palette": [
+          "#AACFF7",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#F6ADB4": "#F39FAA",
+      "#FDBE92": "#F9C299",
+      "#A7DAB1": "#9AD7B7",
+      "#98CEFC": "#AACFF7"
+    }
+  },
+  "paw-print": {
+    "source": "paw-print.svg",
+    "slots": [
+      {
+        "id": "paw",
+        "label": "Paw",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FAB39E",
+            "deltaL": -0.0253
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDB198": "#FAB39E",
+      "#FDBFA9": "#F9C299"
+    }
+  },
+  "pepperoni-pizza": {
+    "source": "pepperoni-pizza.svg",
+    "slots": [
+      {
+        "id": "crust",
+        "label": "Crust",
+        "default": "#FDCB75",
+        "palette": [
+          "#FDCB75",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FEE9B3",
+            "deltaL": 0.0695
+          }
+        ]
+      },
+      {
+        "id": "pepperoni",
+        "label": "Pepperoni",
+        "default": "#EF6254",
+        "palette": [
+          "#EF6254",
+          "#B23A2E",
+          "#C05A3A",
+          "#D9482F",
+          "#E0607E",
+          "#E5966F",
+          "#EFD070",
+          "#D9A94E",
+          "#7E9560",
+          "#8FB06A",
+          "#A4C07E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FDCB75": "#FDCB75",
+      "#FEE9B3": "#FEE9B3",
+      "#EF6254": "#EF6254"
+    }
+  },
+  "picnic-basket": {
+    "source": "picnic-basket.svg",
+    "slots": [
+      {
+        "id": "basket",
+        "label": "Basket",
+        "default": "#FEBFA1",
+        "palette": [
+          "#FEBFA1",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FDC5A9",
+            "deltaL": 0.0117
+          },
+          {
+            "color": "#FDBFA1",
+            "deltaL": -0.001
+          },
+          {
+            "color": "#F4C487",
+            "deltaL": -0.0056
+          },
+          {
+            "color": "#EAB576",
+            "deltaL": -0.047
+          },
+          {
+            "color": "#E9B472",
+            "deltaL": -0.0505
+          },
+          {
+            "color": "#E5AE6C",
+            "deltaL": -0.067
+          }
+        ]
+      },
+      {
+        "id": "cloth",
+        "label": "Cloth",
+        "default": "#F7E9D6",
+        "palette": [
+          "#F7E9D6",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#E9B472": "#E9B472",
+      "#E5AE6C": "#E5AE6C",
+      "#EAB576": "#EAB576",
+      "#F4C487": "#F4C487",
+      "#F7E9D6": "#F7E9D6",
+      "#FEBFA1": "#FEBFA1",
+      "#FDC5A9": "#FDC5A9",
+      "#FDBFA1": "#FDBFA1"
+    }
+  },
+  "pine-tree-cluster": {
+    "source": "pine-tree-cluster.svg",
+    "slots": [
+      {
+        "id": "trunk",
+        "label": "Trunk",
+        "default": "#C09E62",
+        "palette": [
+          "#C09E62",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#BB7E59",
+            "deltaL": -0.0695
+          }
+        ]
+      },
+      {
+        "id": "foliage",
+        "label": "Foliage",
+        "default": "#869A72",
+        "palette": [
+          "#869A72",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AEC3A2",
+            "deltaL": 0.1326
+          },
+          {
+            "color": "#96B187",
+            "deltaL": 0.069
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#B79A7B": "#C09E62",
+      "#8AAA80": "#869A72",
+      "#99B38F": "#96B187",
+      "#AEC69B": "#AEC3A2",
+      "#B4936D": "#BB7E59"
+    }
+  },
+  "pinecone": {
+    "source": "pinecone.svg",
+    "slots": [
+      {
+        "id": "pinecone",
+        "label": "Pinecone",
+        "default": "#DCA581",
+        "palette": [
+          "#DCA581",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D69B73",
+            "deltaL": -0.0279
+          },
+          {
+            "color": "#D59B74",
+            "deltaL": -0.0288
+          },
+          {
+            "color": "#D59A72",
+            "deltaL": -0.0311
+          },
+          {
+            "color": "#D29871",
+            "deltaL": -0.0383
+          },
+          {
+            "color": "#C18563",
+            "deltaL": -0.0957
+          },
+          {
+            "color": "#B8805D",
+            "deltaL": -0.1166
+          },
+          {
+            "color": "#B47A58",
+            "deltaL": -0.1336
+          },
+          {
+            "color": "#AD7150",
+            "deltaL": -0.1603
+          },
+          {
+            "color": "#A66B4A",
+            "deltaL": -0.1813
+          },
+          {
+            "color": "#9B6143",
+            "deltaL": -0.2152
+          },
+          {
+            "color": "#965D40",
+            "deltaL": -0.2297
+          },
+          {
+            "color": "#925A3C",
+            "deltaL": -0.2413
+          },
+          {
+            "color": "#8E563A",
+            "deltaL": -0.2544
+          },
+          {
+            "color": "#8E5539",
+            "deltaL": -0.2565
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#B47A58": "#B47A58",
+      "#925A3C": "#925A3C",
+      "#AD7150": "#AD7150",
+      "#D69B73": "#D69B73",
+      "#8E563A": "#8E563A",
+      "#DCA581": "#DCA581",
+      "#A66B4A": "#A66B4A",
+      "#965D40": "#965D40",
+      "#B8805D": "#B8805D",
+      "#D29871": "#D29871",
+      "#D59A72": "#D59A72",
+      "#9B6143": "#9B6143",
+      "#D59B74": "#D59B74",
+      "#C18563": "#C18563",
+      "#8E5539": "#8E5539"
+    }
+  },
+  "popcorn-bucket": {
+    "source": "popcorn-bucket.svg",
+    "slots": [
+      {
+        "id": "popcorn",
+        "label": "Popcorn",
+        "default": "#FCE5BA",
+        "palette": [
+          "#FCE5BA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.0236
+          },
+          {
+            "color": "#F9D37B",
+            "deltaL": -0.0489
+          }
+        ]
+      },
+      {
+        "id": "bucket",
+        "label": "Bucket",
+        "default": "#EF4F55",
+        "palette": [
+          "#EF4F55",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FDECC3": "#FCE5BA",
+      "#FBDBA1": "#F9D37B",
+      "#F2424F": "#EF4F55",
+      "#FBF3E7": "#FBEED8"
+    }
+  },
+  "postage-stamp": {
+    "source": "postage-stamp.svg",
+    "slots": [
+      {
+        "id": "stamp",
+        "label": "Stamp",
+        "default": "#B5DFC5",
+        "palette": [
+          "#B5DFC5",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "border",
+        "label": "Border",
+        "default": "#B6A4E4",
+        "palette": [
+          "#B6A4E4",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#C0E6CD": "#B5DFC5",
+      "#B9A8E2": "#B6A4E4"
+    }
+  },
+  "price-tag": {
+    "source": "price-tag.svg",
+    "slots": [
+      {
+        "id": "tag",
+        "label": "Tag",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "string",
+        "label": "String",
+        "default": "#B5DFC5",
+        "palette": [
+          "#B5DFC5",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "detail",
+        "label": "Detail",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FDC8AF": "#F9C299",
+      "#B1D6C0": "#B5DFC5",
+      "#FFFFFF": "#FAFBFA"
+    }
+  },
+  "pumpkin": {
+    "source": "pumpkin.svg",
+    "slots": [
+      {
+        "id": "pumpkin",
+        "label": "Pumpkin",
+        "default": "#FC994D",
+        "palette": [
+          "#FC994D",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FB883E",
+            "deltaL": -0.0305
+          }
+        ]
+      },
+      {
+        "id": "stem",
+        "label": "Stem",
+        "default": "#9CB66F",
+        "palette": [
+          "#9CB66F",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FC994D": "#FC994D",
+      "#9CB66F": "#9CB66F",
+      "#FB883E": "#FB883E"
+    }
+  },
+  "push-pin": {
+    "source": "push-pin.svg",
+    "slots": [
+      {
+        "id": "stem",
+        "label": "Stem",
+        "default": "#7BCBFC",
+        "palette": [
+          "#7BCBFC",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "pin",
+        "label": "Pin",
+        "default": "#FB8E8B",
+        "palette": [
+          "#FB8E8B",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FE6DAE",
+            "deltaL": -0.0331
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#7BCBFC": "#7BCBFC",
+      "#FE78B8": "#FB8E8B",
+      "#FE62A5": "#FE6DAE"
+    }
+  },
+  "ribbon-banner-2": {
+    "source": "ribbon-banner-2.svg",
+    "slots": [
+      {
+        "id": "banner",
+        "label": "Banner",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "ends",
+        "label": "Ends",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCCDAC": "#F9C299",
+      "#EEA4A9": "#F39FAA"
+    }
+  },
+  "ribbon-banner": {
+    "source": "ribbon-banner.svg",
+    "slots": [
+      {
+        "id": "banner",
+        "label": "Banner",
+        "default": "#CCB7EE",
+        "palette": [
+          "#CCB7EE",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FBEED8",
+            "deltaL": 0.138
+          },
+          {
+            "color": "#FCC0C6",
+            "deltaL": 0.0479
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#D2BCE6": "#CCB7EE",
+      "#FEECD2": "#FBEED8",
+      "#FDCAD3": "#FCC0C6"
+    }
+  },
+  "rounded-oak-leaf": {
+    "source": "rounded-oak-leaf.svg",
+    "slots": [
+      {
+        "id": "leaf",
+        "label": "Leaf",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#B5DFC5",
+            "deltaL": 0.1379
+          }
+        ]
+      },
+      {
+        "id": "vein",
+        "label": "Vein",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#8FAE8A": "#96B187",
+      "#FCE67D": "#FDE98A",
+      "#C9DEC4": "#B5DFC5"
+    }
+  },
+  "route-29": {
+    "source": "route-29.svg",
+    "slots": [
+      {
+        "id": "sign",
+        "label": "Sign",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "text",
+        "label": "Text",
+        "default": "#415C5F",
+        "palette": [
+          "#415C5F",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FCEE9A": "#FDE98A",
+      "#38656D": "#415C5F"
+    }
+  },
+  "sticker-scallop-shell": {
+    "source": "scallop-shell.svg",
+    "slots": [
+      {
+        "id": "shell",
+        "label": "Shell",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F5D7C5",
+            "deltaL": 0.036
+          },
+          {
+            "color": "#FB8E8B",
+            "deltaL": -0.1006
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FB928A": "#FB8E8B",
+      "#FDBBC0": "#FCC0C6",
+      "#FCD5C2": "#F5D7C5"
+    }
+  },
+  "shipping-tag": {
+    "source": "shipping-tag.svg",
+    "slots": [
+      {
+        "id": "tag",
+        "label": "Tag",
+        "default": "#D4AA83",
+        "palette": [
+          "#D4AA83",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "string",
+        "label": "String",
+        "default": "#E29590",
+        "palette": [
+          "#E29590",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#DD928C",
+            "deltaL": -0.0119
+          }
+        ]
+      },
+      {
+        "id": "hole",
+        "label": "Hole",
+        "default": "#000000",
+        "palette": [
+          "#000000",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#D4AA83": "#D4AA83",
+      "#E29590": "#E29590",
+      "#000000": "#000000",
+      "#DD928C": "#DD928C"
+    }
+  },
+  "signpost": {
+    "source": "signpost.svg",
+    "slots": [
+      {
+        "id": "post",
+        "label": "Post",
+        "default": "#AEC3A2",
+        "palette": [
+          "#AEC3A2",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "sign1",
+        "label": "Sign 1",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "sign2",
+        "label": "Sign 2",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#EDBA6D": "#E8B16B",
+      "#F8BB96": "#F9C299",
+      "#BEC99D": "#AEC3A2"
+    }
+  },
+  "skeleton-key": {
+    "source": "skeleton-key.svg",
+    "slots": [
+      {
+        "id": "key",
+        "label": "Key",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "bow",
+        "label": "Bow",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "detail",
+        "label": "Detail",
+        "default": "#FAFBFA",
+        "palette": [
+          "#FAFBFA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#EBC583": "#F9C299",
+      "#ED9C9F": "#F39FAA",
+      "#FFFFFF": "#FAFBFA"
+    }
+  },
+  "sleeping-cat": {
+    "source": "sleeping-cat.svg",
+    "slots": [
+      {
+        "id": "cat",
+        "label": "Cat",
+        "default": "#F9C299",
+        "palette": [
+          "#F9C299",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FABDA3": "#F9C299"
+    }
+  },
+  "slippers": {
+    "source": "slippers.svg",
+    "slots": [
+      {
+        "id": "slipper1",
+        "label": "Slipper 1",
+        "default": "#CCB7EE",
+        "palette": [
+          "#CCB7EE",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#9F8FC4",
+            "deltaL": -0.1323
+          }
+        ]
+      },
+      {
+        "id": "slipper2",
+        "label": "Slipper 2",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F5D7C5",
+            "deltaL": 0.036
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#CBB4E4": "#CCB7EE",
+      "#A78EC1": "#9F8FC4",
+      "#F7C7CF": "#FCC0C6",
+      "#FCD4D8": "#F5D7C5"
+    }
+  },
+  "snowflake": {
+    "source": "snowflake.svg",
+    "slots": [
+      {
+        "id": "snowflake",
+        "label": "Snowflake",
+        "default": "#A5BAF9",
+        "palette": [
+          "#A5BAF9",
+          "#4A6C80",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#DCECF2",
+          "#9ED0FA",
+          "#3F9A88"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AACFF7",
+            "deltaL": 0.0455
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#A5D3FC": "#AACFF7",
+      "#A5BAF9": "#A5BAF9"
+    }
+  },
+  "steering-wheel": {
+    "source": "steering-wheel.svg",
+    "slots": [
+      {
+        "id": "wheel",
+        "label": "Wheel",
+        "default": "#C09E62",
+        "palette": [
+          "#C09E62",
+          "#5B4326",
+          "#77592F",
+          "#8A6A44",
+          "#987444",
+          "#B8935B",
+          "#C9A46F",
+          "#E0C39A",
+          "#D06E45",
+          "#AE5231"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9C299",
+            "deltaL": 0.1368
+          },
+          {
+            "color": "#BB7E59",
+            "deltaL": -0.0695
+          },
+          {
+            "color": "#915333",
+            "deltaL": -0.209
+          }
+        ]
+      },
+      {
+        "id": "hub",
+        "label": "Hub",
+        "default": "#E8B16B",
+        "palette": [
+          "#E8B16B",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#E5A960": "#E8B16B",
+      "#CE8444": "#C09E62",
+      "#855438": "#915333",
+      "#E3B97F": "#F9C299",
+      "#B6733B": "#BB7E59"
+    }
+  },
+  "succulent": {
+    "source": "succulent.svg",
+    "slots": [
+      {
+        "id": "pot",
+        "label": "Pot",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#AE5231",
+          "#D06E45",
+          "#C9A46F",
+          "#B8935B",
+          "#8A8278",
+          "#3F9A88",
+          "#6A97AD",
+          "#EFE1C9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "plant",
+        "label": "Plant",
+        "default": "#6D9163",
+        "palette": [
+          "#6D9163",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AEC3A2",
+            "deltaL": 0.175
+          },
+          {
+            "color": "#96B187",
+            "deltaL": 0.1115
+          },
+          {
+            "color": "#C09E62",
+            "deltaL": 0.0996
+          },
+          {
+            "color": "#869A72",
+            "deltaL": 0.0425
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#F9B89D": "#FAB39E",
+      "#688A57": "#6D9163",
+      "#A1B97F": "#C09E62",
+      "#769A60": "#869A72",
+      "#9CB77A": "#96B187",
+      "#A9C182": "#AEC3A2"
+    }
+  },
+  "sunburst": {
+    "source": "sunburst.svg",
+    "slots": [
+      {
+        "id": "sun",
+        "label": "Sun",
+        "default": "#FDE98A",
+        "palette": [
+          "#FDE98A",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#F9D37B",
+            "deltaL": -0.0492
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDE461": "#F9D37B",
+      "#FDF38A": "#FDE98A"
+    }
+  },
+  "teapot": {
+    "source": "teapot.svg",
+    "slots": [
+      {
+        "id": "teapot",
+        "label": "Teapot",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "pattern",
+        "label": "Pattern",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#AEC3A2",
+            "deltaL": 0.0636
+          },
+          {
+            "color": "#C09E62",
+            "deltaL": -0.0119
+          }
+        ]
+      },
+      {
+        "id": "flower",
+        "label": "Flower",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#A2B190": "#96B187",
+      "#F9EBD4": "#FBEED8",
+      "#FBB698": "#FAB39E",
+      "#A5B593": "#C09E62",
+      "#B7C1A6": "#AEC3A2"
+    }
+  },
+  "tent-2": {
+    "source": "tent-2.svg",
+    "slots": [
+      {
+        "id": "tent",
+        "label": "Tent",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "accent",
+        "label": "Accent",
+        "default": "#FAB39E",
+        "palette": [
+          "#FAB39E",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#95A88F": "#96B187",
+      "#FAEBD3": "#FBEED8",
+      "#EBAD95": "#FAB39E"
+    }
+  },
+  "tent": {
+    "source": "tent.svg",
+    "slots": [
+      {
+        "id": "tent",
+        "label": "Tent",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#D9482F",
+          "#E0607E",
+          "#6A97AD",
+          "#3F9A88",
+          "#7E9560",
+          "#D9A94E",
+          "#8E6FC0",
+          "#E5966F",
+          "#8FB4C4",
+          "#F6E7C9",
+          "#B23A6A",
+          "#C05A3A"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D2E6DE",
+            "deltaL": 0.1791
+          },
+          {
+            "color": "#AEC3A2",
+            "deltaL": 0.0636
+          },
+          {
+            "color": "#869A72",
+            "deltaL": -0.069
+          },
+          {
+            "color": "#6D9163",
+            "deltaL": -0.1115
+          }
+        ]
+      },
+      {
+        "id": "trim",
+        "label": "Trim",
+        "default": "#FCE5BA",
+        "palette": [
+          "#FCE5BA",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#ABC2A5": "#AEC3A2",
+      "#D3E4CE": "#D2E6DE",
+      "#90AB8B": "#96B187",
+      "#7D977B": "#869A72",
+      "#FCE7C8": "#FCE5BA",
+      "#789177": "#6D9163"
+    }
+  },
+  "torn-paper": {
+    "source": "torn-paper.svg",
+    "slots": [
+      {
+        "id": "paper",
+        "label": "Paper",
+        "default": "#FBEED8",
+        "palette": [
+          "#FBEED8",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#FBEBE1": "#FBEED8"
+    }
+  },
+  "tulip": {
+    "source": "tulip.svg",
+    "slots": [
+      {
+        "id": "leaves",
+        "label": "Leaves",
+        "default": "#96B187",
+        "palette": [
+          "#96B187",
+          "#2F5D4A",
+          "#3F7A63",
+          "#4E8A5F",
+          "#5E8F7A",
+          "#6DA35C",
+          "#7FA88C",
+          "#8FB06A",
+          "#A4C07E",
+          "#B7C98A",
+          "#C05A3A",
+          "#D98A3A",
+          "#D9A94E",
+          "#B23A2E"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#869A72",
+            "deltaL": -0.069
+          }
+        ]
+      },
+      {
+        "id": "petals",
+        "label": "Petals",
+        "default": "#F39FAA",
+        "palette": [
+          "#F39FAA",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FCC0C6",
+            "deltaL": 0.0747
+          },
+          {
+            "color": "#FB8E8B",
+            "deltaL": -0.0259
+          },
+          {
+            "color": "#EF6D71",
+            "deltaL": -0.0963
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#8EB182": "#96B187",
+      "#84A977": "#869A72",
+      "#F06A82": "#EF6D71",
+      "#F79DAF": "#F39FAA",
+      "#F38396": "#FB8E8B",
+      "#FABBC8": "#FCC0C6"
+    }
+  },
+  "washi-tape-2": {
+    "source": "washi-tape-2.svg",
+    "slots": [
+      {
+        "id": "tape",
+        "label": "Tape",
+        "default": "#CCB7EE",
+        "palette": [
+          "#CCB7EE",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#FCC0C6",
+            "deltaL": 0.0479
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#FDCBDB": "#FCC0C6",
+      "#C9B7EA": "#CCB7EE"
+    }
+  },
+  "sticker-washi-tape": {
+    "source": "washi-tape.svg",
+    "slots": [
+      {
+        "id": "tape",
+        "label": "Tape",
+        "default": "#B6A4E4",
+        "palette": [
+          "#B6A4E4",
+          "#B23A6A",
+          "#C22E68",
+          "#D9482F",
+          "#E0607E",
+          "#F0A0B4",
+          "#F6C9D4",
+          "#8E6FC0",
+          "#A78CCF",
+          "#F6E7C9",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D2E6DE",
+            "deltaL": 0.1509
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#E8DBFA": "#D2E6DE",
+      "#BAA3E5": "#B6A4E4"
+    }
+  },
+  "watering-can": {
+    "source": "watering-can.svg",
+    "slots": [
+      {
+        "id": "can",
+        "label": "Can",
+        "default": "#96A4AD",
+        "palette": [
+          "#96A4AD",
+          "#2F6B62",
+          "#3F9A88",
+          "#6DB7A6",
+          "#6A97AD",
+          "#8FB4C4",
+          "#B6D3DE",
+          "#4A6C80",
+          "#9ED0FA",
+          "#DCECF2"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#509997",
+            "deltaL": -0.0751
+          },
+          {
+            "color": "#648EB2",
+            "deltaL": -0.0805
+          }
+        ]
+      },
+      {
+        "id": "handle",
+        "label": "Handle",
+        "default": "#CAC7C0",
+        "palette": [
+          "#CAC7C0",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#C9A46F",
+          "#B8935B",
+          "#D9A94E",
+          "#6E6259"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#D2E6DE",
+            "deltaL": 0.0777
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#8AA2B2": "#96A4AD",
+      "#C2C8CD": "#CAC7C0",
+      "#D1D5D9": "#D2E6DE",
+      "#63889F": "#509997",
+      "#7090A5": "#648EB2"
+    }
+  },
+  "wax-seal-stamp": {
+    "source": "wax-seal-stamp.svg",
+    "slots": [
+      {
+        "id": "seal",
+        "label": "Seal",
+        "default": "#CC4948",
+        "palette": [
+          "#CC4948",
+          "#B8862E",
+          "#D9A94E",
+          "#EFD070",
+          "#F9EBA6",
+          "#E5966F",
+          "#D06E45",
+          "#D9482F",
+          "#F6C1A9"
+        ],
+        "allowCustom": true,
+        "shades": []
+      },
+      {
+        "id": "emboss",
+        "label": "Emboss",
+        "default": "#FCC0C6",
+        "palette": [
+          "#FCC0C6",
+          "#3A3128",
+          "#655E55",
+          "#8A8278",
+          "#B0A89C",
+          "#D3CCC2",
+          "#EDE9E2",
+          "#EFE1C9",
+          "#E1CDAD",
+          "#F8F0E0"
+        ],
+        "allowCustom": true,
+        "shades": []
+      }
+    ],
+    "colors": {
+      "#D25054": "#CC4948",
+      "#F8CBC5": "#FCC0C6"
+    }
+  },
+  "wayfarer-sunglasses": {
+    "source": "wayfarer-sunglasses.svg",
+    "slots": [
+      {
+        "id": "sunglasses",
+        "label": "Sunglasses",
+        "default": "#282828",
+        "palette": [
+          "#282828",
+          "#1F1915",
+          "#2E241C",
+          "#3A3128",
+          "#4E433A",
+          "#655E55",
+          "#6E6259",
+          "#8A8278"
+        ],
+        "allowCustom": true,
+        "shades": [
+          {
+            "color": "#0B0B0B",
+            "deltaL": -0.1273
+          }
+        ]
+      }
+    ],
+    "colors": {
+      "#060606": "#0B0B0B",
+      "#2C2C2C": "#282828"
+    }
+  }
+}

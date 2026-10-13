@@ -1,0 +1,68 @@
+{
+  "kind": "sticker",
+  "label": "Price Tag",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "tag",
+      "label": "Tag",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "string",
+      "label": "String",
+      "default": "#B5DFC5",
+      "palette": [
+        "#B5DFC5",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "detail",
+      "label": "Detail",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}
