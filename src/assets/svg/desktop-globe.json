@@ -1,0 +1,64 @@
+{
+  "kind": "sticker",
+  "label": "Desktop Globe",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "stand",
+      "label": "Stand",
+      "default": "#C09E62",
+      "palette": [
+        "#C09E62",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "globe",
+      "label": "Globe",
+      "default": "#91CABE",
+      "palette": [
+        "#91CABE",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "detail",
+      "label": "Detail",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

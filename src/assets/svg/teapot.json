@@ -1,0 +1,81 @@
+{
+  "kind": "sticker",
+  "label": "Teapot",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "teapot",
+      "label": "Teapot",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "pattern",
+      "label": "Pattern",
+      "default": "#96B187",
+      "palette": [
+        "#96B187",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#AEC3A2",
+          "deltaL": 0.0636
+        },
+        {
+          "color": "#C09E62",
+          "deltaL": -0.0119
+        }
+      ]
+    },
+    {
+      "id": "flower",
+      "label": "Flower",
+      "default": "#FAB39E",
+      "palette": [
+        "#FAB39E",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

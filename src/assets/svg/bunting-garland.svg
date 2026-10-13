@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="none" viewBox="0 0 80 80">
+<path d="m8.58 32.25 3.24 12.1 7.58-8.34c-3.88-0.89-7.6-2.21-10.82-3.76z" fill="var(--c-flag1, #FCC0C6)" />
+  <path d="m20.91 36.29 4.53 11.33 7.04-9.47c-4.04-0.34-7.94-1-11.57-1.86z" fill="var(--c-flag2, #FDE98A)" />
+  <path d="m34.05 38.17 5.93 10.45 5.98-10.45c-3.98 0.28-8.04 0.28-11.91 0z" fill="var(--c-flag3, #B5DFC5)" />
+  <path d="m47.53 38.09 6.97 9.53 4.58-11.25c-3.83 0.86-7.73 1.43-11.55 1.72z" fill="var(--c-flag4, #CCB7EE)" />
+  <path d="m60.77 35.98 7.71 8.37 2.93-12.01c-3.49 1.5-7.07 2.75-10.64 3.64z" fill="var(--c-flag1, #FCC0C6)" />
+  <path d="m7.12 31.46c9.57 4.14 21.3 6.3 32.88 6.3s23.94-2.34 32.8-6.3" stroke="oklch(from var(--c-flag4, #CCB7EE) calc(l - 0.0586) c h)" stroke-linecap="round" stroke-width="1.345" />
+</svg>

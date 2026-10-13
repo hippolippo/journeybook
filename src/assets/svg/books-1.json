@@ -1,0 +1,28 @@
+{
+  "kind": "room",
+  "id": "books-1",
+  "label": "Book stack",
+  "category": "trinket",
+  "layer": "surface",
+  "band": "floor",
+  "aspect": 1.101,
+  "defaultScale": 0.25,
+  "attach": "furniture",
+  "colorSlots": [
+    {
+      "id": "cover",
+      "label": "Covers",
+      "default": "#D6805E",
+      "palette": ["#d6805e", "#c97b5a", "#d98c8c", "#e8b4af", "#d9a94e", "#9caf88", "#7e8f6b", "#9dbfc9", "#6f97bb", "#d3b184", "#4a3b2e"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "ember", "label": "Ember", "colors": { "cover": "#d6805e" } },
+    { "id": "sage", "label": "Sage", "colors": { "cover": "#9caf88" } },
+    { "id": "honey", "label": "Honey", "colors": { "cover": "#d9a94e" } },
+    { "id": "rose", "label": "Rose", "colors": { "cover": "#d98c8c" } },
+    { "id": "sky", "label": "Sky", "colors": { "cover": "#6f97bb" } },
+    { "id": "ink", "label": "Ink", "colors": { "cover": "#4a3b2e" } }
+  ]
+}

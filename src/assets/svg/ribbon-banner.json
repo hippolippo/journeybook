@@ -1,0 +1,36 @@
+{
+  "kind": "sticker",
+  "label": "Ribbon Banner",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "banner",
+      "label": "Banner",
+      "default": "#CCB7EE",
+      "palette": [
+        "#CCB7EE",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FBEED8",
+          "deltaL": 0.138
+        },
+        {
+          "color": "#FCC0C6",
+          "deltaL": 0.0479
+        }
+      ]
+    }
+  ]
+}

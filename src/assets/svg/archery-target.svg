@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+<circle cx="40.03" cy="39.39" r="23.04" fill="var(--c-target, #FB8E8B)" />
+  <circle cx="40.03" cy="39.33" r="17.34" fill="oklch(from var(--c-target, #FB8E8B) calc(l + 0.0908) c h)" />
+  <circle cx="40.03" cy="39.26" r="11.84" fill="oklch(from var(--c-target, #FB8E8B) calc(l + 0.1908) c h)" />
+  <circle cx="39.98" cy="39.22" r="6.453" fill="oklch(from var(--c-target, #FB8E8B) calc(l - 0.0704) c h)" />
+</svg>

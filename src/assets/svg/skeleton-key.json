@@ -1,0 +1,65 @@
+{
+  "kind": "sticker",
+  "label": "Skeleton Key",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "key",
+      "label": "Key",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "bow",
+      "label": "Bow",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "detail",
+      "label": "Detail",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

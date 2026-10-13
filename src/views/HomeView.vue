@@ -7,7 +7,7 @@ import { useAuthStore } from '@/stores/auth';
 import { togetherStatus } from '@/calendar/events';
 import { stickerById } from '@/scrapbook/decor';
 
-const pressedFlower = stickerById('flower').art;
+const pressedFlower = stickerById('daisy').art;
 
 const router = useRouter();
 const app = useAppStore();

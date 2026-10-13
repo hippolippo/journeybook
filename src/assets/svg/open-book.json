@@ -1,0 +1,70 @@
+{
+  "kind": "sticker",
+  "label": "Open Book",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "cover",
+      "label": "Cover",
+      "default": "#BCAFD0",
+      "palette": [
+        "#BCAFD0",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "pages",
+      "label": "Pages",
+      "default": "#FAFBFA",
+      "palette": [
+        "#FAFBFA",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F5D7C5",
+          "deltaL": -0.0877
+        }
+      ]
+    },
+    {
+      "id": "trim",
+      "label": "Trim",
+      "default": "#FBEED8",
+      "palette": [
+        "#FBEED8",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "kind": "sticker",
+  "label": "Ribbon Banner 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "banner",
+      "label": "Banner",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "ends",
+      "label": "Ends",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#5B4326",
+        "#77592F",
+        "#8A6A44",
+        "#987444",
+        "#B8935B",
+        "#C9A46F",
+        "#E0C39A",
+        "#D06E45",
+        "#AE5231"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

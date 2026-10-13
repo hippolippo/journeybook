@@ -1,0 +1,59 @@
+{
+  "kind": "sticker",
+  "label": "Conch Shell",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "shell",
+      "label": "Shell",
+      "default": "#FDE6CE",
+      "palette": [
+        "#FDE6CE",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "ridges",
+      "label": "Ridges",
+      "default": "#FC8D83",
+      "palette": [
+        "#FC8D83",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FCB5A3",
+          "deltaL": 0.0742
+        },
+        {
+          "color": "#F6A8A9",
+          "deltaL": 0.0464
+        },
+        {
+          "color": "#FC9187",
+          "deltaL": 0.0072
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="82" height="82" viewBox="0 0 82 82">
+<rect x="3.812" y="29.06" width="74.33" height="11.75" fill="oklch(from var(--c-tape, #CCB7EE) calc(l + 0.0479) c h)" />
+  <circle cx="7.723" cy="34.38" r="2.051" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="15.73" cy="37.76" r="2.051" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="23.66" cy="32.41" r="2.314" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="32.05" cy="36.96" r="2.266" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="40.98" cy="32.64" r="2.305" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="49.79" cy="37.11" r="2.266" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="58.11" cy="32.62" r="2.285" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="66.62" cy="37.17" r="2.285" fill="var(--c-tape, #CCB7EE)" />
+  <circle cx="74.84" cy="32.96" r="2.062" fill="var(--c-tape, #CCB7EE)" />
+</svg>

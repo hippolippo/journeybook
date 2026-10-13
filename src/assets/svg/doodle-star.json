@@ -1,9 +1,0 @@
-{
-  "kind": "sticker",
-  "id": "star",
-  "label": "Star",
-  "tint": true,
-  "aspect": 1,
-  "defaultColor": "#d9a94e",
-  "art": { "day": "doodle-star.svg" }
-}

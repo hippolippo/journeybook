@@ -1,0 +1,32 @@
+{
+  "kind": "sticker",
+  "label": "Heart 2",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "heart",
+      "label": "Heart",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FCC0C6",
+          "deltaL": 0.0747
+        }
+      ]
+    }
+  ]
+}

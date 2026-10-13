@@ -1,0 +1,27 @@
+{
+  "kind": "room",
+  "id": "tall-shelf",
+  "label": "Tall bookshelf",
+  "category": "furniture",
+  "layer": "floor",
+  "band": "floor",
+  "aspect": 0.71,
+  "defaultScale": 1.35,
+  "host": true,
+  "colorSlots": [
+    {
+      "id": "wood",
+      "label": "Wood",
+      "default": "#A76435",
+      "palette": ["#a76435", "#a66434", "#a36131", "#8e5e42", "#b99362", "#d3b184", "#7e8f6b", "#6f97bb", "#c97b5a", "#4a3b2e"],
+      "allowCustom": true
+    }
+  ],
+  "presets": [
+    { "id": "oak", "label": "Oak", "colors": { "wood": "#a76435" } },
+    { "id": "walnut", "label": "Walnut", "colors": { "wood": "#8e5e42" } },
+    { "id": "cream", "label": "Cream", "colors": { "wood": "#d3b184" } },
+    { "id": "mint", "label": "Mint", "colors": { "wood": "#7e8f6b" } },
+    { "id": "sky", "label": "Sky", "colors": { "wood": "#6f97bb" } }
+  ]
+}

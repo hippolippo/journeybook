@@ -12,7 +12,7 @@ const BUILTIN: CatalogItem[] = [
     layer: 'wall',
     band: 'wall',
     aspect: 120 / 130,
-    defaultScale: 0.22,
+    defaultScale: 0.13,
     defaultRotation: 0,
     art: { day: clockArt },
     colorSlots: [],

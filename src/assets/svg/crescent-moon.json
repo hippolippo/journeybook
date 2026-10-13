@@ -1,0 +1,45 @@
+{
+  "kind": "sticker",
+  "label": "Crescent Moon",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "moon",
+      "label": "Moon",
+      "default": "#FDE98A",
+      "palette": [
+        "#FDE98A",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "stars",
+      "label": "Stars",
+      "default": "#CCB7EE",
+      "palette": [
+        "#CCB7EE",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F0A0B4",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

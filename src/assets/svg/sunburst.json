@@ -1,0 +1,30 @@
+{
+  "kind": "sticker",
+  "label": "Sunburst",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "sun",
+      "label": "Sun",
+      "default": "#FDE98A",
+      "palette": [
+        "#FDE98A",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F9D37B",
+          "deltaL": -0.0492
+        }
+      ]
+    }
+  ]
+}

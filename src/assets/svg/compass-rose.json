@@ -1,0 +1,100 @@
+{
+  "kind": "sticker",
+  "label": "Compass Rose",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "face",
+      "label": "Face",
+      "default": "#FCD9B4",
+      "palette": [
+        "#FCD9B4",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD",
+        "#F8F0E0"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FFFFFF",
+          "deltaL": 0.0945
+        }
+      ]
+    },
+    {
+      "id": "points",
+      "label": "Points",
+      "default": "#85B3E4",
+      "palette": [
+        "#85B3E4",
+        "#2F6B62",
+        "#3F9A88",
+        "#6DB7A6",
+        "#6A97AD",
+        "#8FB4C4",
+        "#B6D3DE",
+        "#4A6C80",
+        "#9ED0FA",
+        "#DCECF2"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#6191C2",
+          "deltaL": -0.1099
+        },
+        {
+          "color": "#5D8EC0",
+          "deltaL": -0.1197
+        }
+      ]
+    },
+    {
+      "id": "land",
+      "label": "Land",
+      "default": "#98CAB4",
+      "palette": [
+        "#98CAB4",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "center",
+      "label": "Center",
+      "default": "#FDBD9F",
+      "palette": [
+        "#FDBD9F",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

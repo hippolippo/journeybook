@@ -1,0 +1,59 @@
+{
+  "kind": "sticker",
+  "label": "Controller",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "body",
+      "label": "Body",
+      "default": "#1F1915",
+      "palette": ["#1F1915", "#2E241C", "#3A3128", "#4E433A", "#655E55", "#6E6259", "#8A8278"],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#4E433A",
+          "deltaL": 0.1722
+        },
+        {
+          "color": "#332A24",
+          "deltaL": 0.0739
+        }
+      ]
+    },
+    {
+      "id": "grips",
+      "label": "Grips",
+      "default": "#8A8278",
+      "palette": [
+        "#8A8278",
+        "#3A3128",
+        "#655E55",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "buttons",
+      "label": "Buttons",
+      "default": "#D9482F",
+      "palette": [
+        "#D9482F",
+        "#B8862E",
+        "#D9A94E",
+        "#EFD070",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}

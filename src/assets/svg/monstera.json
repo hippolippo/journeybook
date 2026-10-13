@@ -1,0 +1,81 @@
+{
+  "kind": "sticker",
+  "label": "Monstera",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "pot",
+      "label": "Pot",
+      "default": "#FCC0C6",
+      "palette": [
+        "#FCC0C6",
+        "#AE5231",
+        "#D06E45",
+        "#C9A46F",
+        "#B8935B",
+        "#8A8278",
+        "#3F9A88",
+        "#6A97AD",
+        "#EFE1C9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "leaves",
+      "label": "Leaves",
+      "default": "#9AD7B7",
+      "palette": [
+        "#9AD7B7",
+        "#2F5D4A",
+        "#3F7A63",
+        "#4E8A5F",
+        "#5E8F7A",
+        "#6DA35C",
+        "#7FA88C",
+        "#8FB06A",
+        "#A4C07E",
+        "#B7C98A",
+        "#C05A3A",
+        "#D98A3A",
+        "#D9A94E",
+        "#B23A2E"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#FDE98A",
+          "deltaL": 0.1015
+        },
+        {
+          "color": "#B5DFC5",
+          "deltaL": 0.0378
+        },
+        {
+          "color": "#A4DE5A",
+          "deltaL": 0.0054
+        },
+        {
+          "color": "#91CABE",
+          "deltaL": -0.0325
+        },
+        {
+          "color": "#AEC3A2",
+          "deltaL": -0.0365
+        },
+        {
+          "color": "#96B187",
+          "deltaL": -0.1001
+        },
+        {
+          "color": "#869A72",
+          "deltaL": -0.169
+        },
+        {
+          "color": "#6D9163",
+          "deltaL": -0.2115
+        }
+      ]
+    }
+  ]
+}

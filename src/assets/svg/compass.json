@@ -1,0 +1,43 @@
+{
+  "kind": "sticker",
+  "label": "Compass",
+  "aspect": 0.9639,
+  "colorSlots": [
+    {
+      "id": "compass",
+      "label": "Compass",
+      "default": "#C2A258",
+      "palette": [
+        "#C2A258",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#C9A46F",
+        "#B8935B",
+        "#D9A94E",
+        "#6E6259"
+      ],
+      "allowCustom": true,
+      "shades": [
+        {
+          "color": "#F6DA93",
+          "deltaL": 0.1703
+        },
+        {
+          "color": "#F4D78F",
+          "deltaL": 0.1619
+        },
+        {
+          "color": "#C9A962",
+          "deltaL": 0.0226
+        },
+        {
+          "color": "#C2985D",
+          "deltaL": -0.0195
+        }
+      ]
+    }
+  ]
+}

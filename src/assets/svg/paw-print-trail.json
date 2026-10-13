@@ -1,0 +1,95 @@
+{
+  "kind": "sticker",
+  "label": "Paw Print Trail",
+  "aspect": 1,
+  "colorSlots": [
+    {
+      "id": "paw1",
+      "label": "Paw 1",
+      "default": "#F39FAA",
+      "palette": [
+        "#F39FAA",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "paw2",
+      "label": "Paw 2",
+      "default": "#F9C299",
+      "palette": [
+        "#F9C299",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "paw3",
+      "label": "Paw 3",
+      "default": "#9AD7B7",
+      "palette": [
+        "#9AD7B7",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "paw4",
+      "label": "Paw 4",
+      "default": "#AACFF7",
+      "palette": [
+        "#AACFF7",
+        "#D9482F",
+        "#E0607E",
+        "#6A97AD",
+        "#3F9A88",
+        "#7E9560",
+        "#D9A94E",
+        "#8E6FC0",
+        "#E5966F",
+        "#8FB4C4",
+        "#F6E7C9",
+        "#B23A6A",
+        "#C05A3A"
+      ],
+      "allowCustom": true,
+      "shades": []
+    }
+  ]
+}
