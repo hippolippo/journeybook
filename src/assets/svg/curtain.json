@@ -3,8 +3,12 @@
   "id": "curtain",
   "label": "Curtain",
   "category": "wallDecor",
-  "layer": "wall",
+  "layer": "surface",
   "band": "wall",
-  "aspect": 0.547,
-  "defaultScale": 0.7
+  "attach": "shelf",
+  "anchor": "top",
+  "anchorOffset": 0.14,
+  "aspect": 0.3,
+  "defaultScale": 0.434,
+  "raw": true
 }

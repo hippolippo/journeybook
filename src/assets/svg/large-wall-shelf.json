@@ -6,7 +6,7 @@
   "layer": "wall",
   "band": "wall",
   "aspect": 3.25,
-  "defaultScale": 0.1,
+  "defaultScale": 0.126,
   "host": true,
   "colorSlots": [
     {
