@@ -6,9 +6,7 @@ import type { ScrapNode } from '@/data/types';
 import { useAppStore } from '@/stores/app';
 import { useViewport } from '@/composables/useViewport';
 import { duplicateBook, exportBookData, importBookData } from '@/data/bookTransfer';
-import { stickerById } from '@/scrapbook/decor';
-
-const pressedFlower = stickerById('daisy').art;
+import pressedFlower from '@/assets/svg/daisy-stem.svg';
 
 const props = defineProps<{ folderId?: string }>();
 const app = useAppStore();
