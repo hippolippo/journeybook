@@ -179,6 +179,7 @@ describe('room item round-trip', () => {
       hideMobile: true,
       locked: true,
       lightLevel: 1.4,
+      shadow: 0.7,
     };
     expect(roundTripItem(item)).toEqual(item);
   });

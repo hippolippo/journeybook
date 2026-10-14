@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Pumpkin",
-  "aspect": 1,
+  "aspect": 1.0405,
   "colorSlots": [
     {
       "id": "pumpkin",

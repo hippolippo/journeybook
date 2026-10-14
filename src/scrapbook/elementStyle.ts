@@ -2,6 +2,11 @@ import type { PageElement } from '@/data/types';
 import type { ColorSlot } from '@/catalog/types';
 import { stickerById, tapeById } from './decor';
 
+/** Content transform vars for an element (horizontal flip mirrors the content). */
+export function flipVars(el: { flipX?: boolean }): Record<string, string> {
+  return el.flipX ? { transform: 'scaleX(-1)' } : {};
+}
+
 /** Build `--c-<slot>` CSS variables from slot defaults and stored values. */
 export function slotVars(
   slots: ColorSlot[] | undefined,

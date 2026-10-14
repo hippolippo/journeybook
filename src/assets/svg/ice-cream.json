@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Ice Cream",
-  "aspect": 1,
+  "aspect": 0.4408,
   "colorSlots": [
     {
       "id": "cone",

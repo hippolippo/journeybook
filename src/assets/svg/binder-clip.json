@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Binder Clip",
-  "aspect": 1,
+  "aspect": 0.9233,
   "colorSlots": [
     {
       "id": "clip",

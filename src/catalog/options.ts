@@ -14,10 +14,19 @@ export const WALLS: SurfaceOption[] = [
 ];
 
 export const FLOORS: SurfaceOption[] = [
-  { id: 'wood-warm', label: 'Warm wood', swatch: '#b2885a', className: 'floor--wood-warm' },
-  { id: 'wood-dark', label: 'Dark wood', swatch: '#8a5f3c', className: 'floor--wood-dark' },
-  { id: 'tile-check', label: 'Checkered tile', swatch: '#d8cec0', className: 'floor--tile-check' },
-  { id: 'carpet-rose', label: 'Rose carpet', swatch: '#d9a3a0', className: 'floor--carpet-rose' },
+  { id: 'wood-warm', label: 'Warm oak', swatch: '#c39a63', className: 'floor--wood-warm' },
+  { id: 'wood-dark', label: 'Walnut', swatch: '#7d5433', className: 'floor--wood-dark' },
+  { id: 'tile-check', label: 'Stone', swatch: '#d8cec0', className: 'floor--tile-check' },
+  { id: 'carpet-rose', label: 'Rose', swatch: '#d9a3a0', className: 'floor--carpet-rose' },
+  { id: 'cream', label: 'Cream', swatch: '#f1e5cd', className: 'floor--cream' },
+  { id: 'sand', label: 'Sand', swatch: '#e4cfa6', className: 'floor--sand' },
+  { id: 'terracotta', label: 'Terracotta', swatch: '#c07a55', className: 'floor--terracotta' },
+  { id: 'clay', label: 'Clay', swatch: '#a8624a', className: 'floor--clay' },
+  { id: 'sage', label: 'Sage', swatch: '#a8b491', className: 'floor--sage' },
+  { id: 'forest', label: 'Forest', swatch: '#6f8a6a', className: 'floor--forest' },
+  { id: 'sky', label: 'Sky', swatch: '#a9c6d1', className: 'floor--sky' },
+  { id: 'taupe', label: 'Taupe', swatch: '#b6a894', className: 'floor--taupe' },
+  { id: 'charcoal', label: 'Charcoal', swatch: '#4a3f36', className: 'floor--charcoal' },
 ];
 
 export function wallById(id: string): SurfaceOption {

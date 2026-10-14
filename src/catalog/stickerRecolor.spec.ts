@@ -31,6 +31,16 @@ describe('recolourable stickers', () => {
     }
   });
 
+  it('sizes each sticker to its artwork (aspect matches the raw viewBox)', () => {
+    for (const s of recolourable) {
+      if (!s.raw) continue;
+      const m = /viewBox="([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+)"/.exec(s.raw);
+      if (!m) continue;
+      const ratio = Number(m[3]) / Number(m[4]);
+      expect(Math.abs(ratio - s.aspect), `${s.id} aspect should hug the art`).toBeLessThan(0.02);
+    }
+  });
+
   it('names slots after the part, not the colour family', () => {
     const colourNames = new Set([
       'cream', 'kraft', 'clay', 'poppy', 'berry', 'mustard', 'lavender', 'ink', 'teal',

@@ -7,6 +7,7 @@
   "band": "floor",
   "aspect": 1.807,
   "defaultScale": 0.65,
+  "host": true,
   "colorSlots": [
     {
       "id": "rug",
