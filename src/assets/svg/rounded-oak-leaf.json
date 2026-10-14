@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Rounded Oak Leaf",
-  "aspect": 1,
+  "aspect": 0.6442,
   "colorSlots": [
     {
       "id": "leaf",

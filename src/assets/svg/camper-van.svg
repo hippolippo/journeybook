@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+<svg xmlns="http://www.w3.org/2000/svg" width="72.92" height="46.81" viewBox="3.7 15.82 72.92 46.81">
 <path d="m59.74 56.46c0.84 2.03 2.38 3.23 4.53 3.23 2.81 0 4.44-1.58 5.1-3.96l-9.63 0.73z" fill="oklch(from var(--c-tyres, #4E433A) calc(l - 0.0983) c h)" />
   <path d="m32.58 54.26c0.22 4.18 2.26 6.97 5.59 6.97 3.28 0 5.02-2.16 5.59-5.04-1.19-1.6-2.82-3.55-3.57-5.81-0.81-2.48-2.04-3.89-4.1-3.89-2.88 0-4.11 3.43-4.29 7.72l0.78 0.05z" fill="oklch(from var(--c-tyres, #4E433A) calc(l - 0.0983) c h)" />
   <ellipse cx="36.67" cy="54" rx="1.896" ry="3.712" fill="var(--c-body, #F8F0E0)" />

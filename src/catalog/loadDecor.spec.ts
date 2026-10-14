@@ -157,7 +157,7 @@ describe('asset loader', () => {
 
   it('adds light and music to the new decor', () => {
     const warmer = loadedRoomItems.find((i) => i.id === 'candle-warmer');
-    expect(warmer?.colorSlots.map((s) => s.id)).toEqual(['shade', 'metal']);
+    expect(warmer?.colorSlots.map((s) => s.id)).toEqual(['shade', 'metal', 'candle']);
     expect(warmer?.lights?.length).toBe(1);
 
     const string = loadedRoomItems.find((i) => i.id === 'fairy-lights-photos');
@@ -263,5 +263,16 @@ describe('day/night variant merging', () => {
     // viewBox to 3 decimals, so allow for that rounding here.
     expect(dayBox.w / dayBox.h).toBeCloseTo(nightBox.w / nightBox.h, 4);
     expect(raccoon.aspect).toBeCloseTo(dayBox.w / dayBox.h, 4);
+  });
+
+  it('lets rugs host surface items and never lets a host attach elsewhere', () => {
+    for (const id of ['circular-rug', 'rectangle-rug']) {
+      const rug = loadedRoomItems.find((i) => i.id === id);
+      expect(rug?.host, `${id} should be a host`).toBe(true);
+      expect(rug?.attach, `${id} should not attach`).toBeUndefined();
+    }
+    for (const item of loadedRoomItems) {
+      if (item.host) expect(item.attach, `${item.id} is a host and must not attach`).toBeFalsy();
+    }
   });
 });
