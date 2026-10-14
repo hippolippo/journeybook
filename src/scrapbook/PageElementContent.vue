@@ -180,6 +180,7 @@ const grainUri = computed(() => {
         v-if="editable"
         ref="noteInput"
         class="note__input"
+        rows="1"
         :value="el.text"
         :style="noteText ?? {}"
         spellcheck="false"

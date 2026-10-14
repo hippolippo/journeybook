@@ -1644,6 +1644,15 @@ img[alt=''] {
 .peditor-backdrop ::selection,
 .imgedit-stage ::selection { background: transparent; }
 
+/* …but the note editor's own text stays selectable so words can be selected. */
+.noteedit .imgedit-stage textarea,
+.noteedit .imgedit-stage input,
+.noteedit .imgedit-stage [contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.noteedit .imgedit-stage ::selection { background: rgba(217, 140, 140, 0.45); }
+
 .el--locked { cursor: default; }
 .el--locked.el--selected { outline-style: solid; }
 .pe-lock { position: absolute; top: -16px; left: -16px; width: 16px; height: 16px; color: #6b5744; pointer-events: none; }
