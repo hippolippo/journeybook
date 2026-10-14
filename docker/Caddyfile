@@ -11,6 +11,11 @@
 {$DOMAIN:localhost} {
 	encode zstd gzip
 
+	# Send the bare base path to the trailing-slash form so the SPA resolves
+	# under its base (e.g. /journeybook -> /journeybook/).
+	@bare path {$APP_BASE:/journeybook}
+	redir @bare {$APP_BASE:/journeybook}/ 308
+
 	handle_path {$APP_BASE:/journeybook}/* {
 		# PocketBase API + realtime subscriptions.
 		@pb path /api/* /_/*
