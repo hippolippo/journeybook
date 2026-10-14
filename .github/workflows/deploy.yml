@@ -1,0 +1,125 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push web
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/web.Dockerfile
+          push: true
+          build-args: |
+            APP_BASE=${{ vars.APP_BASE || '/journeybook' }}
+          tags: |
+            ${{ env.IMAGE_PREFIX }}-web:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}-web:main
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
+
+      - name: Build and push pb
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/pocketbase.Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_PREFIX }}-pb:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}-pb:main
+          cache-from: type=gha,scope=pb
+          cache-to: type=gha,mode=max,scope=pb
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_DIR: journeybook
+      DOMAIN: ${{ vars.DOMAIN || 'haftels.com' }}
+      APP_BASE: ${{ vars.APP_BASE || '/journeybook' }}
+      BACKUP_REMOTE: ${{ vars.BACKUP_REMOTE }}
+      BACKUP_RSYNC_TARGET: ${{ vars.BACKUP_RSYNC_TARGET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Upload application files
+        run: |
+          tar czf - \
+            --exclude-vcs \
+            --exclude=node_modules \
+            --exclude=dist \
+            --exclude=coverage \
+            --exclude=playwright-report \
+            --exclude=test-results \
+            --exclude=backups \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='docker/.env' \
+            --exclude='server/pb_data' \
+            --exclude='server/pocketbase' \
+            . | ssh -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" \
+              "mkdir -p ~/$DEPLOY_DIR && tar xzf - -C ~/$DEPLOY_DIR"
+
+      - name: Deploy
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ADMIN_EMAIL: ${{ secrets.PB_ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.PB_ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          ADMIN_EMAIL_B64="$(printf %s "$ADMIN_EMAIL" | base64 -w0)"
+          ADMIN_PASSWORD_B64="$(printf %s "$ADMIN_PASSWORD" | base64 -w0)"
+          TOKEN_B64="$(printf %s "$GHCR_TOKEN" | base64 -w0)"
+
+          cat > /tmp/remote-deploy.sh <<REMOTE
+          set -euo pipefail
+          cd "\$HOME/$DEPLOY_DIR"
+          printf 'DOMAIN=%s\\nAPP_BASE=%s\\n' '$DOMAIN' '$APP_BASE' > docker/.env
+          if [ -n '$BACKUP_REMOTE' ]; then printf 'BACKUP_REMOTE=%s\\n' '$BACKUP_REMOTE' >> docker/.env; fi
+          if [ -n '$BACKUP_RSYNC_TARGET' ]; then printf 'BACKUP_RSYNC_TARGET=%s\\n' '$BACKUP_RSYNC_TARGET' >> docker/.env; fi
+          echo '$TOKEN_B64' | base64 -d | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+          export IMAGE_TAG='${{ github.sha }}'
+          export WEB_IMAGE='${{ env.IMAGE_PREFIX }}-web'
+          export PB_IMAGE='${{ env.IMAGE_PREFIX }}-pb'
+          printf '%s\\n%s\\n' "\$(echo '$ADMIN_EMAIL_B64' | base64 -d)" "\$(echo '$ADMIN_PASSWORD_B64' | base64 -d)" | ./scripts/deploy.sh
+          docker logout ghcr.io
+          REMOTE
+
+          ssh -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" 'bash -s' < /tmp/remote-deploy.sh
