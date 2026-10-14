@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Campfire",
-  "aspect": 1,
+  "aspect": 0.8928,
   "colorSlots": [
     {
       "id": "smoke",

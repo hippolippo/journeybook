@@ -91,6 +91,7 @@ const selAspectLocked = computed(() => {
   if (s.kind === 'image') return true;
   return s.aspectLocked !== false;
 });
+const selFlipX = computed(() => !!sel.value?.flipX);
 
 function num(v: string) {
   return Number(v);
@@ -142,6 +143,9 @@ function toggleLock() {
 }
 function toggleAspect() {
   if (sel.value) pe.setAspectLocked(sel.value.id, !selAspectLocked.value);
+}
+function toggleFlip() {
+  if (sel.value) pe.setFlipX(sel.value.id, !selFlipX.value);
 }
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -447,6 +451,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             </template>
 
             <label style="margin-top: 0.5rem"><input type="checkbox" :checked="selAspectLocked" :disabled="sel.kind === 'image'" @change="toggleAspect" /> Lock aspect ratio</label>
+            <label style="margin-top: 0.5rem"><input type="checkbox" :checked="selFlipX" @change="toggleFlip" /> Flip horizontally</label>
             <label><input type="checkbox" :checked="!!sel.locked" @change="toggleLock" /> Lock item (finished)</label>
 
             <template v-if="selImage">

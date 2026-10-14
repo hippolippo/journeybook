@@ -384,6 +384,13 @@ export const usePageEditorStore = defineStore('pageEditor', {
       el.aspectLocked = value;
       this.dirty = true;
     },
+    setFlipX(id: string, value: boolean) {
+      const el = this.draft?.elements.find((e) => e.id === id);
+      if (!el) return;
+      this.snapshot();
+      el.flipX = value;
+      this.dirty = true;
+    },
     changeMedia(id: string, mediaId: string) {
       const el = this.draft?.elements.find((e) => e.id === id);
       if (!el || el.kind !== 'image') return;

@@ -29,6 +29,7 @@ import {
 } from '@/room/transform';
 import { canHost, hostAt } from '@/room/attach';
 import { itemsAtPoint } from '@/room/pick';
+import { defaultShadowAmount, ovalShadowStyle, shadowFilter } from '@/room/shadow';
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import WallClock from './WallClock.vue';
@@ -91,6 +92,19 @@ const colorVars = computed(() => {
 });
 const selected = computed(() => !props.ghost && !props.light && editor.isEditing && editor.selectedId === props.item.id);
 
+/** Effective shadow: the item's own amount, else the catalog default. */
+const shadowAmount = computed(() => props.item.shadow ?? (cat.value ? defaultShadowAmount(cat.value) : 0));
+/** Shape-following drop-shadow for every shadow item (resting items also get the oval). */
+const shadowCss = computed(() => {
+  const c = cat.value;
+  if (!c || c.repeat) return 'none';
+  return shadowFilter(shadowAmount.value);
+});
+/** Contact (oval) shadow style for resting items (trinkets/furniture). */
+const ovalStyle = computed(() =>
+  cat.value && !cat.value.repeat ? ovalShadowStyle(cat.value.category, shadowAmount.value) : null,
+);
+
 const positionBand = computed<Band>(() =>
   cat.value?.layer === 'surface' ? 'both' : (cat.value?.band ?? 'floor'),
 );
@@ -118,7 +132,7 @@ const nestedStyle = computed<Record<string, string> | null>(() => {
   };
 });
 
-const style = computed(() => {
+const baseStyle = computed(() => {
   if (!cat.value || !placement.value) return { display: 'none' };
   // Depth is a single absolute scale for every item; items keep their own depth
   // even while selected. The moving preview is a separate translucent element.
@@ -164,6 +178,10 @@ const style = computed(() => {
   const base = resolveItemStyle(positionBand.value, z, placement.value, cat.value, cat.value.band);
   return { ...base, ...colorVars.value };
 });
+const style = computed<Record<string, string>>(() => ({
+  ...baseStyle.value,
+  '--room-shadow': shadowCss.value,
+}));
 const dayNight = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay));
 const night = computed(() => dayNight.value === 'night');
 const art = computed(() => {
@@ -505,6 +523,7 @@ function onUp(event: PointerEvent) {
       <slot />
     </template>
     <template v-else>
+      <span v-if="ovalStyle" class="room-item__shadow" :style="ovalStyle" aria-hidden="true"></span>
       <span class="room-item__art">
         <FxLayer :animations="visuals.animations" :particles="visuals.particles" :seed="props.item.id" :light-level="props.item.lightLevel ?? 1">
           <span v-if="cat.repeat" class="room-item__repeat" :style="repeatStyle"></span>

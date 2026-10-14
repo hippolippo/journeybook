@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Apple 2",
-  "aspect": 1,
+  "aspect": 0.8314,
   "colorSlots": [
     {
       "id": "leaf",

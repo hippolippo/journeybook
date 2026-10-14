@@ -4,6 +4,8 @@ import { getCatalogItem } from '@/catalog/catalog';
 /** Whether `host` can hold `child` (a surface item), honouring the child's `attach`. */
 export function canHost(child: CatalogItem | undefined, host: CatalogItem | undefined): boolean {
   if (!child || !host) return false;
+  // Only surface items can rest on a host; anything else just moves over it.
+  if (child.layer !== 'surface') return false;
   if (!host.host || host.layer === 'surface') return false;
   const attach = child.attach ?? 'any';
   if (attach === 'shelf') return host.category === 'wallDecor';

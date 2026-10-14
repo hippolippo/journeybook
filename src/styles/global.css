@@ -202,23 +202,21 @@ img[alt=''] {
   right: 0;
   bottom: 0;
   height: 26%;
-  background: linear-gradient(180deg, #b2885a, #7c5c39);
+  background: #c39a63;
 }
-.floor--wood-warm {
-  background: repeating-linear-gradient(90deg, rgba(74, 59, 46, 0.14) 0 2px, transparent 2px 96px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 30px),
-    linear-gradient(180deg, #b2885a, #7c5c39);
-}
-.floor--wood-dark {
-  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 96px),
-    linear-gradient(180deg, #8a5f3c, #5c3d24);
-}
-.floor--tile-check {
-  background: repeating-conic-gradient(#e6ddd0 0% 25%, #cfc3b2 0% 50%) 0 0 / 92px 92px;
-}
-.floor--carpet-rose {
-  background: radial-gradient(circle at 50% 0%, #e0b3b0, #c98f8c);
-}
+.floor--wood-warm { background: #c39a63; }
+.floor--wood-dark { background: #7d5433; }
+.floor--tile-check { background: #d8cec0; }
+.floor--carpet-rose { background: #d9a3a0; }
+.floor--cream { background: #f1e5cd; }
+.floor--sand { background: #e4cfa6; }
+.floor--terracotta { background: #c07a55; }
+.floor--clay { background: #a8624a; }
+.floor--sage { background: #a8b491; }
+.floor--forest { background: #6f8a6a; }
+.floor--sky { background: #a9c6d1; }
+.floor--taupe { background: #b6a894; }
+.floor--charcoal { background: #4a3f36; }
 .room__baseboard {
   position: absolute;
   left: 0;
@@ -366,7 +364,6 @@ img[alt=''] {
 /* ---------------- room items ---------------- */
 .room-item {
   position: absolute;
-  filter: drop-shadow(0 12px 14px rgba(74, 59, 46, 0.3));
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
@@ -461,8 +458,20 @@ img[alt=''] {
 }
 
 /* asset-driven visual effects: generic animations + particles (all data) */
-.room-item__art { position: absolute; inset: 0; display: block; isolation: isolate; }
-.room-item--repeat { filter: none; }
+.room-item__art { position: absolute; inset: 0; display: block; isolation: isolate; filter: var(--room-shadow, none); }
+/* Contact shadow: a soft, translucent dark oval along the item's bottom width. */
+.room-item__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 1%;
+  /* Halfway between the original position and the fully-lowered one. */
+  transform: translate(-50%, 31%);
+  aspect-ratio: 6 / 1;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(40, 30, 22, 0.55) 0%, rgba(40, 30, 22, 0.32) 45%, rgba(40, 30, 22, 0) 74%);
+  filter: blur(1.5px);
+  pointer-events: none;
+}
 .room-item__repeat { position: absolute; inset: 0; display: block; }
 .room-item__art img,
 .room-item__art svg,
@@ -1578,11 +1587,12 @@ img[alt=''] {
   border: 2px solid var(--line-soft);
   border-radius: 8px;
   background: #fff;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
-.chip img { width: 100%; height: 100%; object-fit: contain; }
+.chip img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; display: block; }
 .chip--tape span { display: block; width: 100%; height: 16px; }
 .chip--wide { width: auto; padding: 0 0.5rem; height: 34px; font-size: 0.72rem; color: var(--ink-2); }
 .chip.is-active { border-color: var(--rose, #d98c8c); background: #fff6f3; }

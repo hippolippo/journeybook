@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Minivan",
-  "aspect": 1,
+  "aspect": 1.9968,
   "colorSlots": [
     {
       "id": "tyres",
@@ -24,7 +24,15 @@
       "id": "body",
       "label": "Body",
       "default": "#B6D3DE",
-      "palette": ["#B6D3DE", "#4A6C80", "#6A97AD", "#8FB4C4", "#DCECF2", "#9ED0FA", "#3F9A88"],
+      "palette": [
+        "#B6D3DE",
+        "#4A6C80",
+        "#6A97AD",
+        "#8FB4C4",
+        "#DCECF2",
+        "#9ED0FA",
+        "#3F9A88"
+      ],
       "allowCustom": true,
       "shades": [
         {

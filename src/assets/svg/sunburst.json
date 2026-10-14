@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Sunburst",
-  "aspect": 1,
+  "aspect": 0.9453,
   "colorSlots": [
     {
       "id": "sun",

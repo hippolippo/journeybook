@@ -6,7 +6,7 @@ import { stickerById, tapeById } from '@/scrapbook/decor';
 import { frameById } from '@/scrapbook/frames';
 import { noteInnerStyle, noteTextStyle } from '@/scrapbook/notes';
 import { effectsFilter } from '@/scrapbook/effects';
-import { slotVars } from '@/scrapbook/elementStyle';
+import { flipVars, slotVars } from '@/scrapbook/elementStyle';
 import FxLayer from '@/room/FxLayer.vue';
 import { assetSrc } from '@/catalog/loadDecor';
 
@@ -104,7 +104,7 @@ const imgStyle = computed(() => {
 
 const noteInner = computed(() => (props.el.kind === 'note' ? noteInnerStyle(props.el) : null));
 const noteText = computed(() => (props.el.kind === 'note' ? noteTextStyle(props.el) : null));
-const innerStyle = computed(() => noteInner.value ?? frameVars.value);
+const innerStyle = computed(() => ({ ...(noteInner.value ?? frameVars.value), ...flipVars(props.el) }));
 
 const noteInput = ref<HTMLTextAreaElement | null>(null);
 function growNoteInput() {

@@ -354,6 +354,12 @@ export const useEditorStore = defineStore('editor', {
       item.lightLevel = Math.min(2, Math.max(0, value));
       this.dirty = true;
     },
+    setShadow(id: string, value: number) {
+      const item = this.itemById(id);
+      if (!item) return;
+      item.shadow = Math.min(1, Math.max(0, value));
+      this.dirty = true;
+    },
     setZ(id: string, z: number) {
       const item = this.itemById(id);
       if (!item) return;

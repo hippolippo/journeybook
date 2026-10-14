@@ -22,14 +22,21 @@
       "default": "#B99552",
       "palette": ["#b99552", "#c79363", "#e6bc8e", "#d7a879", "#be8b5a", "#9aa0a6", "#7e8f6b", "#9dbfc9", "#4a3b2e"],
       "allowCustom": true
+    },
+    {
+      "id": "candle",
+      "label": "Candle",
+      "default": "#A1A885",
+      "palette": ["#a1a885", "#cfe3c5", "#b7c1a6", "#96a58d", "#9caf88", "#7e8f6b", "#e8d3b0", "#f7c9c9", "#cfe0ea", "#f0e1ca"],
+      "allowCustom": true
     }
   ],
   "presets": [
-    { "id": "brass", "label": "Brass", "colors": { "shade": "#f0e1ca", "metal": "#b99552" } },
-    { "id": "pewter", "label": "Pewter", "colors": { "shade": "#fcf7ec", "metal": "#9aa0a6" } },
-    { "id": "sage", "label": "Sage", "colors": { "shade": "#e6efe4", "metal": "#7e8f6b" } },
-    { "id": "sky", "label": "Sky", "colors": { "shade": "#e4eef4", "metal": "#6f97bb" } },
-    { "id": "blush", "label": "Blush", "colors": { "shade": "#f7e6e2", "metal": "#c97b5a" } }
+    { "id": "brass", "label": "Brass", "colors": { "shade": "#f0e1ca", "metal": "#b99552", "candle": "#a1a885" } },
+    { "id": "pewter", "label": "Pewter", "colors": { "shade": "#fcf7ec", "metal": "#9aa0a6", "candle": "#cfe3c5" } },
+    { "id": "sage", "label": "Sage", "colors": { "shade": "#e6efe4", "metal": "#7e8f6b", "candle": "#7e8f6b" } },
+    { "id": "sky", "label": "Sky", "colors": { "shade": "#e4eef4", "metal": "#6f97bb", "candle": "#cfe0ea" } },
+    { "id": "blush", "label": "Blush", "colors": { "shade": "#f7e6e2", "metal": "#c97b5a", "candle": "#f7c9c9" } }
   ],
   "lights": [
     { "type": "lamp", "distribution": "semi", "x": 50, "y": 68, "radius": 240, "intensity": 1, "color": "#ffcf8a" }

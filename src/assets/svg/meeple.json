@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Meeple",
-  "aspect": 1,
+  "aspect": 0.8804,
   "colorSlots": [
     {
       "id": "meeple",

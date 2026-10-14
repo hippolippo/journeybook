@@ -3,8 +3,9 @@
   "id": "bernese-mountain-puppy",
   "label": "Puppy",
   "category": "pet",
-  "layer": "floor",
+  "layer": "surface",
   "band": "floor",
+  "attach": "furniture",
   "aspect": 1.03,
   "defaultScale": 0.44,
   "art": {
