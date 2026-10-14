@@ -4,8 +4,8 @@
   "aspect": 1,
   "colorSlots": [
     {
-      "id": "can",
-      "label": "Can",
+      "id": "body",
+      "label": "Body",
       "default": "#96A4AD",
       "palette": [
         "#96A4AD",
@@ -22,12 +22,8 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#509997",
-          "deltaL": -0.0751
-        },
-        {
-          "color": "#648EB2",
-          "deltaL": -0.0805
+          "color": "#7E9CA8",
+          "deltaL": -0.0364
         }
       ]
     },
@@ -50,8 +46,8 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#D2E6DE",
-          "deltaL": 0.0777
+          "color": "#D3CCC2",
+          "deltaL": 0.018
         }
       ]
     }

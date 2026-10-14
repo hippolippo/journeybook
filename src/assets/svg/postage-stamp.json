@@ -4,8 +4,8 @@
   "aspect": 1,
   "colorSlots": [
     {
-      "id": "stamp",
-      "label": "Stamp",
+      "id": "paper",
+      "label": "Paper",
       "default": "#B5DFC5",
       "palette": [
         "#B5DFC5",
@@ -26,8 +26,8 @@
       "shades": []
     },
     {
-      "id": "border",
-      "label": "Border",
+      "id": "waves",
+      "label": "Waves",
       "default": "#B6A4E4",
       "palette": [
         "#B6A4E4",

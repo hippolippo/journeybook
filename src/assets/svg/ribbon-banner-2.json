@@ -4,8 +4,8 @@
   "aspect": 1,
   "colorSlots": [
     {
-      "id": "banner",
-      "label": "Banner",
+      "id": "ribbon",
+      "label": "Ribbon",
       "default": "#F39FAA",
       "palette": [
         "#F39FAA",
@@ -23,26 +23,12 @@
         "#C05A3A"
       ],
       "allowCustom": true,
-      "shades": []
-    },
-    {
-      "id": "ends",
-      "label": "Ends",
-      "default": "#F9C299",
-      "palette": [
-        "#F9C299",
-        "#5B4326",
-        "#77592F",
-        "#8A6A44",
-        "#987444",
-        "#B8935B",
-        "#C9A46F",
-        "#E0C39A",
-        "#D06E45",
-        "#AE5231"
-      ],
-      "allowCustom": true,
-      "shades": []
+      "shades": [
+        {
+          "color": "#F6C1A9",
+          "deltaL": 0.0635
+        }
+      ]
     }
   ]
 }

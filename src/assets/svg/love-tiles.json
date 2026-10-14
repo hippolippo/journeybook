@@ -25,15 +25,14 @@
     {
       "id": "tile1",
       "label": "Tile 1",
-      "default": "#BB7E59",
+      "default": "#D9A94E",
       "palette": [
-        "#BB7E59",
+        "#D9A94E",
         "#D9482F",
         "#E0607E",
         "#6A97AD",
         "#3F9A88",
         "#7E9560",
-        "#D9A94E",
         "#8E6FC0",
         "#E5966F",
         "#8FB4C4",
@@ -44,19 +43,18 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#F9D37B",
-          "deltaL": 0.2338
+          "color": "#F9EBA6",
+          "deltaL": 0.1737
         }
       ]
     },
     {
       "id": "tile2",
       "label": "Tile 2",
-      "default": "#FCC0C6",
+      "default": "#E0607E",
       "palette": [
-        "#FCC0C6",
-        "#D9482F",
         "#E0607E",
+        "#D9482F",
         "#6A97AD",
         "#3F9A88",
         "#7E9560",
@@ -71,17 +69,16 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#F18E45",
-          "deltaL": -0.1243
+          "color": "#C24E6E",
+          "deltaL": -0.0721
         }
       ]
     },
     {
       "id": "tile3",
       "label": "Tile 3",
-      "default": "#EF6D71",
+      "default": "#D9482F",
       "palette": [
-        "#EF6D71",
         "#D9482F",
         "#E0607E",
         "#6A97AD",
@@ -101,12 +98,11 @@
     {
       "id": "tile4",
       "label": "Tile 4",
-      "default": "#B5DFC5",
+      "default": "#6A97AD",
       "palette": [
-        "#B5DFC5",
+        "#6A97AD",
         "#D9482F",
         "#E0607E",
-        "#6A97AD",
         "#3F9A88",
         "#7E9560",
         "#D9A94E",
@@ -123,13 +119,12 @@
     {
       "id": "tile5",
       "label": "Tile 5",
-      "default": "#869A72",
+      "default": "#3F9A88",
       "palette": [
-        "#869A72",
+        "#3F9A88",
         "#D9482F",
         "#E0607E",
         "#6A97AD",
-        "#3F9A88",
         "#7E9560",
         "#D9A94E",
         "#8E6FC0",

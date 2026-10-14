@@ -6,14 +6,13 @@
     {
       "id": "smoke",
       "label": "Smoke",
-      "default": "#BCAFD0",
+      "default": "#D3CCC2",
       "palette": [
-        "#BCAFD0",
+        "#D3CCC2",
         "#3A3128",
         "#655E55",
         "#8A8278",
         "#B0A89C",
-        "#D3CCC2",
         "#EDE9E2",
         "#EFE1C9",
         "#E1CDAD",
@@ -22,22 +21,21 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#F5D7C5",
-          "deltaL": 0.1238
+          "color": "#EDE9E2",
+          "deltaL": 0.0871
         }
       ]
     },
     {
       "id": "logs",
       "label": "Logs",
-      "default": "#E8B16B",
+      "default": "#B8935B",
       "palette": [
-        "#E8B16B",
+        "#B8935B",
         "#5B4326",
         "#77592F",
         "#8A6A44",
         "#987444",
-        "#B8935B",
         "#C9A46F",
         "#E0C39A",
         "#D06E45",
@@ -46,26 +44,25 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#FB8E8B",
-          "deltaL": -0.0336
+          "color": "#D06E45",
+          "deltaL": -0.0421
         },
         {
-          "color": "#BB7E59",
-          "deltaL": -0.1492
+          "color": "#8A6A44",
+          "deltaL": -0.138
         }
       ]
     },
     {
       "id": "flame",
       "label": "Flame",
-      "default": "#F9C299",
+      "default": "#E5966F",
       "palette": [
-        "#F9C299",
+        "#E5966F",
         "#B8862E",
         "#D9A94E",
         "#EFD070",
         "#F9EBA6",
-        "#E5966F",
         "#D06E45",
         "#D9482F",
         "#F6C1A9"
@@ -74,11 +71,11 @@
       "shades": [
         {
           "color": "#FDE98A",
-          "deltaL": 0.0766
+          "deltaL": 0.1862
         },
         {
           "color": "#FAB39E",
-          "deltaL": -0.0253
+          "deltaL": 0.0842
         }
       ]
     }

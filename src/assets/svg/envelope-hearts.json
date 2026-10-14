@@ -27,29 +27,25 @@
           "deltaL": 0.036
         },
         {
-          "color": "#FAB39E",
-          "deltaL": -0.0351
-        },
-        {
           "color": "#F39FAA",
           "deltaL": -0.0747
         }
       ]
     },
     {
-      "id": "paper",
-      "label": "Paper",
-      "default": "#FBEED8",
+      "id": "heart",
+      "label": "Hearts",
+      "default": "#F0A0B4",
       "palette": [
-        "#FBEED8",
-        "#3A3128",
-        "#655E55",
-        "#8A8278",
-        "#B0A89C",
-        "#D3CCC2",
-        "#EDE9E2",
-        "#EFE1C9",
-        "#E1CDAD",
+        "#F0A0B4",
+        "#B23A6A",
+        "#C22E68",
+        "#D9482F",
+        "#E0607E",
+        "#F6C9D4",
+        "#8E6FC0",
+        "#A78CCF",
+        "#F6E7C9",
         "#F8F0E0"
       ],
       "allowCustom": true,

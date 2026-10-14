@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
 <path d="m55.82 22.07-6.93-9.68c-0.14-0.18-0.35-0.27-0.57-0.27h-16.77c-0.23 0-0.44 0.1-0.58 0.28l-6.85 9.71c-0.22 0.31-0.32 0.68-0.32 1.06v40.6c0 2.07 1.67 3.81 3.67 3.81h25.05c2 0 3.71-1.7 3.71-3.81v-40.58c0-0.39-0.16-0.81-0.41-1.12z" fill="var(--c-tag, #F9C299)" />
-  <circle cx="39.99" cy="19.53" r="4.809" fill="var(--c-string, #B5DFC5)" />
-  <circle cx="39.99" cy="19.53" r="2.557" fill="var(--c-detail, #FAFBFA)" fill-opacity=".8" />
+  <circle cx="39.99" cy="19.53" r="4.809" fill="var(--c-eyelet, #B0A89C)" />
+  <circle cx="39.99" cy="19.53" r="2.557" fill="var(--c-hole, #FAFBFA)" fill-opacity=".8" />
 </svg>

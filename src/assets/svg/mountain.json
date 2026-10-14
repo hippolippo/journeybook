@@ -4,14 +4,13 @@
   "aspect": 1,
   "colorSlots": [
     {
-      "id": "sky",
-      "label": "Sky",
-      "default": "#8EB0D6",
+      "id": "ridge",
+      "label": "Ridge",
+      "default": "#8FB4C4",
       "palette": [
-        "#8EB0D6",
+        "#8FB4C4",
         "#4A6C80",
         "#6A97AD",
-        "#8FB4C4",
         "#B6D3DE",
         "#DCECF2",
         "#9ED0FA",
@@ -21,11 +20,11 @@
       "shades": []
     },
     {
-      "id": "mountains",
-      "label": "Mountains",
-      "default": "#BCAFD0",
+      "id": "mountain",
+      "label": "Mountain",
+      "default": "#A78CCF",
       "palette": [
-        "#BCAFD0",
+        "#A78CCF",
         "#B23A6A",
         "#C22E68",
         "#D9482F",
@@ -33,7 +32,6 @@
         "#F0A0B4",
         "#F6C9D4",
         "#8E6FC0",
-        "#A78CCF",
         "#F6E7C9",
         "#F8F0E0"
       ],

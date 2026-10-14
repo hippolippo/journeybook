@@ -6,28 +6,35 @@
     {
       "id": "cone",
       "label": "Cone",
-      "default": "#F9C299",
+      "default": "#C9A46F",
       "palette": [
-        "#F9C299",
+        "#C9A46F",
         "#5B4326",
         "#77592F",
         "#8A6A44",
         "#987444",
         "#B8935B",
-        "#C9A46F",
         "#E0C39A",
         "#D06E45",
         "#AE5231"
       ],
       "allowCustom": true,
-      "shades": []
+      "shades": [
+        {
+          "color": "#B8935B",
+          "deltaL": -0.0548
+        },
+        {
+          "color": "#987444",
+          "deltaL": -0.1563
+        }
+      ]
     },
     {
       "id": "scoop",
       "label": "Scoop",
-      "default": "#FB8E8B",
+      "default": "#F6C9D4",
       "palette": [
-        "#FB8E8B",
         "#F6C9D4",
         "#F0A0B4",
         "#E0607E",
@@ -41,12 +48,8 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#FBEED8",
-          "deltaL": 0.1908
-        },
-        {
-          "color": "#FCC0C6",
-          "deltaL": 0.1006
+          "color": "#FBDDE2",
+          "deltaL": 0.0457
         }
       ]
     },
@@ -70,20 +73,7 @@
         "#C05A3A"
       ],
       "allowCustom": true,
-      "shades": [
-        {
-          "color": "#E8B16B",
-          "deltaL": -0.0323
-        },
-        {
-          "color": "#DA9D80",
-          "deltaL": -0.0812
-        },
-        {
-          "color": "#F18E45",
-          "deltaL": -0.0896
-        }
-      ]
+      "shades": []
     }
   ]
 }
