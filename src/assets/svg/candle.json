@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Candle",
-  "aspect": 1,
+  "aspect": 0.505,
   "colorSlots": [
     {
       "id": "wick",

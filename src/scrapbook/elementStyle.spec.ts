@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { PageElement } from '@/data/types';
-import { elementStyle } from './elementStyle';
+import { elementStyle, flipVars } from './elementStyle';
 
 function note(patch: Partial<PageElement> = {}): PageElement {
   return {
@@ -33,5 +33,13 @@ describe('elementStyle drop shadow', () => {
     const soft = elementStyle(note({ dropShadow: true, shadowStrength: 0 }));
     const strong = elementStyle(note({ dropShadow: true, shadowStrength: 1 }));
     expect(soft.filter).not.toBe(strong.filter);
+  });
+});
+
+describe('flipVars', () => {
+  it('mirrors the content only when flipX is set', () => {
+    expect(flipVars({})).toEqual({});
+    expect(flipVars({ flipX: false })).toEqual({});
+    expect(flipVars({ flipX: true })).toEqual({ transform: 'scaleX(-1)' });
   });
 });

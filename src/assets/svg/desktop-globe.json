@@ -1,7 +1,7 @@
 {
   "kind": "sticker",
   "label": "Desktop Globe",
-  "aspect": 1,
+  "aspect": 0.7019,
   "colorSlots": [
     {
       "id": "stand",

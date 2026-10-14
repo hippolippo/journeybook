@@ -10,6 +10,7 @@ import { hostFrame, screenToHostLocal } from '@/room/transform';
 import { canHost, hostAt } from '@/room/attach';
 import { useEditorStore, type Dock } from '@/stores/editor';
 import { emitsLight } from '@/room/lights/registry';
+import { defaultShadowAmount } from '@/room/shadow';
 import RoomThumb from '@/room/RoomThumb.vue';
 
 const editor = useEditorStore();
@@ -93,6 +94,20 @@ function toggleLock(value: boolean) {
 }
 function setLightLevel(value: string) {
   if (selected.value) editor.setLightLevel(selected.value.id, num(value));
+}
+/** Effective shadow amount: the item's own value, else the catalog default. */
+const shadowAmount = computed(() => {
+  const item = selected.value;
+  if (!item) return 0;
+  return item.shadow ?? (selectedCat.value ? defaultShadowAmount(selectedCat.value) : 0);
+});
+const shadowOn = computed(() => shadowAmount.value > 0.01);
+function setShadow(value: string) {
+  if (selected.value) editor.setShadow(selected.value.id, num(value));
+}
+function toggleShadow(on: boolean) {
+  const fallback = selectedCat.value ? defaultShadowAmount(selectedCat.value) : 0;
+  setShadow(String(on ? fallback || 0.5 : 0));
 }
 function removeLayout(id: string, name: string) {
   if (window.confirm(`Delete the layout "${name}"?`)) void editor.deleteLayout(id);
@@ -482,6 +497,13 @@ async function saveNamed() {
           <span>Light</span>
           <input type="range" min="0" max="2" step="0.05" :value="selected.lightLevel ?? 1" @pointerdown="editor.snapshot()" @input="setLightLevel(($event.target as HTMLInputElement).value)" />
           <input type="number" min="0" max="2" step="0.05" :value="selected.lightLevel ?? 1" @change="editor.snapshot(); setLightLevel(($event.target as HTMLInputElement).value)" />
+        </div>
+
+        <label><input type="checkbox" :checked="shadowOn" @change="editor.snapshot(); toggleShadow(($event.target as HTMLInputElement).checked)" /> Drop shadow</label>
+        <div v-if="shadowOn" class="field">
+          <span>Shadow</span>
+          <input type="range" min="0" max="1" step="0.05" :value="shadowAmount" @pointerdown="editor.snapshot()" @input="setShadow(($event.target as HTMLInputElement).value)" />
+          <input type="number" min="0" max="1" step="0.05" :value="shadowAmount" @change="editor.snapshot(); setShadow(($event.target as HTMLInputElement).value)" />
         </div>
 
         <label><input type="checkbox" :checked="placement.flip" @change="editor.snapshot(); setFlip(($event.target as HTMLInputElement).checked)" /> Flip horizontally</label>

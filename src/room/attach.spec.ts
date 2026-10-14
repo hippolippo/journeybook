@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CatalogItem } from '@/catalog/types';
+import { getCatalogItem } from '@/catalog/catalog';
 import { canHost } from './attach';
 
 function cat(over: Partial<CatalogItem>): CatalogItem {
@@ -34,5 +35,22 @@ describe('canHost', () => {
 
   it('never lets a surface item host another item', () => {
     expect(canHost(cat({ layer: 'surface' }), cat({ layer: 'surface', host: true, category: 'furniture' }))).toBe(false);
+  });
+
+  it('lets rugs (floor furniture) host surface items', () => {
+    const rug = getCatalogItem('circular-rug');
+    expect(rug?.host).toBe(true);
+    expect(canHost(getCatalogItem('potted-plant-2'), rug)).toBe(true);
+  });
+
+  it('never lets a non-surface item attach to a host', () => {
+    expect(canHost(cat({ layer: 'floor' }), cat({ category: 'furniture', host: true }))).toBe(false);
+    expect(canHost(cat({ layer: 'wall' }), cat({ category: 'furniture', host: true }))).toBe(false);
+  });
+
+  it('makes the puppy attachable to furniture', () => {
+    const puppy = getCatalogItem('bernese-mountain-puppy');
+    expect(puppy?.layer).toBe('surface');
+    expect(canHost(puppy, getCatalogItem('desk'))).toBe(true);
   });
 });
