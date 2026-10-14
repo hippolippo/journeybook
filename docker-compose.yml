@@ -1,5 +1,8 @@
+name: journeybook
+
 services:
   pb:
+    image: ${PB_IMAGE:-journeybook-pb:local}
     build:
       context: .
       dockerfile: docker/pocketbase.Dockerfile
@@ -14,17 +17,19 @@ services:
       start_period: 10s
 
   web:
+    image: ${WEB_IMAGE:-journeybook-web:local}
     build:
       context: .
       dockerfile: docker/web.Dockerfile
       args:
-        VITE_PB_URL: /
+        APP_BASE: ${APP_BASE:-/journeybook}
     restart: unless-stopped
     depends_on:
       pb:
         condition: service_healthy
     environment:
       DOMAIN: ${DOMAIN:-localhost}
+      APP_BASE: ${APP_BASE:-/journeybook}
     ports:
       - '80:80'
       - '443:443'
