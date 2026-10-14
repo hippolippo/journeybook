@@ -2,7 +2,7 @@
 
 # Journeybook SPA, built and served by Caddy.
 # Build from the repository root:
-#   docker build -f docker/web.Dockerfile -t journeybook-web .
+#   docker build -f docker/web.Dockerfile --build-arg APP_BASE=/journeybook -t journeybook-web .
 FROM node:22-alpine AS build
 
 RUN corepack enable
@@ -13,8 +13,12 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-ARG VITE_PB_URL=/
-ENV VITE_PB_URL=$VITE_PB_URL
+# APP_BASE is the URL path the app is served under (e.g. /journeybook). It drives
+# both Vite's asset base and the PocketBase client URL, so one value configures
+# the whole subpath.
+ARG APP_BASE=/
+ENV VITE_BASE=$APP_BASE
+ENV VITE_PB_URL=$APP_BASE
 RUN pnpm build
 
 FROM caddy:2.8-alpine

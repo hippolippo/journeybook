@@ -4,23 +4,25 @@
 # issues an internal certificate). For a public domain, set DOMAIN and Caddy
 # provisions TLS automatically. For a bare LAN IP that has no DNS name, add a
 # `tls internal` line inside the site block.
+#
+# The app is served under APP_BASE (e.g. /journeybook). Caddy strips that prefix
+# before serving files and before proxying to PocketBase, so the same image works
+# at the root or under any subpath without being rebuilt.
 {$DOMAIN:localhost} {
 	encode zstd gzip
 
-	# PocketBase API + realtime subscriptions.
-	handle /api/* {
-		reverse_proxy pb:8090
-	}
+	handle_path {$APP_BASE:/journeybook}/* {
+		# PocketBase API + realtime subscriptions.
+		@pb path /api/* /_/*
+		handle @pb {
+			reverse_proxy pb:8090
+		}
 
-	# PocketBase admin UI.
-	handle /_/* {
-		reverse_proxy pb:8090
-	}
-
-	# Static SPA with history-mode fallback.
-	handle {
-		root * /srv
-		try_files {path} /index.html
-		file_server
+		# Static SPA with history-mode fallback.
+		handle {
+			root * /srv
+			try_files {path} /index.html
+			file_server
+		}
 	}
 }
