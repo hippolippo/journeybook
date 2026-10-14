@@ -4,21 +4,17 @@
   "aspect": 2.0697,
   "colorSlots": [
     {
-      "id": "sky",
-      "label": "Sky",
-      "default": "#AACFF7",
+      "id": "mountains",
+      "label": "Mountains",
+      "default": "#8FB4C4",
       "palette": [
-        "#AACFF7",
-        "#B23A6A",
-        "#C22E68",
-        "#D9482F",
-        "#E0607E",
-        "#F0A0B4",
-        "#F6C9D4",
-        "#8E6FC0",
-        "#A78CCF",
-        "#F6E7C9",
-        "#F8F0E0"
+        "#8FB4C4",
+        "#4A6C80",
+        "#6A97AD",
+        "#B6D3DE",
+        "#DCECF2",
+        "#9ED0FA",
+        "#3F9A88"
       ],
       "allowCustom": true,
       "shades": []
@@ -26,9 +22,9 @@
     {
       "id": "hills",
       "label": "Hills",
-      "default": "#D2E6DE",
+      "default": "#A3B77E",
       "palette": [
-        "#D2E6DE",
+        "#A3B77E",
         "#3F7A63",
         "#4E8A5F",
         "#6DA35C",
@@ -43,8 +39,8 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#AEC3A2",
-          "deltaL": -0.1156
+          "color": "#7E9560",
+          "deltaL": -0.1115
         }
       ]
     }

@@ -22,10 +22,6 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#FBEED8",
-          "deltaL": 0.0236
-        },
-        {
           "color": "#F9D37B",
           "deltaL": -0.0489
         }
@@ -45,6 +41,24 @@
         "#D06E45",
         "#D9482F",
         "#F6C1A9"
+      ],
+      "allowCustom": true,
+      "shades": []
+    },
+    {
+      "id": "stripes",
+      "label": "Stripes",
+      "default": "#F8F0E0",
+      "palette": [
+        "#F8F0E0",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD"
       ],
       "allowCustom": true,
       "shades": []

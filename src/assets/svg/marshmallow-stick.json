@@ -6,26 +6,20 @@
     {
       "id": "stick",
       "label": "Stick",
-      "default": "#E8B16B",
+      "default": "#C9A46F",
       "palette": [
-        "#E8B16B",
+        "#C9A46F",
         "#5B4326",
         "#77592F",
         "#8A6A44",
         "#987444",
         "#B8935B",
-        "#C9A46F",
         "#E0C39A",
         "#D06E45",
         "#AE5231"
       ],
       "allowCustom": true,
-      "shades": [
-        {
-          "color": "#F9C299",
-          "deltaL": 0.0572
-        }
-      ]
+      "shades": []
     },
     {
       "id": "marshmallow",
@@ -44,7 +38,12 @@
         "#F8F0E0"
       ],
       "allowCustom": true,
-      "shades": []
+      "shades": [
+        {
+          "color": "#E8C79A",
+          "deltaL": -0.1066
+        }
+      ]
     }
   ]
 }
