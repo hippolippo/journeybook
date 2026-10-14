@@ -5,7 +5,7 @@
   "category": "furniture",
   "layer": "floor",
   "band": "floor",
-  "aspect": 1.147,
+  "aspect": 1.169,
   "defaultScale": 0.7,
   "host": true,
   "colorSlots": [
@@ -18,17 +18,24 @@
     },
     {
       "id": "wood",
-      "label": "Top",
-      "default": "#D8B18B",
-      "palette": ["#d8b18b", "#d3b184", "#b99362", "#e8d9c0", "#8e5e42", "#fcf7ec", "#9caf88", "#9dbfc9"],
+      "label": "Wood",
+      "default": "#E9CEAC",
+      "palette": ["#e9ceac", "#d8b18b", "#d3b184", "#b99362", "#e8d9c0", "#fcf7ec", "#8e5e42", "#9caf88", "#9dbfc9"],
+      "allowCustom": true
+    },
+    {
+      "id": "accent",
+      "label": "Knob",
+      "default": "#C79352",
+      "palette": ["#c79352", "#d9a94e", "#b99362", "#d3b184", "#8e5e42", "#4a3b2e"],
       "allowCustom": true
     }
   ],
   "presets": [
-    { "id": "sage", "label": "Sage", "colors": { "body": "#8a9479", "wood": "#d8b18b" } },
-    { "id": "mint", "label": "Mint", "colors": { "body": "#cfe3c5", "wood": "#e8d9c0" } },
-    { "id": "sky", "label": "Sky", "colors": { "body": "#9dbfc9", "wood": "#d3b184" } },
-    { "id": "blush", "label": "Blush", "colors": { "body": "#e8b4af", "wood": "#d3b184" } },
-    { "id": "ink", "label": "Ink", "colors": { "body": "#4a3b2e", "wood": "#8e5e42" } }
+    { "id": "sage", "label": "Sage", "colors": { "body": "#8a9479", "wood": "#e9ceac", "accent": "#c79352" } },
+    { "id": "mint", "label": "Mint", "colors": { "body": "#cfe3c5", "wood": "#e8d9c0", "accent": "#d3b184" } },
+    { "id": "sky", "label": "Sky", "colors": { "body": "#9dbfc9", "wood": "#d3b184", "accent": "#b99362" } },
+    { "id": "blush", "label": "Blush", "colors": { "body": "#e8b4af", "wood": "#d3b184", "accent": "#d9a94e" } },
+    { "id": "ink", "label": "Ink", "colors": { "body": "#4a3b2e", "wood": "#8e5e42", "accent": "#b99362" } }
   ]
 }
