@@ -6,39 +6,24 @@
     {
       "id": "seal",
       "label": "Seal",
-      "default": "#CC4948",
+      "default": "#D9482F",
       "palette": [
-        "#CC4948",
+        "#D9482F",
         "#B8862E",
         "#D9A94E",
         "#EFD070",
         "#F9EBA6",
         "#E5966F",
         "#D06E45",
-        "#D9482F",
         "#F6C1A9"
       ],
       "allowCustom": true,
-      "shades": []
-    },
-    {
-      "id": "emboss",
-      "label": "Emboss",
-      "default": "#FCC0C6",
-      "palette": [
-        "#FCC0C6",
-        "#3A3128",
-        "#655E55",
-        "#8A8278",
-        "#B0A89C",
-        "#D3CCC2",
-        "#EDE9E2",
-        "#EFE1C9",
-        "#E1CDAD",
-        "#F8F0E0"
-      ],
-      "allowCustom": true,
-      "shades": []
+      "shades": [
+        {
+          "color": "#8E2A1C",
+          "deltaL": -0.1646
+        }
+      ]
     }
   ]
 }

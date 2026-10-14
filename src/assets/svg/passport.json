@@ -9,13 +9,13 @@
       "default": "#1E3F73",
       "palette": [
         "#1E3F73",
-        "#1F1915",
-        "#2E241C",
+        "#2F5548",
+        "#4A6C80",
         "#3A3128",
         "#4E433A",
         "#655E55",
-        "#6E6259",
-        "#8A8278"
+        "#8E2F4E",
+        "#2E241C"
       ],
       "allowCustom": true,
       "shades": []
@@ -23,18 +23,16 @@
     {
       "id": "emblem",
       "label": "Emblem",
-      "default": "#CCE4F3",
+      "default": "#EFD070",
       "palette": [
-        "#CCE4F3",
-        "#2F6B62",
-        "#3F9A88",
-        "#6DB7A6",
-        "#6A97AD",
-        "#8FB4C4",
-        "#B6D3DE",
-        "#4A6C80",
-        "#9ED0FA",
-        "#DCECF2"
+        "#EFD070",
+        "#B8862E",
+        "#D9A94E",
+        "#F9EBA6",
+        "#E5966F",
+        "#D06E45",
+        "#D9482F",
+        "#F6C1A9"
       ],
       "allowCustom": true,
       "shades": []
@@ -42,22 +40,17 @@
     {
       "id": "globe",
       "label": "Globe",
-      "default": "#DFEED5",
+      "default": "#F8F0E0",
       "palette": [
-        "#DFEED5",
-        "#2F5D4A",
-        "#3F7A63",
-        "#4E8A5F",
-        "#5E8F7A",
-        "#6DA35C",
-        "#7FA88C",
-        "#8FB06A",
-        "#A4C07E",
-        "#B7C98A",
-        "#C05A3A",
-        "#D98A3A",
-        "#D9A94E",
-        "#B23A2E"
+        "#F8F0E0",
+        "#3A3128",
+        "#655E55",
+        "#8A8278",
+        "#B0A89C",
+        "#D3CCC2",
+        "#EDE9E2",
+        "#EFE1C9",
+        "#E1CDAD"
       ],
       "allowCustom": true,
       "shades": []

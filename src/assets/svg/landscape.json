@@ -6,12 +6,11 @@
     {
       "id": "sky",
       "label": "Sky",
-      "default": "#8EB0D6",
+      "default": "#8FB4C4",
       "palette": [
-        "#8EB0D6",
+        "#8FB4C4",
         "#4A6C80",
         "#6A97AD",
-        "#8FB4C4",
         "#B6D3DE",
         "#DCECF2",
         "#9ED0FA",
@@ -23,13 +22,12 @@
     {
       "id": "water",
       "label": "Water",
-      "default": "#96B187",
+      "default": "#6A97AD",
       "palette": [
-        "#96B187",
+        "#6A97AD",
         "#2F6B62",
         "#3F9A88",
         "#6DB7A6",
-        "#6A97AD",
         "#8FB4C4",
         "#B6D3DE",
         "#4A6C80",
@@ -42,9 +40,9 @@
     {
       "id": "hills",
       "label": "Hills",
-      "default": "#AEC3A2",
+      "default": "#A3B77E",
       "palette": [
-        "#AEC3A2",
+        "#A3B77E",
         "#3F7A63",
         "#4E8A5F",
         "#6DA35C",
@@ -59,8 +57,8 @@
       "allowCustom": true,
       "shades": [
         {
-          "color": "#B5DFC5",
-          "deltaL": 0.0743
+          "color": "#B7C98A",
+          "deltaL": 0.057
         }
       ]
     }
