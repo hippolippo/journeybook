@@ -3,8 +3,8 @@
 A private, long-distance memory-keeping app for exactly two people — a shared
 scrapbook and a shared room. Scrapbooks, notes, real-time games, and camera.
 
-- Product & technical spec: [`SPEC.md`](SPEC.md)
-- Design mockups & visual spec: [`design/`](design/) ([`design/SPEC.md`](design/SPEC.md))
+- Product & technical spec (source of truth): [`SPEC.md`](SPEC.md)
+- Design mockups (visual reference only): [`design/`](design/)
 - Agent constitution: [`AGENTS.md`](AGENTS.md)
 - Deployment: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
 
@@ -48,29 +48,42 @@ See [`server/README.md`](server/README.md) for details and dev credentials.
 - **Auth**: two invite-only accounts; login gate when a backend is configured.
   Each account has a **name** and a **role** (`him`/`her`) so greetings, the
   room-bar avatars, and visit directions read correctly for whoever is signed in.
-- **Room** rendered from a data catalog (default layout matches the mockup);
-  day/night (auto by reference timezone + manual override); responsive
-  band-relative placement. Wall/floor options and per-item color slots.
+- **Room**: an empty-by-default illustrated room rendered from a data catalog
+  (`src/assets/svg/*.json` sidecars); hosts/attachment, recolourable slots,
+  day/night (auto by reference timezone + manual override), dynamic lighting,
+  effects, shadows, and responsive band-relative placement.
 - **Scrapbooks**: folders/books tree; two-row shelf with arrowheads and a pinned
   toolbar; **square pages** with freeform overlapping elements; desktop shows a
-  two-page spread (1–2, 3–4), mobile shows one page.
-- **Room editor** (desktop): move/select/resize/rotate/flip/depth, recolor
-  (presets + custom picker), swap wall/floor, day/night, and author desktop vs
-  **mobile layouts** with a "hide in mobile" option and mobile preview.
+  two-page spread (1–2, 3–4), mobile shows one page. Image album, frames, papers,
+  notes, stickers, tape, layers, and effects are all data-driven.
+- **Room editor** (desktop): move/select/resize/rotate/flip/depth, duplicate,
+  lock, recolor (presets + custom picker), swap wall/floor, day/night, named
+  layouts, and derived/editable **mobile placements** with a preview.
+- **Calendar**: shared month grid, visits with flight legs, anniversaries,
+  birthdays, occasions, recurrence, and a togetherness countdown.
+- **Data safety**: local-storage mode for dev, PocketBase + outbox in production,
+  trash/restore, integrity check, whole-library export/import, and
+  backup-on-redeploy.
 - **Realtime**: with PocketBase, room and content updates propagate to both users.
 
 ## Layout
 
 ```
 src/
-  assets/svg/      SVG catalog (one file per asset)
-  catalog/         catalog items, wall/floor options, default room layout
-  data/            types, storage adapter, PocketBase backend, seed content
-  room/            geometry (bands), day/night, pagination, RoomItem, clock
-  stores/          Pinia stores (app data, editor, auth)
-  views/           Home, Organizer, Book, Login
-  editor/          room editor panel
-server/            PocketBase migrations, setup script (binary + pb_data gitignored)
+  assets/svg/      SVG catalog (one file per asset, room sidecars as .json)
+  calendar/        event model, recurrence, metadata, dialog/list
+  catalog/         catalog loader/types, options, recipes, effects, lighting
+  components/      shared shell components (room bar, page canvas, icons)
+  composables/     viewport, reduced motion, asset URLs
+  data/            types, storage, PocketBase backend, outbox, trash, transfers
+  editor/          room editor panel and exit dialog
+  room/            geometry, attachment, day/night, lights, effects, RoomStage
+  scrapbook/       page editor, notes, frames, papers, effects, layers
+  stores/          Pinia stores (app data, room editor, page editor, auth)
+  views/           Home, Organizer, Book, Calendar, Settings, Login
+server/            PocketBase migrations/hooks, setup script
+docker/            Dockerfiles and Caddyfile
+scripts/           deploy and off-box backup scripts
 ```
 
 ## Roadmap

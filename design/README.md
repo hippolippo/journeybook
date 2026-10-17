@@ -27,7 +27,9 @@ A small screen-switcher pill at the bottom jumps between views.
 | `app.js` | Vanilla renderer + interactions |
 | `mock-data.js` | Seed folders/scrapbooks/pages |
 | `assets/svg/` | All art, one file per asset |
-| `SPEC.md` | The written spec |
+
+Behaviour is specified in [`../SPEC.md`](../SPEC.md). These mockups are visual
+reference only.
 
 ## This is a mockup
 

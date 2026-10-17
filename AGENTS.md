@@ -26,17 +26,69 @@ by scale. Optimize for low cost, low maintenance, and data safety.
 Before implementing anything, be crystal clear on the mission:
 
 1. Restate the goal in your own words and confirm it matches the user's intent.
-2. Identify unknowns and ambiguities. Resolve every one by asking the user —
+2. Read the affected `SPEC.md` sections and identify any code/spec mismatch.
+3. Identify unknowns and ambiguities. Resolve every one by asking the user —
    do not proceed while you have doubts.
-3. Produce a concrete plan (files, approach, tradeoffs, verification).
-4. Get explicit approval of the plan.
-5. Only then act. Once the plan is approved and unambiguous, act freely and make
+4. Produce a concrete plan (files, approach, tradeoffs, spec updates,
+   verification).
+5. Get explicit approval of the plan.
+6. Only then act. Once the plan is approved and unambiguous, act freely and make
    reasonable in-scope decisions without re-asking for every small step.
 
 Planning before acting is mandatory. Freely improvising before the plan is clear
 is a failure, even if the code works.
 
-## 3. Communication
+## 3. Specification Discipline (non-negotiable)
+
+`SPEC.md` is the single source of truth for what the app does. The code and the
+spec must never disagree. This section is a gate, not a suggestion.
+
+### Before implementing
+
+1. Read the affected sections of `SPEC.md` before planning. If the requested
+   behaviour is not described there, say so and propose the spec change first.
+2. Treat a code/spec mismatch as a defect. Do not silently implement around it.
+3. If the request changes behaviour, the plan must include the exact `SPEC.md`
+   sections that will change.
+
+### During implementation
+
+Every change that alters any of the following **must update `SPEC.md` in the same
+branch**, normally in the same commit:
+
+- user-visible behaviour, layout, copy, or navigation;
+- routes, screens, or mobile/desktop policy;
+- data shapes, collections, fields, migration behaviour, or sync semantics;
+- room/catalog/asset contracts (sidecar fields, colours, hosts, lighting,
+  effects, animations, particles);
+- scrapbook elements, frames, papers, notes, stickers, tape, or media handling;
+- editor capabilities, shortcuts, limits, or defaults;
+- deployment, backups, CI, or environment requirements;
+- tooling that the spec references (scripts, commands, test coverage).
+
+Required edits on a spec-affecting change:
+
+1. Update every affected section.
+2. Update the **Last updated** date at the top of `SPEC.md`.
+3. Append a row to the **Spec change log**.
+4. Update **§18 Known gaps and risks** when a gap is fixed, introduced, or
+   discovered.
+5. Keep TypeScript snippets aligned with `src/data/types.ts` and
+   `src/catalog/types.ts`.
+
+### After implementing
+
+- Include `SPEC.md` in the final verification: confirm the diff is intentional and
+  describes the shipped behaviour.
+- If a change genuinely needs no spec update, state that explicitly in the final
+  report or commit message, with a one-line reason. Silence is not acceptable.
+- Never document planned or unverified behaviour as shipped. Put intent in
+  **§19 Roadmap** and limitations in **§18 Known gaps and risks**.
+- `design/` holds visual mockups only. `design/SPEC.md` no longer exists; its
+  content was merged into `SPEC.md`. Never treat `design/` as behavioural
+  authority.
+
+## 4. Communication
 
 - Plan before acting. Lead with the plan, then execute.
 - Be concise and direct. No filler, no flattery, no unnecessary preamble or
@@ -46,7 +98,7 @@ is a failure, even if the code works.
   guessing.
 - Reference code locations as `file_path:line_number`.
 
-## 4. Autonomy
+## 5. Autonomy
 
 - Act freely within the approved scope. Make reasonable decisions for small
   details without asking.
@@ -55,7 +107,7 @@ is a failure, even if the code works.
   anything outside this repository.
 - Never expand scope on your own. If you discover adjacent work, note it and ask.
 
-## 5. Hard Rules (non-negotiable)
+## 6. Hard Rules (non-negotiable)
 
 - Never commit, print, or log secrets, API keys, tokens, or `.env` values.
   `.env*` stays gitignored; commit an `.env.example` with placeholders instead.
@@ -68,14 +120,16 @@ is a failure, even if the code works.
   unless the user explicitly instructs it.
 - Never commit or push unless the user explicitly asks.
 
-## 6. Verification (required)
+## 7. Verification (required)
 
 A task is not done until all of these pass:
 
 - Typecheck: `pnpm typecheck` (`vue-tsc`)
-- Lint + format check: `pnpm lint`
+- Lint: `pnpm lint` (ESLint)
+- Format check: `pnpm format` (Prettier)
 - Tests: `pnpm test` (Vitest) and `pnpm test:e2e` (Playwright) when a flow is
   affected
+- Spec: the `SPEC.md` diff matches the shipped change (§3)
 
 Rules:
 
@@ -85,8 +139,10 @@ Rules:
   can't be run, say so and why.
 - If a verification command does not yet exist, propose adding it to
   `package.json` and record it here.
+- CI does not run these checks before deploying. Contributors must run them
+  locally; do not assume a green deploy means green tests.
 
-## 7. Architecture
+## 8. Architecture
 
 - Frontend: Vue 3 Single Page Application, TypeScript, `<script setup>`
   Composition API, Pinia for state, Vue Router.
@@ -109,7 +165,7 @@ Rules:
 - Schema changes are additive by default; destructive migrations require
   explicit user approval and a verified backup first.
 
-## 8. Code Conventions
+## 9. Code Conventions
 
 - TypeScript everywhere, strict mode. No `any` (use `unknown` + narrowing).
 - Vue components: `<script setup lang="ts">`, Composition API, typed props and
@@ -123,7 +179,7 @@ Rules:
 - Formatting and lint are enforced by ESLint + Prettier; do not hand-format
   around them.
 
-## 9. Art & Visual Assets
+## 10. Art & Visual Assets
 
 - All art lives in a dedicated SVG assets folder — never scattered around the
   repo. One folder per area:
@@ -139,7 +195,7 @@ Rules:
 - Keep SVGs accessible: decorative art gets `aria-hidden="true"`; meaningful art
   gets `role="img"` plus a `<title>`.
 
-## 10. Tooling
+## 11. Tooling
 
 - Package manager: pnpm.
 - Build/dev: Vite.
@@ -147,14 +203,14 @@ Rules:
 - Types: vue-tsc.
 - Tests: Vitest + Vue Test Utils; Playwright for e2e.
 
-## 11. Branching & Commits
+## 12. Branching & Commits
 
 - One branch per change, named `type/short-description`
   (e.g. `feat/scrapbook-pages`, `fix/camera-reconnect`).
 - Only commit when the user explicitly asks. When asked, keep commits focused
   and write clear messages that describe intent.
 
-## 12. Open Questions
+## 13. Open Questions
 
 - VPS provider and PocketBase deployment specifics (decide when we get there).
 - Auth model for the two users (invite-only accounts vs. shared space).
