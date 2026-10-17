@@ -5,11 +5,11 @@ import { useAppStore } from '@/stores/app';
  * Reactive album-image URL that self-heals: if the URL is missing (e.g. the
  * in-memory blob cache was dropped after a reload/HMR), it re-hydrates it.
  */
-export function useAssetUrl(id: () => string | undefined): ComputedRef<string> {
+export function useAssetUrl(id: () => string | undefined, thumb?: string): ComputedRef<string> {
   const app = useAppStore();
   const url = computed(() => {
     const value = id();
-    return value ? app.assetUrl(value) : '';
+    return value ? app.assetUrl(value, thumb) : '';
   });
   watchEffect(() => {
     const value = id();

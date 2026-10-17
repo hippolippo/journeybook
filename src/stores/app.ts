@@ -86,9 +86,12 @@ export const useAppStore = defineStore('app', {
       return (bookId: string): MediaAsset[] => s.data.content.media.filter((m) => m.bookId === bookId);
     },
     assetUrl: (s) => {
-      return (id: string): string => {
+      return (id: string, thumb?: string): string => {
         void s.mediaVersion;
-        return mediaUrl(s.data.content.media.find((m) => m.id === id));
+        return mediaUrl(
+          s.data.content.media.find((m) => m.id === id),
+          thumb,
+        );
       };
     },
     integrity: (s) => auditIntegrity(s.data),

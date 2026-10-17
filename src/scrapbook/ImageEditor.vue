@@ -9,6 +9,7 @@ import { EFFECT_SLIDERS, isBuiltinPreset, mergedPresets } from '@/scrapbook/effe
 import PageElementContent from '@/scrapbook/PageElementContent.vue';
 import ColorSlotsEditor from '@/scrapbook/ColorSlotsEditor.vue';
 import Icon from '@/components/Icon.vue';
+import { MEDIA_THUMB_SMALL } from '@/data/media';
 
 const pe = usePageEditorStore();
 const app = useAppStore();
@@ -297,7 +298,7 @@ async function onFiles(e: Event) {
                 :class="{ 'is-active': m.id === el.mediaId }"
                 @click="useMedia(m.id)"
               >
-                <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" loading="lazy" decoding="async" />
+                <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id, MEDIA_THUMB_SMALL)" alt="" draggable="false" loading="lazy" decoding="async" />
               </button>
             </div>
             <p v-if="uploadError" class="editor__error">{{ uploadError }}</p>

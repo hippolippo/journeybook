@@ -12,6 +12,7 @@ import ImageEditor from '@/scrapbook/ImageEditor.vue';
 import NoteEditor from '@/scrapbook/NoteEditor.vue';
 import ColorSlotsEditor from '@/scrapbook/ColorSlotsEditor.vue';
 import PaperSurface from '@/scrapbook/PaperSurface.vue';
+import { MEDIA_THUMB_SMALL } from '@/data/media';
 
 const pe = usePageEditorStore();
 const app = useAppStore();
@@ -337,9 +338,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                   type="button"
                   :title="m.name"
                   @click="useMedia(m.id)"
-                  @pointerdown="startPlace($event, { img: app.assetUrl(m.id) }, (at) => pe.addImage(m.id, at))"
+                  @pointerdown="startPlace($event, { img: app.assetUrl(m.id, MEDIA_THUMB_SMALL) }, (at) => pe.addImage(m.id, at))"
                 >
-                  <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id)" alt="" draggable="false" loading="lazy" decoding="async" />
+                  <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id, MEDIA_THUMB_SMALL)" alt="" draggable="false" loading="lazy" decoding="async" />
                 </button>
                 <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)"><Icon name="close" /></button>
               </div>

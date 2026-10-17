@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import type { ImageElement, PageElement } from '@/data/types';
+import { MEDIA_THUMB_LARGE } from '@/data/media';
 import { useAssetUrl } from '@/composables/useAssetUrl';
 import { stickerById, tapeById } from '@/scrapbook/decor';
 import { frameById } from '@/scrapbook/frames';
@@ -17,7 +18,10 @@ const sticker = computed(() => (props.el.kind === 'sticker' ? stickerById(props.
 const tape = computed(() => (props.el.kind === 'tape' ? tapeById(props.el.style) : null));
 const imgEl = ref<HTMLImageElement | null>(null);
 const natAspect = ref(1);
-const imgUrl = useAssetUrl(() => (props.el.kind === 'image' ? props.el.mediaId : undefined));
+const imgUrl = useAssetUrl(
+  () => (props.el.kind === 'image' ? props.el.mediaId : undefined),
+  MEDIA_THUMB_LARGE,
+);
 
 function onLoad(e: Event) {
   const img = e.target as HTMLImageElement;

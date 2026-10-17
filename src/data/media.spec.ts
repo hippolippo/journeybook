@@ -33,4 +33,12 @@ describe('mediaUrl', () => {
     const { mediaUrl } = await import('./media');
     expect(mediaUrl(asset())).toBe('');
   });
+
+  it('requests a generated thumbnail when asked', async () => {
+    vi.stubEnv('VITE_PB_URL', 'http://127.0.0.1:8090');
+    const { mediaUrl } = await import('./media');
+    expect(mediaUrl(asset('pic.png'), '480x480')).toBe(
+      'http://127.0.0.1:8090/api/files/media/abc1234567890/pic.png?thumb=480x480',
+    );
+  });
 });
