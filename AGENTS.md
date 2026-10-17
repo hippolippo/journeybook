@@ -5,6 +5,9 @@ repository. When anything here conflicts with a general default or with the
 wording of a request, this file wins. When a request conflicts with this file,
 stop and confirm with the user before proceeding.
 
+For any question or research task about the app, **`SPEC.md` is the first stop**.
+Read it before searching code or history; see §3 for the required research order.
+
 ## 1. Mission
 
 Journeybook is a private, long-distance memory-keeping app for exactly two
@@ -26,7 +29,9 @@ by scale. Optimize for low cost, low maintenance, and data safety.
 Before implementing anything, be crystal clear on the mission:
 
 1. Restate the goal in your own words and confirm it matches the user's intent.
-2. Read the affected `SPEC.md` sections and identify any code/spec mismatch.
+2. Start research in `SPEC.md` — always the first stop, before searching code,
+   reading components, or checking history. Read the affected sections and
+   identify any code/spec mismatch.
 3. Identify unknowns and ambiguities. Resolve every one by asking the user —
    do not proceed while you have doubts.
 4. Produce a concrete plan (files, approach, tradeoffs, spec updates,
@@ -42,6 +47,23 @@ is a failure, even if the code works.
 
 `SPEC.md` is the single source of truth for what the app does. The code and the
 spec must never disagree. This section is a gate, not a suggestion.
+
+### Research order
+
+`SPEC.md` is the **first stop for every research task**, not only for
+implementation work. Use this order:
+
+1. **`SPEC.md`** — read the relevant sections first. It defines intended
+   behaviour, data shapes, asset contracts, and known gaps.
+2. **Code** — use the spec to decide which files to inspect, then verify the
+   implementation detail.
+3. **Tests and history** — use them to confirm edge cases or when the spec is
+   silent.
+
+Do not begin with repository-wide grep, file crawling, or `git log`. If the spec
+does not answer the question, say so, inspect the code, and record the gap in
+§18 when it is a real discrepancy. Never treat code as the definition if it
+contradicts the spec.
 
 ### Before implementing
 
