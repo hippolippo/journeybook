@@ -1,5 +1,6 @@
 import type { Placement } from '@/data/types';
 import type { Band, CatalogItem } from '@/catalog/types';
+import { displayAnchor, attachAnchorOf } from './anchor';
 import { normalizeAngle } from '@/scrapbook/transform';
 
 /** Fraction of the stage height where the wall ends and the floor begins. */
@@ -134,7 +135,7 @@ export function deriveMobile(desktop: Placement): Placement {
 export function resolveAttachedFlatStyle(
   host: Pick<CatalogItem, 'band' | 'aspect' | 'defaultScale'>,
   hostPlacement: Placement,
-  child: Pick<CatalogItem, 'band' | 'aspect'>,
+  child: Pick<CatalogItem, 'band' | 'aspect' | 'attachAnchor'>,
   childPlacement: Placement,
   itemZ: number,
 ): ResolvedStyle {
@@ -146,9 +147,10 @@ export function resolveAttachedFlatStyle(
   const childW = childH * child.aspect;
   const ax = childPlacement.ax ?? 0.5;
   const ay = childPlacement.ay ?? 0;
+  const q = displayAnchor(attachAnchorOf(child), childPlacement.flip);
   // Child centre relative to the host centre, in cqh units.
-  let cx = (ax - 0.5) * hostW * 100;
-  const cy = (ay - 0.5) * hostH * 100 - (childH * 100) / 2;
+  let cx = (ax - 0.5) * hostW * 100 - (q.x - 0.5) * childW * 100;
+  const cy = (ay - 0.5) * hostH * 100 - (q.y - 0.5) * childH * 100;
   if (hostPlacement.flip) cx = -cx;
   const rad = (hostPlacement.rotation * Math.PI) / 180;
   const cos = Math.cos(rad);

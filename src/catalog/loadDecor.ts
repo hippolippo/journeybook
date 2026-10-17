@@ -61,6 +61,10 @@ export interface AssetDefinition {
   attach?: CatalogItem['attach'];
   /** Can hold surface items (a resting surface: desk, shelf, …). */
   host?: boolean;
+  /** Invisible hit-area extension, as fractions of the item box. */
+  hitbox?: CatalogItem['hitbox'];
+  /** Point inside the item box that pins it to a host (default bottom-centre). */
+  attachAnchor?: CatalogItem['attachAnchor'];
   tint?: boolean;
   defaultColor?: string;
   colorSlots?: CatalogItem['colorSlots'];
@@ -345,6 +349,8 @@ function toCatalogItem(def: AssetDefinition): CatalogItem | null {
     colorSlots,
     attach: def.attach,
     host: def.host,
+    hitbox: def.hitbox,
+    attachAnchor: def.attachAnchor,
     effect: def.effect ?? null,
     presets: def.presets,
     animations: def.animations,

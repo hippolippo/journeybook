@@ -16,11 +16,11 @@ import {
 import {
   attachedPct,
   attachedResizeRatio,
-  bottomFrac,
   centerPx,
   childCenterScreen,
   hostFrame,
   localRotation,
+  looseAnchorPoint,
   looseRotation,
   resizeLoose,
   screenToHostLocal,
@@ -28,8 +28,9 @@ import {
   type StageRect,
 } from '@/room/transform';
 import { canHost, hostAt } from '@/room/attach';
+import { attachAnchorOf, displayAnchor } from '@/room/anchor';
 import { itemsAtPoint } from '@/room/pick';
-import { defaultShadowAmount, ovalShadowStyle, shadowFilter } from '@/room/shadow';
+import { composePose, defaultShadowAmount, levelShadowTransform, ovalShadowStyle, shadowFilter } from '@/room/shadow';
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import WallClock from './WallClock.vue';
@@ -104,6 +105,21 @@ const shadowCss = computed(() => {
 const ovalStyle = computed(() =>
   cat.value && !cat.value.repeat ? ovalShadowStyle(cat.value.category, shadowAmount.value) : null,
 );
+/** Effective on-screen pose, including a rotated/flipped host for attached items. */
+const ovalPose = computed(() => {
+  const p = placement.value;
+  if (!p) return { rotation: 0, flip: false };
+  const child = { rotation: p.rotation, flip: p.flip };
+  if (attached.value && hostPlacement.value) {
+    return hostCat.value?.repeat ? child : composePose(hostPlacement.value, child);
+  }
+  if (preview.value && previewHostPlacement.value) {
+    return previewHostCat.value?.repeat ? child : composePose(previewHostPlacement.value, child);
+  }
+  return child;
+});
+/** Cancels the item's rotation so the contact shadow stays level and centred. */
+const ovalWrapperStyle = computed(() => ({ transform: levelShadowTransform(ovalPose.value) }));
 
 const positionBand = computed<Band>(() =>
   cat.value?.layer === 'surface' ? 'both' : (cat.value?.band ?? 'floor'),
@@ -115,17 +131,22 @@ const nestedStyle = computed<Record<string, string> | null>(() => {
   const c = cat.value;
   const p = placement.value;
   const hc = hostCat.value;
-  if (!c || !p || !hc) return null;
+  const hp = hostPlacement.value;
+  if (!c || !p || !hc || !hp) return null;
   const { heightPct, widthPct } = attachedPct(c, p, hc);
   const ax = p.ax ?? 0.5;
   const ay = p.ay ?? 0;
+  const hostH = hp.scale * bandFor(hc.band).height * 100;
+  const childH = (heightPct / 100) * hostH;
+  const childW = childH * c.aspect;
+  const q = displayAnchor(attachAnchorOf(c), p.flip);
   return {
-    left: `${(ax * 100).toFixed(4)}%`,
-    bottom: `${((1 - ay) * 100).toFixed(4)}%`,
-    top: 'auto',
+    left: `calc(${(ax * 100).toFixed(4)}% - ${(q.x * childW).toFixed(4)}cqh)`,
+    top: `calc(${(ay * 100).toFixed(4)}% - ${(q.y * childH).toFixed(4)}cqh)`,
+    bottom: 'auto',
     width: `${widthPct.toFixed(4)}%`,
     height: `${heightPct.toFixed(4)}%`,
-    transform: `translateX(-50%) rotate(${p.rotation}deg) scaleX(${p.flip ? -1 : 1})`,
+    transform: `rotate(${p.rotation}deg) scaleX(${p.flip ? -1 : 1})`,
     transformOrigin: '50% 50%',
     zIndex: String(props.ghost ? 9999 : props.item.z),
     ...colorVars.value,
@@ -305,7 +326,16 @@ function detachLoose(stage: StageRect, frame: HostFrame) {
   if (!cat.value || !hostCat.value || !origin) return;
   const { heightPct } = attachedPct(cat.value, origin, hostCat.value);
   const childH = (heightPct / 100) * frame.heightPx;
-  const center = childCenterScreen(origin.ax ?? 0.5, origin.ay ?? 0, childH, frame);
+  const childW = childH * cat.value.aspect;
+  const center = childCenterScreen(
+    origin.ax ?? 0.5,
+    origin.ay ?? 0,
+    childH,
+    frame,
+    attachAnchorOf(cat.value),
+    childW,
+    origin.flip,
+  );
   const h = origin.scale * bandFor(sizeBand.value).height * stage.height;
   editor.detach(
     props.item.id,
@@ -323,9 +353,8 @@ function updateAttachPreview(stage: StageRect) {
     editor.setAttachPreview(null);
     return;
   }
-  const baseX = stage.left + p.x * stage.width;
-  const baseY = stage.top + bottomFrac(positionBand.value, p) * stage.height + 2;
-  const hit = hostAt(baseX, baseY, cat.value, props.item.id);
+  const anchor = looseAnchorPoint(cat.value, positionBand.value, sizeBand.value, p, stage);
+  const hit = hostAt(anchor.x, anchor.y + 2, cat.value, props.item.id);
   const hitCat = hit ? getCatalogItem(hit.catalogId) : undefined;
   const host = hit ? allItems.value.find((i) => i.id === hit.id) : undefined;
   if (!hit || !host || !hitCat || !canHost(cat.value, hitCat)) {
@@ -337,15 +366,12 @@ function updateAttachPreview(stage: StageRect) {
   const hostPlacement =
     props.layout === 'mobile' ? (host.mobile ?? deriveMobile(host.desktop)) : host.desktop;
   const frame = hostFrame(hitCat, hostPlacement, stage);
-  const center = centerPx(positionBand.value, sizeBand.value, p, stage);
-  const local = screenToHostLocal(center.x - frame.pivot.x, center.y - frame.pivot.y, frame);
-  const { heightPct } = attachedPct(cat.value, p, hitCat);
-  const childH = (heightPct / 100) * frame.heightPx;
+  const local = screenToHostLocal(anchor.x - frame.pivot.x, anchor.y - frame.pivot.y, frame);
   editor.setAttachPreview({
     itemId: props.item.id,
     hostId: hit.id,
     ax: clamp(local.x / frame.widthPx + 0.5, 0, 1),
-    ay: clamp((local.y + childH / 2) / frame.heightPx + 0.5, 0, 1),
+    ay: clamp(local.y / frame.heightPx + 0.5, 0, 1),
   });
   editor.setRemovePreview(null);
 }
@@ -429,17 +455,16 @@ function onUp(event: PointerEvent) {
   const isSurface = cat.value?.layer === 'surface';
   const stage = stageRect();
   const p = placement.value;
-  // Decide what the item is dropped on from its base, not the grab point, so a
-  // surface item resting on furniture re-attaches when nudged. Hit-test while
-  // the `dragging` class is set (the item ignores pointer events then).
+  // Decide what the item is dropped on from its attach point, not the grab
+  // point, so a surface item resting on furniture re-attaches when nudged.
+  // Hit-test while the `dragging` class is set (it ignores pointer events then).
+  const anchor =
+    cat.value && stage && p
+      ? looseAnchorPoint(cat.value, positionBand.value, sizeBand.value, p, stage)
+      : null;
   const hit =
-    mode === 'move' && wasMoved && isSurface && !props.item.locked && cat.value && stage && p
-      ? hostAt(
-          stage.left + p.x * stage.width,
-          stage.top + bottomFrac(positionBand.value, p) * stage.height + 2,
-          cat.value,
-          props.item.id,
-        )
+    mode === 'move' && wasMoved && isSurface && !props.item.locked && cat.value && stage && p && anchor
+      ? hostAt(anchor.x, anchor.y + 2, cat.value, props.item.id)
       : null;
   // A click (no drag) cycles selection through items stacked at the point.
   if (mode === 'move' && !wasMoved && stack.length) {
@@ -458,7 +483,7 @@ function onUp(event: PointerEvent) {
   // If it stayed attached the whole drag, onMove already set its host-relative
   // position — leave it alone (re-attaching here would jump it).
   if (attached.value) return;
-  if (!stage || !hit || !p) return;
+  if (!stage || !hit || !p || !anchor) return;
   if (!canHost(cat.value, getCatalogItem(hit.catalogId))) return;
   const dropHostCat = getCatalogItem(hit.catalogId);
   const dropHost = allItems.value.find((i) => i.id === hit.id);
@@ -468,19 +493,16 @@ function onUp(event: PointerEvent) {
       : dropHost.desktop
     : null;
   if (!dropHostCat || !dropHostPlacement) return;
-  // Place the child so its rendered centre is unchanged. Its own rotation is
-  // kept, so it tilts with the furniture while attached.
+  // Pin the item's declared attach point to the host. Its own rotation is kept,
+  // so it tilts with the furniture while attached.
   const frame = hostFrame(dropHostCat, dropHostPlacement, stage);
-  const { heightPct } = attachedPct(cat.value, p, dropHostCat);
-  const childH = (heightPct / 100) * frame.heightPx;
-  const center = centerPx(positionBand.value, sizeBand.value, p, stage);
-  const local = screenToHostLocal(center.x - frame.pivot.x, center.y - frame.pivot.y, frame);
+  const local = screenToHostLocal(anchor.x - frame.pivot.x, anchor.y - frame.pivot.y, frame);
   editor.setAttach(
     props.item.id,
     props.layout,
     hit.id,
     clamp(local.x / frame.widthPx + 0.5, 0, 1),
-    clamp((local.y + childH / 2) / frame.heightPx + 0.5, 0, 1),
+    clamp(local.y / frame.heightPx + 0.5, 0, 1),
   );
 }
 
@@ -523,7 +545,10 @@ function onUp(event: PointerEvent) {
       <slot />
     </template>
     <template v-else>
-      <span v-if="ovalStyle" class="room-item__shadow" :style="ovalStyle" aria-hidden="true"></span>
+      <span v-if="canEdit && cat.hitbox?.bottom" class="room-item__hitbox" :style="{ height: `${(cat.hitbox?.bottom ?? 0) * 100}%` }" aria-hidden="true"></span>
+      <span v-if="ovalStyle" class="room-item__shadow-wrap" :style="ovalWrapperStyle" aria-hidden="true">
+        <span class="room-item__shadow" :style="ovalStyle"></span>
+      </span>
       <span class="room-item__art">
         <FxLayer :animations="visuals.animations" :particles="visuals.particles" :seed="props.item.id" :light-level="props.item.lightLevel ?? 1">
           <span v-if="cat.repeat" class="room-item__repeat" :style="repeatStyle"></span>

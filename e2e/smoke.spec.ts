@@ -865,6 +865,44 @@ test('a trinket dropped on the window attaches to it and stays on the wall', asy
   expect(box.y + box.height / 2).toBeLessThan(900 * 0.74);
 });
 
+test('a curtain attaches to the window from just inside its top-right corner', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto('/');
+  await openRoomEditor(page);
+  const win = page.locator('.room-item[data-catalog=window]').first();
+  const curtain = page.locator('.room-item[data-catalog=curtain]').first();
+  const wb = (await win.boundingBox())!;
+  const cb = (await curtain.boundingBox())!;
+  const startX = cb.x + cb.width / 2;
+  const startY = cb.y + cb.height / 2;
+  const anchorX = cb.x + cb.width * 0.95;
+  const anchorY = cb.y + cb.height * 0.05;
+
+  // Drop the curtain's top-right anchor onto the window centre.
+  const targetX = wb.x + wb.width / 2;
+  const targetY = wb.y + wb.height / 2;
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(
+    startX + (targetX - anchorX),
+    startY + (targetY - anchorY),
+    { steps: 12 },
+  );
+  await page.mouse.up();
+
+  expect(await curtain.evaluate((el) => !!el.closest('[data-catalog=window]'))).toBe(true);
+  const ab = (await curtain.boundingBox())!;
+  expect(Math.abs(ab.x + ab.width * 0.95 - targetX)).toBeLessThan(8);
+  expect(Math.abs(ab.y + ab.height * 0.05 - targetY)).toBeLessThan(8);
+
+  // Flipping mirrors the anchor: the same host point becomes the top-left.
+  await curtain.click();
+  await page.getByText('Flip horizontally').click();
+  const flipped = (await curtain.boundingBox())!;
+  expect(Math.abs(flipped.x + flipped.width * 0.05 - targetX)).toBeLessThan(8);
+  expect(Math.abs(flipped.y + flipped.height * 0.05 - targetY)).toBeLessThan(8);
+});
+
 test('surface items can be dragged from the floor up onto the wall', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 900 });
   await page.goto('/');

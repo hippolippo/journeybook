@@ -40,6 +40,8 @@ reference the skill generates against.
 | `defaultRotation` | number                          | Degrees.                                                |
 | `attach`          | `furniture` \| `shelf` \| `any` | Surface items only.                                     |
 | `host`            | boolean                         | Marks a resting surface; wall/floor only.               |
+| `hitbox`          | `{ bottom?: number }`           | Invisible hit-area extension below the item (fraction of its height). |
+| `attachAnchor`    | `{ x: number, y: number }`      | Point that pins the item to a host (default bottom-centre; `x` mirrors on flip). |
 | `repeat`          | `"x"` \| `"y"` \| `"both"`      | Tiling.                                                 |
 | `art`             | `{ day, night }`                | Each is a file name or `{ src, scale?, particles?, animations? }`. A lone day SVG auto-detects `<id>-night.svg`. |
 | `artAnchor`       | enum                            | Day/night overlay: `top/center/bottom` × `left/center/right` (default `bottom-center`). |

@@ -6,6 +6,7 @@
   "layer": "wall",
   "band": "wall",
   "host": true,
+  "hitbox": { "bottom": 0.1 },
   "art": { "day": "window-day.svg", "night": "window-night.svg" },
   "aspect": 1.397,
   "defaultScale": 0.31

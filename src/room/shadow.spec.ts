@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_SHADOW,
   STRONG_SHADOW,
+  composePose,
   defaultShadowAmount,
   isRestingCategory,
+  levelShadowTransform,
   ovalShadowStyle,
   shadowFilter,
 } from './shadow';
@@ -63,5 +65,18 @@ describe('room item shadow defaults', () => {
     expect(high).toBeTruthy();
     expect(parseFloat(high!.width)).toBeGreaterThan(parseFloat(mid!.width));
     expect(parseFloat(high!.opacity)).toBeGreaterThan(parseFloat(mid!.opacity));
+  });
+
+  it('composes an attached child pose with its host, including flips', () => {
+    expect(composePose({ rotation: 30, flip: false }, { rotation: 10, flip: false })).toEqual({ rotation: 40, flip: false });
+    expect(composePose({ rotation: 30, flip: false }, { rotation: 10, flip: true })).toEqual({ rotation: 40, flip: true });
+    expect(composePose({ rotation: 30, flip: true }, { rotation: 10, flip: false })).toEqual({ rotation: 20, flip: true });
+    expect(composePose({ rotation: 30, flip: true }, { rotation: 10, flip: true })).toEqual({ rotation: 20, flip: false });
+  });
+
+  it('counter-transforms the level shadow wrapper for rotation and flip', () => {
+    expect(levelShadowTransform({ rotation: 0, flip: false })).toBe('scaleX(1) rotate(0deg)');
+    expect(levelShadowTransform({ rotation: 30, flip: false })).toBe('scaleX(1) rotate(-30deg)');
+    expect(levelShadowTransform({ rotation: 30, flip: true })).toBe('scaleX(-1) rotate(-30deg)');
   });
 });

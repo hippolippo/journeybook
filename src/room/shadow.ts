@@ -1,4 +1,24 @@
 import type { Category } from '@/catalog/types';
+import { normalizeAngle } from '@/scrapbook/transform';
+
+/** On-screen rotation/flip of an item, used to level its contact shadow. */
+export interface ItemPose {
+  rotation: number;
+  flip: boolean;
+}
+
+/** Compose a host's on-screen pose with an attached child's local pose. */
+export function composePose(host: ItemPose, child: ItemPose): ItemPose {
+  return {
+    rotation: normalizeAngle(host.rotation + (host.flip ? -child.rotation : child.rotation)),
+    flip: host.flip ? !child.flip : child.flip,
+  };
+}
+
+/** Inverse of an item's pose, cancelling rotation/flip for the contact shadow. */
+export function levelShadowTransform(pose: ItemPose): string {
+  return `scaleX(${pose.flip ? -1 : 1}) rotate(${normalizeAngle(-pose.rotation)}deg)`;
+}
 
 /** Default shadow amount for items that cast one. */
 export const DEFAULT_SHADOW = 0.5;

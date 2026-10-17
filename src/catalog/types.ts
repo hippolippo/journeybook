@@ -116,6 +116,10 @@ export interface CatalogItem {
   attach?: 'furniture' | 'shelf' | 'any';
   /** Can hold surface items (a resting surface: desk, shelf, …). */
   host?: boolean;
+  /** Invisible hit-area extension, as fractions of the item box. */
+  hitbox?: { bottom?: number };
+  /** Point inside the item box that pins it to a host (default bottom-centre). */
+  attachAnchor?: { x: number; y: number };
   component?: 'clock';
   raw?: string;
   /** Inlined night-variant SVG (recolourable assets with a day/night pair). */

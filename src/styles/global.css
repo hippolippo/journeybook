@@ -459,7 +459,10 @@ img[alt=''] {
 
 /* asset-driven visual effects: generic animations + particles (all data) */
 .room-item__art { position: absolute; inset: 0; display: block; isolation: isolate; filter: var(--room-shadow, none); }
+/* Invisible hit-area extension below a host (e.g. window → curtain). */
+.room-item__hitbox { position: absolute; left: 0; right: 0; top: 100%; }
 /* Contact shadow: a soft, translucent dark oval along the item's bottom width. */
+.room-item__shadow-wrap { position: absolute; inset: 0; transform-origin: 50% 50%; pointer-events: none; }
 .room-item__shadow {
   position: absolute;
   left: 50%;

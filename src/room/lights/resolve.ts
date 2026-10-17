@@ -1,6 +1,7 @@
 import type { CatalogItem, LightDef, LightDistribution, LightType } from '@/catalog/types';
 import type { Placement, RoomItem } from '@/data/types';
 import { bandFor } from '@/room/geometry';
+import { attachAnchorOf, displayAnchor } from '@/room/anchor';
 import { effectList } from '@/catalog/effects';
 import { lightDistributionDef, lightTypeDef, TYPE_DISTRIBUTION } from './registry';
 
@@ -66,8 +67,9 @@ function attachedBox(
   const childW = (childH * child.aspect) / stageAspect;
   const ax = childP.ax ?? 0.5;
   const ay = childP.ay ?? 0;
-  let offsetX = (ax - 0.5) * hostW;
-  const offsetY = (ay - 0.5) * hostH - childH / 2;
+  const q = displayAnchor(attachAnchorOf(child), childP.flip);
+  let offsetX = (ax - 0.5) * hostW - (q.x - 0.5) * childW;
+  const offsetY = (ay - 0.5) * hostH - (q.y - 0.5) * childH;
   if (hostP.flip) offsetX = -offsetX;
   const rad = (hostP.rotation * Math.PI) / 180;
   const cos = Math.cos(rad);

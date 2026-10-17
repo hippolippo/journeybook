@@ -1,6 +1,13 @@
 import type { Placement } from '@/data/types';
 import type { Band, CatalogItem } from '@/catalog/types';
 import { bandFor } from './geometry';
+import {
+  anchorCenterOffset,
+  attachAnchorOf,
+  DEFAULT_ATTACH_ANCHOR,
+  displayAnchor,
+  type AttachAnchor,
+} from './anchor';
 import { angleFromCenter, normalizeAngle, resizeCorner, type Box, type Point } from '@/scrapbook/transform';
 
 /** A stage element's box in client pixels (from getBoundingClientRect). */
@@ -39,6 +46,22 @@ export function centerPx(positionBand: Band, sizeBand: Band, p: Placement, stage
   const h = heightFrac(sizeBand, p) * stage.height;
   const bottom = bottomFrac(positionBand, p) * stage.height;
   return { x: stage.left + p.x * stage.width, y: stage.top + bottom - h / 2 };
+}
+
+/** The item's on-screen attach point in px (top-right for a curtain, etc.). */
+export function looseAnchorPoint(
+  child: Pick<CatalogItem, 'attachAnchor' | 'aspect'>,
+  positionBand: Band,
+  sizeBand: Band,
+  p: Placement,
+  stage: StageRect,
+): Point {
+  const box = boxPx(positionBand, sizeBand, p, child.aspect, stage);
+  const q = displayAnchor(attachAnchorOf(child), p.flip);
+  return {
+    x: box.x - box.w / 2 + q.x * box.w,
+    y: box.y - box.h / 2 + q.y * box.h,
+  };
 }
 
 /** Convert a resized pixel box back into placement fields. */
@@ -168,9 +191,18 @@ export function childPivotScreen(ax: number, ay: number, frame: HostFrame): Poin
 }
 
 /** The child's on-screen centre (its rotation pivot), independent of its rotation. */
-export function childCenterScreen(ax: number, ay: number, childHeightPx: number, frame: HostFrame): Point {
+export function childCenterScreen(
+  ax: number,
+  ay: number,
+  childHeightPx: number,
+  frame: HostFrame,
+  childAnchor: AttachAnchor = DEFAULT_ATTACH_ANCHOR,
+  childWidthPx = 0,
+  childFlip = false,
+): Point {
   const anchor = childAnchorLocal(ax, ay, frame);
-  return hostLocalToScreen({ x: anchor.x, y: anchor.y - childHeightPx / 2 }, frame);
+  const offset = anchorCenterOffset(childAnchor, childWidthPx, childHeightPx, childFlip);
+  return hostLocalToScreen({ x: anchor.x - offset.x, y: anchor.y - offset.y }, frame);
 }
 
 /**
@@ -209,7 +241,7 @@ export function attachedResizeRatio(
 export function detachedLoosePlacement(
   hostCat: Pick<CatalogItem, 'band' | 'aspect' | 'defaultScale'>,
   hostPlacement: Placement,
-  childCat: Pick<CatalogItem, 'band' | 'aspect' | 'layer'>,
+  childCat: Pick<CatalogItem, 'band' | 'aspect' | 'layer' | 'attachAnchor'>,
   childPlacement: Placement,
   stageAspect: number,
 ): { x: number; y: number } {
@@ -220,10 +252,12 @@ export function detachedLoosePlacement(
     childPlacement.scale *
     bandFor(childCat.band).height *
     (hostPlacement.scale / hostCat.defaultScale);
+  const childW = childH * childCat.aspect;
   const ax = childPlacement.ax ?? 0.5;
   const ay = childPlacement.ay ?? 0;
-  let cx = (ax - 0.5) * hostW;
-  const cy = (ay - 0.5) * hostH - childH / 2;
+  const q = displayAnchor(attachAnchorOf(childCat), childPlacement.flip);
+  let cx = (ax - 0.5) * hostW - (q.x - 0.5) * childW;
+  const cy = (ay - 0.5) * hostH - (q.y - 0.5) * childH;
   if (hostPlacement.flip) cx = -cx;
   const rad = toRadians(hostPlacement.rotation);
   const rx = cx * Math.cos(rad) - cy * Math.sin(rad);
