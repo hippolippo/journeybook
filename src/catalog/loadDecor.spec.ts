@@ -122,6 +122,10 @@ describe('asset loader', () => {
     expect(new Set(aliasedArts).size).toBe(3);
     // The window has a day/night pair (window-day / window-night).
     expect(byId.get('window')?.art.night).toBeTruthy();
+    // Its hit area extends below the sill so curtains attach at rest.
+    expect(byId.get('window')?.hitbox?.bottom).toBe(0.1);
+    // Curtains hang from just inside their top-right corner (top-left when flipped).
+    expect(byId.get('curtain')?.attachAnchor).toEqual({ x: 0.95, y: 0.05 });
     // Furniture can host surface items; the beanbag recolours its fabric.
     expect(byId.get('beanbag')?.host).toBe(true);
     expect(byId.get('beanbag')?.colorSlots.map((s) => s.id)).toEqual(['fabric']);

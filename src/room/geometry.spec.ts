@@ -85,5 +85,18 @@ describe('resolveAttachedFlatStyle', () => {
     const style = resolveAttachedFlatStyle(hostCat, host, childCat, { ...child, ax: 0.5, rotation: 10 }, 30);
     expect(style.transform).toBe('translateX(-50%) rotate(40deg) scaleX(1)');
   });
+
+  it('places a custom anchor at the host point and mirrors it when flipped', () => {
+    const host = { x: 0.2, y: 1, scale: 1, rotation: 0, flip: false };
+    const curtain = { ...childCat, aspect: 0.3, attachAnchor: { x: 1, y: 0 } };
+    const p = { ...child, ax: 1, ay: 0 };
+    const right = resolveAttachedFlatStyle(hostCat, host, curtain, p, 30);
+    expect(right.left).toBe('calc(20.0000% + 24.0500cqh)');
+    expect(parseFloat(right.top)).toBeCloseTo(74);
+
+    const left = resolveAttachedFlatStyle(hostCat, host, curtain, { ...p, flip: true }, 30);
+    expect(left.left).toBe('calc(20.0000% + 27.9500cqh)');
+    expect(parseFloat(left.top)).toBeCloseTo(74);
+  });
 });
 

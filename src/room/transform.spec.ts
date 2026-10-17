@@ -13,6 +13,7 @@ import {
   hostFrame,
   hostLocalToScreen,
   localRotation,
+  looseAnchorPoint,
   resizeLoose,
   screenToHostLocal,
   type HostFrame,
@@ -118,6 +119,32 @@ describe('centerPx', () => {
   });
 });
 
+describe('looseAnchorPoint', () => {
+  it('defaults to the bottom-centre of the item box', () => {
+    const point = looseAnchorPoint(
+      { aspect: 2 },
+      'floor',
+      'floor',
+      place({ x: 0.5, y: 1, scale: 0.5 }),
+      stage,
+    );
+    expect(point.x).toBeCloseTo(500);
+    expect(point.y).toBeCloseTo(1000);
+  });
+
+  it('uses a top-right anchor and mirrors it when flipped', () => {
+    const child = { aspect: 2, attachAnchor: { x: 1, y: 0 } };
+    const p = place({ x: 0.5, y: 1, scale: 0.5 });
+    const right = looseAnchorPoint(child, 'floor', 'floor', p, stage);
+    expect(right.x).toBeCloseTo(630);
+    expect(right.y).toBeCloseTo(870);
+
+    const left = looseAnchorPoint(child, 'floor', 'floor', { ...p, flip: true }, stage);
+    expect(left.x).toBeCloseTo(370);
+    expect(left.y).toBeCloseTo(870);
+  });
+});
+
 describe('childCenterScreen', () => {
   it('is independent of the child rotation and sits half a height above the anchor', () => {
     const host = { band: 'floor' as Band, aspect: 2 };
@@ -125,6 +152,18 @@ describe('childCenterScreen', () => {
     const center = childCenterScreen(0.5, 1, 100, frame);
     expect(center.x).toBeCloseTo(200);
     expect(center.y).toBeCloseTo(1000 - 50);
+  });
+
+  it('offsets the centre from a custom attach point', () => {
+    const host = { band: 'floor' as Band, aspect: 2 };
+    const frame = hostFrame(host, place({ x: 0.2, y: 1, scale: 1, rotation: 0 }), stage);
+    const center = childCenterScreen(1, 0, 100, frame, { x: 1, y: 0 }, 200, false);
+    expect(center.x).toBeCloseTo(360);
+    expect(center.y).toBeCloseTo(790);
+
+    const flipped = childCenterScreen(1, 0, 100, frame, { x: 1, y: 0 }, 200, true);
+    expect(flipped.x).toBeCloseTo(560);
+    expect(flipped.y).toBeCloseTo(790);
   });
 });
 
