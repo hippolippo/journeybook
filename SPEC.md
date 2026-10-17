@@ -2,7 +2,7 @@
 
 Status: **Living specification of shipped behaviour (v1).**
 Last updated: **2026-10-17.**
-Implementation reference: commit `edfcfff`.
+Implementation reference: commit `bcda56d`.
 
 This document is the single source of truth for what Journeybook is and how it
 behaves. It describes the app **as implemented**, with a separate list of known
@@ -14,10 +14,11 @@ not be described here as shipped.
 
 ## Spec change log
 
-| Date       | Change                                                                                                                                                                                                                                    |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21. |
-| 2026-10-08 | Initial product and technical spec (`7973394`).                                                                                                                                                                                           |
+| Date       | Change                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18. |
+| 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21.                                 |
+| 2026-10-08 | Initial product and technical spec (`7973394`).                                                                                                                                                                                                                           |
 
 ---
 
@@ -106,7 +107,10 @@ user art, social feeds, and engagement mechanics.
 
 ### 4.2 Backend
 
-- PocketBase, self-hosted on a small VPS, fronted by Caddy for TLS.
+- PocketBase, self-hosted on a 1 GB DigitalOcean droplet (Ubuntu 24.04), fronted
+  by Caddy for TLS. Production lives at `https://haftels.com/journeybook/`; the
+  domain's A record is DNS-only (grey cloud) so Caddy can complete its
+  Let's Encrypt HTTP-01 challenge.
 - PocketBase provides SQLite, file storage, auth, and realtime subscriptions.
 - The schema is committed as JS migrations in `server/pb_migrations/` and applied
   automatically when the container starts.
@@ -327,8 +331,13 @@ Behaviour:
 - PocketBase mode stores a `media` record plus a 25 MB max file. The server
   allowlist is JPEG, PNG, WebP, GIF, AVIF; SVG is not accepted by the backend even
   though the client accepts it.
-- Thumbnails: `480x480` for album grids, `1200x1200f` for page rendering.
-  PocketBase generates them on demand. Local mode serves originals.
+- Thumbnails: the app requests generated variants via `mediaUrl(asset, thumb)` —
+  `480x480` in album grids, pickers and drag ghosts, and `1200x1200f` for page
+  images. PocketBase generates them on demand (existing uploads included). Local
+  mode serves originals. Originals are retained at full resolution and used for
+  export.
+- Uploads are stored at full resolution; only display variants are generated.
+  There is no client-side downscaling or storage re-encode.
 - New images default to the Polaroid frame, width 0.44, aspect-derived height,
   rotation −2°, zoom 1, centre focus.
 - Image editor:
@@ -1152,13 +1161,23 @@ Rules:
 
 ### 17.1 Containers
 
-- `pb`: Alpine + PocketBase (default `0.40.5`), with committed migrations and
-  hooks. `pb_data` is a named volume. Healthcheck hits `/api/health`.
-- `web`: Node build stage produces the SPA, then Caddy serves it and proxies
-  `{APP_BASE}/api/*` and `{APP_BASE}/_/*` to `pb`.
-- `APP_BASE` supports serving at the root or any subpath. A bare base redirects to
-  the trailing-slash form. Hashed assets are immutable; `/api/files/*` is cached
-  privately for a year.
+- Compose project `journeybook`, with two services:
+  - `pb`: Alpine + PocketBase (default `0.40.5`), with committed migrations and
+    hooks. `pb_data` is a named volume (`journeybook_pb_data`). Healthcheck hits
+    `/api/health`.
+  - `web`: Node build stage produces the SPA, then Caddy serves it and proxies
+    `{APP_BASE}/api/*` and `{APP_BASE}/_/*` to `pb`. The `caddy_data` and
+    `caddy_config` volumes retain certificates; ports 80 and 443 are published.
+- Production images are `ghcr.io/hippolippo/journeybook-web` and
+  `ghcr.io/hippolippo/journeybook-pb`, tagged with the commit SHA and `main`.
+  Compose falls back to local `:local` builds when those variables are unset.
+- Production runs at `https://haftels.com/journeybook/`
+  (`DOMAIN=haftels.com`, `APP_BASE=/journeybook`). The root `/` is unused and
+  available for other apps. A bare base path redirects to the trailing-slash
+  form.
+- `APP_BASE` supports serving at the root or any subpath. Hashed assets are
+  immutable; `/api/files/*` is cached privately for a year; SPA HTML is
+  `no-cache`.
 - Environment variables (names only): `VITE_PB_URL`, `VITE_BASE`, `DOMAIN`,
   `APP_BASE`, `PB_IMAGE`, `WEB_IMAGE`, `IMAGE_TAG`, `PB_VERSION`, `BACKUP_KEEP`,
   `BACKUP_REMOTE`, `BACKUP_RSYNC_TARGET`, `BACKUP_STAGE_DIR`, `PB_DATA_DIR`,
@@ -1168,19 +1187,39 @@ Rules:
 ### 17.2 CI/CD
 
 - One workflow (`.github/workflows/deploy.yml`) triggers on pushes to `main` and
-  manual dispatch.
-- It builds and pushes `journeybook-web` and `journeybook-pb` to GHCR, tagged with
-  the commit SHA and `main`.
-- The deploy job uploads the repo over SSH (excluding `.env*`, `pb_data`, builds,
-  and binaries), writes `docker/.env`, logs in to GHCR, and runs
-  `scripts/deploy.sh`.
+  manual dispatch. It runs with `packages: write` and a `deploy-production`
+  concurrency group that does not cancel an in-flight deploy.
+- The build job builds and pushes `journeybook-web` and `journeybook-pb` to GHCR,
+  tagged with the commit SHA and `main`, using GitHub Actions cache.
+- The deploy job:
+  - uploads the repository over SSH to `~/journeybook` on the `deploy` user,
+    excluding `.env*`, `node_modules`, builds, `pb_data`, and the PocketBase
+    binary;
+  - writes `docker/.env` from the repository variables;
+  - logs in to GHCR with the workflow's short-lived `GITHUB_TOKEN` (no stored
+    registry credential);
+  - runs `scripts/deploy.sh` with `IMAGE_TAG` set to the commit SHA.
+- Configuration lives in repository settings (names only):
+  - variables: `DOMAIN`, `APP_BASE`, optional `BACKUP_REMOTE`,
+    `BACKUP_RSYNC_TARGET`;
+  - secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `PB_ADMIN_EMAIL`,
+    `PB_ADMIN_PASSWORD`.
+- The superuser credentials are base64-encoded into the remote script over SSH
+  stdin; they never appear in a URL, argv, or process list.
 - There is no test/typecheck/lint/migration-check/backup-verify job.
 
 ### 17.3 Deploy and migrations
 
 - `scripts/deploy.sh` stops the stack, snapshots the `pb_data` volume to
-  `backups/pb_data-<UTC>.tar.gz` (newest 10 kept), pulls images, upserts the
-  superuser, starts with `--wait`, and verifies the public health endpoint.
+  `backups/pb_data-<UTC>.tar.gz` on the host (newest 10 kept), pulls images,
+  upserts the superuser, starts with `--wait`, and verifies
+  `{APP_BASE}/api/health` through Caddy.
+- The superuser is upserted on every deploy from `PB_ADMIN_EMAIL` /
+  `PB_ADMIN_PASSWORD`, so changing the secrets and redeploying rotates the admin
+  credentials.
+- First deploy creates the superuser. The two app users are created manually in
+  the admin UI at `{APP_BASE}/_/` with `name` and `role` (`him`/`her`); there is
+  no signup.
 - PocketBase applies migrations on container start, **after** the pre-deploy
   snapshot.
 - The deploy script hardcodes the volume name `journeybook_pb_data`.
@@ -1191,12 +1230,15 @@ Rules:
 
 Three layers:
 
-1. **Every redeploy**: host tarball of `pb_data`, newest 10. On-box only.
+1. **Every redeploy**: host tarball of `pb_data` in `~/journeybook/backups`,
+   newest 10. On-box only.
 2. **PocketBase scheduled**: daily 03:00 archive inside `pb_data`, 14 retained.
 3. **Off-box (required once real memories exist)**: `scripts/backup-offsite.sh`
-   copies archives with rclone or rsync. Not scheduled by the repo; the host cron
-   example is in `docs/DEPLOYMENT.md`. There is no encryption, checksum
-   verification, automated restore test, or remote retention.
+   copies archives with rclone or rsync. It is **not yet configured or
+   scheduled**; set `BACKUP_REMOTE` or `BACKUP_RSYNC_TARGET` as a repository
+   variable and add the host cron entry from `docs/DEPLOYMENT.md`. There is no
+   encryption, checksum verification, automated restore test, or remote
+   retention.
 
 ## 18. Known gaps and risks
 
@@ -1218,9 +1260,9 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
   on duplicate IDs.
 - A permanently failing outbox head blocks all later writes; there is no
   dead-letter path.
-- Media file URLs are built with `pb.files.getURL` without a file token, while
-  `media.viewRule` requires auth. Protected files may fail to load in PocketBase
-  mode; not verified against a live server.
+- Media files are not marked Protected, so a direct `/api/files/...` URL works
+  without a token but is also readable by anyone who knows the record ID and
+  random filename. Record listing remains auth-gated.
 - Room is a singleton only by convention; a simultaneous first load could create
   two rows.
 - Library import reuses media IDs and can collide with soft-deleted records.
@@ -1229,6 +1271,8 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
 - `room_layouts` and `image_presets` have `deletedAt`, but no code trashes them.
 - Local object URLs are never evicted.
 - Local mode has no trash expiry.
+- Off-box backups are not configured yet; until they are, recovery depends on
+  on-box snapshots.
 
 **Room risks**
 
@@ -1254,6 +1298,8 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
 - Sticker single-colour `tint` support is unused by shipped assets.
 - Rendered note text is not selectable; only the textarea is.
 - Frame/paper/sticker asset IDs are not validated on import.
+- Album uploads are stored at full resolution (up to 25 MB); only display
+  thumbnails are generated. There is no upload downscaling or storage re-encode.
 
 **UX and platform risks**
 
@@ -1298,7 +1344,7 @@ Status is indicative, not a commitment.
   validated?
 - What is the desired conflict model if both users edit the same room or page at
   once?
-- Which VPS provider and backup destination are final?
+- Which off-box backup destination is final (rclone remote vs rsync host)?
 
 ## 21. Specification maintenance (non-negotiable)
 
