@@ -2,6 +2,10 @@ import type { MediaAsset } from './types';
 import { PB_URL, pb, pbEnabled } from './backend';
 import { idbDelete, idbGet, idbPut } from './mediaStore';
 
+/** PocketBase thumbnail sizes requested by the UI (must exist in the media field). */
+export const MEDIA_THUMB_SMALL = '480x480';
+export const MEDIA_THUMB_LARGE = '1200x1200f';
+
 /** Runtime object URLs for locally stored blobs (local mode only). */
 const urls = new Map<string, string>();
 
@@ -92,11 +96,15 @@ export async function getMediaBlob(asset: MediaAsset): Promise<Blob | undefined>
   }
 }
 
-export function mediaUrl(asset: MediaAsset | undefined): string {
+export function mediaUrl(asset: MediaAsset | undefined, thumb?: string): string {
   if (!asset) return '';
   if (isPbMedia() && pb) {
     if (!asset.fileName) return '';
-    return pb.files.getURL({ id: asset.id, collectionName: 'media' }, asset.fileName);
+    return pb.files.getURL(
+      { id: asset.id, collectionName: 'media' },
+      asset.fileName,
+      thumb ? { thumb } : undefined,
+    );
   }
   return urls.get(asset.id) ?? '';
 }
