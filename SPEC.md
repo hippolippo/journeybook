@@ -16,6 +16,7 @@ not be described here as shipped.
 
 | Date       | Change                                                                                                                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-19 | Added recurring-event anchor clamping and `%` / `%%` occurrence numbering with optional start digits, `\%` / `\\` escapes, a title hint, and expandable help (§10).                                                                                                         |
 | 2026-10-19 | Added the per-user room text glow setting (0–1 slider with a floating mini-room preview), synced through the PocketBase user record with a local fallback; documented the day-mode halo (§11, §13, §14.1).                                                              |
 | 2026-10-19 | Documented the installable web app: Apple touch icon, web app manifest, standalone metadata, icon assets, and base-relative URLs (§4.6, §17.1).                                                                                                                           |
 | 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18. |
@@ -821,6 +822,7 @@ interface CalendarEvent {
   direction?: VisitDirection;
   flights?: FlightLeg[];
   recurrence: Recurrence;
+  showBeforeStart?: boolean; // recurring: also show dates before startsAt
   color?: string; // stored but unused
 }
 
@@ -843,6 +845,15 @@ interface FlightLeg {
 - Anniversaries, birthdays, and occasions may recur yearly, monthly, or weekly.
   Recurrence preserves the original duration and uses the browser's local
   timezone; range expansion caps at 500 occurrences.
+- Recurring events also have an initial date (`startsAt`). Occurrences before it
+  are hidden unless **Show occurrences before the initial date** is enabled.
+- Recurring titles are numbered from the initial date only where the title
+  contains an unescaped placeholder. `%` inserts the number (`21`), `%%` inserts
+  the number with its suffix (`21st`). The first occurrence starts at `0` unless
+  digits follow the sign(s) immediately: `%%21 Birthday` → `21st Birthday` first,
+  then `22nd`, `23rd`… `\%` renders a literal `%`; `\\` renders a literal
+  backslash. If early occurrences are enabled, numbers count backward from the
+  initial date (`-1st`, `-2nd`).
 - No RRULE, exception dates, every-N-weeks, or end-of-month special handling.
 - Visit direction is rendered from the signed-in user's perspective using role
   and partner name ("I go to her", "she comes to me", "we meet").
@@ -852,6 +863,9 @@ interface FlightLeg {
     flight legs (airline, flight number, from/to, depart/arrive, free-text
     timezone label).
   - Non-visit: one-time datetime or recurrence plus date.
+  - Recurring only: **Show occurrences before the initial date** (default off).
+    A short `%` / `%%` hint sits under the title, with an `(i)` button that
+    expands the full numbering and escape rules.
   - Visits are forced to `recurrence: 'none'`.
   - Title and a date/time are required.
 - Month grid: fixed 42 cells, weeks start Sunday, three chips per day, coloured

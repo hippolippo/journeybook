@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import Icon from '@/components/Icon.vue';
 import type { CalendarEvent } from '@/data/types';
 import { useAuthStore } from '@/stores/auth';
-import { countdownLabel, sameDay, type Occurrence } from '@/calendar/events';
+import { countdownLabel, occurrenceTitle, sameDay, type Occurrence } from '@/calendar/events';
 import { KIND_META, directionLabel } from '@/calendar/meta';
 
 const props = defineProps<{
@@ -59,7 +59,7 @@ function countdown(occ: Occurrence): string {
           <Icon :name="KIND_META[occ.event.kind].icon" />
         </span>
         <span class="event-card__body">
-          <span class="event-card__title">{{ occ.event.title }}</span>
+          <span class="event-card__title">{{ occurrenceTitle(occ.event, occ.start) }}</span>
           <span class="event-card__meta">
             {{ KIND_META[occ.event.kind].label }}
             <template v-if="!compact && occ.event.direction">

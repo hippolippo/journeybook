@@ -255,6 +255,8 @@ export interface CalendarEvent {
   direction?: VisitDirection;
   flights?: FlightLeg[];
   recurrence: Recurrence;
+  /** Recurring: also render occurrences before the initial date. Default off. */
+  showBeforeStart?: boolean;
   color?: string;
 }
 

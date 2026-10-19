@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import Icon from '@/components/Icon.vue';
 import type { CalendarEvent, EventKind, FlightLeg, Recurrence, VisitDirection } from '@/data/types';
 import { newId } from '@/utils/id';
@@ -70,6 +70,7 @@ const form = reactive({
   datetime: toLocalInput(initialStart.toISOString()),
   date: toDateInput(initialStart.toISOString()),
   endsLocal: toLocalInput(props.event?.endsAt),
+  showBeforeStart: props.event?.showBeforeStart ?? false,
   flights: (props.event?.flights ?? []).map((leg): LegForm => ({
     id: leg.id,
     label: leg.label ?? '',
@@ -85,6 +86,8 @@ const form = reactive({
 
 const isVisit = computed(() => form.kind === 'visit');
 const isOneTime = computed(() => form.recurrence === 'none');
+const isRecurring = computed(() => !isVisit.value && !isOneTime.value);
+const showTitleHelp = ref(false);
 const canSave = computed(
   () =>
     form.title.trim().length > 0 &&
@@ -139,7 +142,15 @@ function build(): CalendarEvent {
     };
   }
   const startsAt = isOneTime.value ? fromLocalInput(form.datetime) : fromDateInput(form.date);
-  return { ...base, recurrence: form.recurrence, startsAt: startsAt ?? new Date().toISOString() };
+  if (isOneTime.value) {
+    return { ...base, recurrence: 'none', startsAt: startsAt ?? new Date().toISOString() };
+  }
+  return {
+    ...base,
+    recurrence: form.recurrence,
+    startsAt: startsAt ?? new Date().toISOString(),
+    showBeforeStart: form.showBeforeStart,
+  };
 }
 
 function save() {
@@ -151,7 +162,7 @@ function save() {
 <template>
   <div class="dialog-backdrop" @pointerdown.self="emit('close')">
     <form class="dialog event-dialog" @submit.prevent="save">
-      <h2>{{ props.event ? 'Edit' : 'Add' }} to our calendar</h2>
+      <h2>{{ props.event ? 'Edit event' : 'Add to our calendar' }}</h2>
 
       <div class="event-dialog__row">
         <label>
@@ -165,7 +176,31 @@ function save() {
         <label>
           Title
           <input v-model="form.title" type="text" placeholder="What is it?" required />
+          <span v-if="isRecurring" class="event-dialog__title-hint">
+            Use % for the number or %% for the number + suffix
+            <button
+              class="event-dialog__info"
+              type="button"
+              aria-label="Numbering help"
+              :aria-expanded="showTitleHelp"
+              @click="showTitleHelp = !showTitleHelp"
+            >
+              i
+            </button>
+          </span>
         </label>
+      </div>
+      <div v-if="isRecurring && showTitleHelp" class="event-dialog__title-help">
+        <ul>
+          <li><code>%</code> shows the number (e.g. <code>21</code>).</li>
+          <li><code>%%</code> shows the number with its suffix (e.g. <code>21st</code>).</li>
+          <li>
+            The first event starts at 0 unless digits follow the sign immediately:
+            <code>%%21 Birthday</code> → <code>21st Birthday</code>, then <code>22nd</code>.
+          </li>
+          <li><code>\%</code> shows a literal %, and <code>\\</code> shows a backslash.</li>
+          <li>With early occurrences enabled, numbers continue backward from the first date.</li>
+        </ul>
       </div>
 
       <template v-if="isVisit">
@@ -260,6 +295,12 @@ function save() {
             <input v-model="form.date" type="date" required />
           </label>
         </div>
+        <template v-if="!isOneTime">
+          <label class="event-dialog__check">
+            <input v-model="form.showBeforeStart" type="checkbox" />
+            Show occurrences before the initial date
+          </label>
+        </template>
       </template>
 
       <label>
