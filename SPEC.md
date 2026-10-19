@@ -16,6 +16,7 @@ not be described here as shipped.
 
 | Date       | Change                                                                                                                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-19 | Added the per-user room text glow setting (0–1 slider with a floating mini-room preview), synced through the PocketBase user record with a local fallback; documented the day-mode halo (§11, §13, §14.1).                                                              |
 | 2026-10-19 | Documented the installable web app: Apple touch icon, web app manifest, standalone metadata, icon assets, and base-relative URLs (§4.6, §17.1).                                                                                                                           |
 | 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18. |
 | 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21.                                 |
@@ -877,6 +878,14 @@ Desktop unless noted:
 - **Performance lighting** (all devices): per-browser toggle that swaps the
   canvas lightmap for the CSS fallback. Persisted in
   `localStorage['journeybook:performance']`; `?perf=1`/`?perf=0` overrides it.
+- **Room text glow** (all devices): per-user slider from 0 (no glow) to 100
+  (solid), with a floating preview shown while the slider is being used. The
+  preview is a mini room with the current wall and a centred window behind the
+  sample text. It controls the wall-coloured halo behind text that sits directly
+  on the room, and only applies in day mode. The default is `0.92`, matching the
+  original fixed halo. In PocketBase mode the value is stored on the signed-in
+  user's `roomGlow` field; local mode (and signed-out use) falls back to
+  `localStorage['journeybook:room-glow']`.
 - **Edit room** (desktop): enters the room editor.
 - **Trash**: lists soft-deleted books, pages, media, events, layouts, and presets;
   restore, delete permanently, or empty all. Shared between both users.
@@ -884,7 +893,7 @@ Desktop unless noted:
   typing `REPLACE`.
 - **Library check**: counts orphan pages, elements, and media; "Clean up" deletes
   orphan pages/elements and trashes orphan media.
-- Mobile shows only time of day and performance lighting.
+- Mobile shows only time of day, performance lighting, and room text glow.
 - There is no theme picker, timezone selector, account/profile editor, password
   change, avatar upload, notification setting, privacy setting, or About section.
 - Account identity and Sign out live in the room bar account menu.
@@ -984,7 +993,7 @@ uniqueness constraints, or foreign keys.
 
 | Collection      | Fields                                                                                                                                                                                                      | Notes                                                                            |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `users` (auth)  | `name` (text 80), `role` (`him`/`her`), auth fields                                                                                                                                                         | list/view authenticated; create/delete null (no signup); update only own record. |
+| `users` (auth)  | `name` (text 80), `role` (`him`/`her`), `roomGlow` (text 0–1), auth fields                                                                                                                                  | list/view authenticated; create/delete null (no signup); update only own record. |
 | `nodes`         | `type` (`folder`/`scrapbook`), `title` (200), `parent` (20), `tags` (JSON), `order` (number), `cover` (20), `published` (bool), `deletedAt`                                                                 | Tree via text `parent`.                                                          |
 | `pages`         | `book` (20), `index` (number), `background` (40), `groups` (JSON), `paperColors` (JSON), `deletedAt`                                                                                                        |                                                                                  |
 | `elements`      | `page` (20), `kind` (`photo`/`note`/`sticker`/`image`/`tape`), `payload` (JSON), `x`, `y`, `w`, `h`, `rotation`, `z`, `opacity`, `locked`, `aspectLocked`, `group` (40), `name` (120), `scale`, `deletedAt` | `payload` holds the full element; columns are fallbacks.                         |
@@ -1021,6 +1030,7 @@ Keys:
 | `journeybook:trash:v1`                  | Trash entries with record snapshots.   |
 | `journeybook:outbox:v1`                 | Pending writes (unused in local mode). |
 | `journeybook:performance`               | Performance-lighting preference.       |
+| `journeybook:room-glow`                 | Local/signed-out room text glow (0–1). |
 | `journeybook:editor-ui:v1`              | Editor dock/collapse preference.       |
 | IndexedDB `journeybook-media` / `blobs` | Media bytes keyed by asset ID.         |
 
