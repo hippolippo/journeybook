@@ -397,6 +397,33 @@ test('desktop settings keeps the management sections', async ({ page }) => {
   expect(box.y + box.height).toBeGreaterThan(900 - 40);
 });
 
+test('room text glow setting previews and persists locally', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/settings');
+  const slider = page.getByLabel('Room text glow');
+  await expect(slider).toBeVisible();
+  await expect(page.locator('.settings__glow-value')).toHaveText('92%');
+
+  await slider.evaluate((el) => {
+    const input = el as HTMLInputElement;
+    input.value = '0';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await expect(page.locator('.settings__glow-value')).toHaveText('0%');
+  const preview = page.locator('.settings__glow-preview-text');
+  await expect(page.locator('.settings__glow-preview')).toBeVisible();
+  expect(await preview.evaluate((el) => getComputedStyle(el, '::before').opacity)).toBe('0');
+
+  await slider.evaluate((el) => {
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    el.dispatchEvent(new Event('pointerup', { bubbles: true }));
+  });
+  await expect(page.locator('.settings__glow-preview')).toBeHidden({ timeout: 2000 });
+
+  await page.reload();
+  await expect(page.getByLabel('Room text glow')).toHaveValue('0');
+});
+
 test('mobile settings scrolls and hides the management sections', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');

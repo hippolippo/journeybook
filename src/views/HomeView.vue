@@ -26,8 +26,10 @@ const greeting = computed(() =>
 <template>
   <section class="home">
     <p class="tag">a little home just for two</p>
-    <h1 class="home__greeting">{{ greeting }}</h1>
-    <p class="home__tagline">what shall we remember today?</p>
+    <div class="home__heading">
+      <h1 class="home__greeting">{{ greeting }}</h1>
+      <p class="home__tagline">what shall we remember today?</p>
+    </div>
     <div class="shelf">
       <button class="hero-book" type="button" @click="router.push({ name: 'organizer' })">
         <span class="hero-book__label">

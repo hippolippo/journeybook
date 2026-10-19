@@ -13,6 +13,8 @@
   --ink-room: var(--ink);
   --ink-room-2: var(--ink-2);
   --ink-room-soft: var(--ink-soft);
+  /* Soft day-mode halo behind text sitting directly on the room. */
+  --room-glow: var(--paper);
   --kraft: #d3b184;
   --kraft-2: #b99362;
   --craft-3: #a9865b;
@@ -965,6 +967,29 @@ img[alt=''] {
 .home { text-align: center; padding-top: 0.5rem; }
 .home__greeting { font-family: var(--font-serif); font-weight: 600; font-size: clamp(1.9rem, 5vw, 3rem); margin: 0.4rem 0 0; color: var(--ink-room); }
 .home__tagline { font-family: var(--font-hand); font-size: clamp(1.3rem, 3.5vw, 1.7rem); color: var(--ink-room-2); margin: 0.1rem 0 0; }
+.home__heading { width: fit-content; max-width: 100%; margin-inline: auto; }
+/* One soft, wide wall-coloured field behind room text (daytime only). */
+:is(.room-glow, .home__heading, .crumb-sep, .tag--draft, .page-nav__label, .calendar__side .calendar__side-head h2, .calendar__side .calendar__side-title, .calendar__side .calendar__empty) {
+  position: relative;
+}
+:is(.room-glow, .home__heading, .crumb-sep, .tag--draft, .page-nav__label, .calendar__side .calendar__side-head h2, .calendar__side .calendar__side-title, .calendar__side .calendar__empty)::before {
+  content: '';
+  position: absolute;
+  inset: -1.5em -3em;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    var(--room-glow) 0%,
+    color-mix(in srgb, var(--room-glow) 76%, transparent) 55%,
+    transparent 100%
+  );
+  filter: blur(2em);
+  opacity: var(--room-glow-strength, 0.92);
+}
+.is-night :is(.home__heading, .crumb-sep, .tag--draft, .page-nav__label, .calendar__side .calendar__side-head h2, .calendar__side .calendar__side-title, .calendar__side .calendar__empty)::before {
+  display: none;
+}
 .shelf { position: relative; margin: 1.7rem auto 0.8rem; max-width: 620px; padding: 1.8rem 1rem 3rem; }
 .shelf::after {
   content: '';
@@ -2107,6 +2132,31 @@ img[alt=''] {
   margin: 0.3rem 0;
 }
 
+/* The mobile calendar side is a card, so it doesn't need the room halo. */
+@media (max-width: 760px) {
+  :is(.calendar__side .calendar__side-head h2, .calendar__side .calendar__side-title, .calendar__side .calendar__empty)::before {
+    display: none;
+  }
+}
+@media (min-width: 761px) {
+  /* Let the halo spill past the calendar boxes and sit behind the cards. */
+  .content--calendar,
+  .calendar,
+  .calendar__side {
+    overflow: visible;
+  }
+  .calendar__side .calendar__side-head h2,
+  .calendar__side .calendar__side-title,
+  .calendar__side .calendar__empty {
+    width: fit-content;
+    max-width: 100%;
+  }
+  .calendar__side .calendar__side-head h2 {
+    flex: 0 1 auto;
+    margin-right: auto;
+  }
+}
+
 /* event dialog */
 .event-dialog {
   width: min(560px, 94vw);
@@ -2425,6 +2475,66 @@ img[alt=''] {
 }
 .settings__chev {
   color: var(--ink-soft);
+}
+.settings__glow-control {
+  position: relative;
+}
+.settings__glow-value {
+  flex: 0 0 auto;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.settings__glow-slider {
+  padding: 0 0.4rem 0.5rem;
+}
+.settings__glow-slider input[type='range'] {
+  width: 100%;
+  accent-color: var(--terracotta);
+}
+.settings__glow-preview {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  z-index: 120;
+  width: min(420px, 100%);
+  padding: 0.4rem;
+  transform: translateX(-50%);
+  background: var(--card);
+  border: 2px solid var(--line-soft);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+.settings__glow-preview-scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 2.6 / 1;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.settings__glow-preview-window {
+  width: 44%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(74, 59, 46, 0.35));
+}
+.settings__glow-preview-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.settings__glow-preview-text {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ink);
+  isolation: isolate;
 }
 
 /* ---------------- mobile webapp (iPhone-first) ---------------- */

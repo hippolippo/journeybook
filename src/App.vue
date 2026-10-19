@@ -6,6 +6,7 @@ import { useEditorStore } from '@/stores/editor';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { useAuthStore } from '@/stores/auth';
 import { useViewport } from '@/composables/useViewport';
+import { wallById } from '@/catalog/options';
 import RoomStage from '@/room/RoomStage.vue';
 import RoomBar from '@/components/RoomBar.vue';
 import EditorPanel from '@/editor/EditorPanel.vue';
@@ -48,9 +49,14 @@ const mainLayout = computed<Viewport>(() =>
 const mainInteractive = computed(() => editor.isEditing && editor.viewport === 'desktop');
 /** Settings is a full-height view: its content may reach the bottom edge. */
 const fullHeight = computed(() => route.name === 'settings');
+/** Calendar lets its text halos spill outside the content box. */
+const contentClass = computed(() => ({ 'content--calendar': route.name === 'calendar' }));
 /** Accounts are configured but nobody is signed in: show only the login card. */
 const locked = computed(() => auth.enabled && auth.ready && !auth.isAuthed);
 const night = computed(() => (editor.isEditing ? editor.timeOfDay : app.timeOfDay) === 'night');
+/** Halo colour for text sitting directly on the room, matching the current wall. */
+const roomGlow = computed(() => wallById(app.room.wallId).swatch);
+const roomGlowStrength = computed(() => auth.roomGlow);
 const rootClass = computed(() => ({
   'is-night': night.value && !locked.value,
   ...(editor.isEditing
@@ -84,7 +90,10 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
 </script>
 
 <template>
-  <div :class="rootClass">
+  <div
+    :class="rootClass"
+    :style="{ '--room-glow': roomGlow, '--room-glow-strength': roomGlowStrength }"
+  >
     <div v-if="rotate" class="rotate-gate">
       <img :src="rotatePhone" alt="" aria-hidden="true" />
       <p class="rotate-gate__title">Please rotate your phone</p>
@@ -110,7 +119,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
         <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
         <div class="app-shell" :class="{ 'app-shell--full': fullHeight }">
           <RoomBar />
-          <div class="content" @pointerdown="onContentDown">
+          <div class="content" :class="contentClass" @pointerdown="onContentDown">
             <router-view />
           </div>
         </div>

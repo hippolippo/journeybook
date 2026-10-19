@@ -1,12 +1,19 @@
 import { defineStore } from 'pinia';
 import { pb, pbEnabled } from '@/data/backend';
 import type { UserRole } from '@/data/types';
+import {
+  clampRoomGlow,
+  loadLocalRoomGlow,
+  parseRoomGlow,
+  saveLocalRoomGlow,
+} from '@/utils/roomGlow';
 
 export interface AccountUser {
   id: string;
   email: string;
   name: string;
   role: UserRole | null;
+  roomGlow: number;
 }
 
 interface UserRecord {
@@ -14,12 +21,19 @@ interface UserRecord {
   email?: string;
   name?: string;
   role?: string;
+  roomGlow?: string | number;
 }
 
 function mapUser(record: UserRecord | null): AccountUser | null {
   if (!record) return null;
   const role = record.role === 'him' || record.role === 'her' ? record.role : null;
-  return { id: record.id, email: record.email ?? '', name: (record.name ?? '').trim(), role };
+  return {
+    id: record.id,
+    email: record.email ?? '',
+    name: (record.name ?? '').trim(),
+    role,
+    roomGlow: parseRoomGlow(record.roomGlow),
+  };
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -27,6 +41,8 @@ export const useAuthStore = defineStore('auth', {
     ready: false,
     user: null as AccountUser | null,
     partner: null as AccountUser | null,
+    /** Local-mode / signed-out fallback for the room text glow. */
+    localRoomGlow: loadLocalRoomGlow(),
   }),
   getters: {
     enabled: () => pbEnabled,
@@ -34,6 +50,7 @@ export const useAuthStore = defineStore('auth', {
     myName: (s) => s.user?.name ?? '',
     partnerName: (s) => s.partner?.name ?? '',
     myRole: (s): UserRole | null => s.user?.role ?? null,
+    roomGlow: (s) => s.user?.roomGlow ?? s.localRoomGlow,
   },
   actions: {
     async loadPartner() {
@@ -77,6 +94,25 @@ export const useAuthStore = defineStore('auth', {
       const auth = await pb.collection('users').authWithPassword(email, password);
       this.user = mapUser(auth.record);
       await this.loadPartner();
+    },
+    /** Save the per-user room text glow (PocketBase) or local fallback. */
+    async setRoomGlow(value: number) {
+      const next = clampRoomGlow(value);
+      if (!this.user) {
+        this.localRoomGlow = next;
+        saveLocalRoomGlow(next);
+        return;
+      }
+      const previous = this.user.roomGlow;
+      this.user = { ...this.user, roomGlow: next };
+      try {
+        if (pb) {
+          await pb.collection('users').update(this.user.id, { roomGlow: String(next) });
+        }
+      } catch (e) {
+        this.user = { ...this.user, roomGlow: previous };
+        throw e;
+      }
     },
     logout() {
       pb?.authStore.clear();

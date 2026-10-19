@@ -1,21 +1,55 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import Icon from '@/components/Icon.vue';
 import { useRouter } from 'vue-router';
 import type { DayNightMode, TrashItem, TrashKind } from '@/data/types';
+import { wallById } from '@/catalog/options';
+import windowArt from '@/assets/svg/window-day.svg';
 import { useAppStore } from '@/stores/app';
+import { useAuthStore } from '@/stores/auth';
 import { useEditorStore } from '@/stores/editor';
 import { useViewport } from '@/composables/useViewport';
 import { exportLibrary, importLibrary } from '@/data/libraryTransfer';
 import { notify } from '@/utils/notify';
 
 const app = useAppStore();
+const auth = useAuthStore();
 const editor = useEditorStore();
 const router = useRouter();
 const { isMobile } = useViewport();
 
 const busy = ref(false);
 const importInput = ref<HTMLInputElement | null>(null);
+const glowDraft = ref(auth.roomGlow);
+const glowPercent = computed(() => Math.round(glowDraft.value * 100));
+const showGlowPreview = ref(false);
+let glowPreviewTimer: ReturnType<typeof setTimeout> | undefined;
+const wallClass = computed(() => wallById(app.room.wallId).className);
+
+function revealGlowPreview() {
+  if (glowPreviewTimer) {
+    clearTimeout(glowPreviewTimer);
+    glowPreviewTimer = undefined;
+  }
+  showGlowPreview.value = true;
+}
+function hideGlowPreviewSoon() {
+  if (glowPreviewTimer) clearTimeout(glowPreviewTimer);
+  glowPreviewTimer = setTimeout(() => {
+    showGlowPreview.value = false;
+    glowPreviewTimer = undefined;
+  }, 400);
+}
+onBeforeUnmount(() => {
+  if (glowPreviewTimer) clearTimeout(glowPreviewTimer);
+});
+
+watch(
+  () => auth.roomGlow,
+  (value) => {
+    glowDraft.value = value;
+  },
+);
 
 const mode = computed(() => app.data.room.dayNightMode);
 const night = computed(() => app.timeOfDay === 'night');
@@ -31,6 +65,18 @@ const KIND_LABELS: Record<TrashKind, string> = {
 
 function setMode(next: DayNightMode) {
   app.setDayNightMode(next);
+}
+function onGlowInput(event: Event) {
+  revealGlowPreview();
+  glowDraft.value = Number((event.target as HTMLInputElement).value) / 100;
+}
+async function saveGlow() {
+  try {
+    await auth.setRoomGlow(glowDraft.value);
+  } catch (e) {
+    console.error(e);
+    notify('error', "Couldn't save the glow", 'Please try again.');
+  }
 }
 function togglePerformance() {
   app.setPerformanceMode(!app.performanceMode);
@@ -187,6 +233,52 @@ onMounted(() => void app.loadTrash());
           aria-hidden="true"
         ></span>
       </button>
+
+      <div class="settings__divider"></div>
+      <div class="settings__glow-control">
+        <div class="settings__row settings__row--field">
+          <div class="settings__text">
+            <span class="settings__label">
+              <Icon name="sun" />
+              Room text glow
+            </span>
+            <span class="settings__sub">
+              Soft halo behind text sitting on the room. Daytime only; saved per user.
+            </span>
+          </div>
+          <span class="settings__glow-value">{{ glowPercent }}%</span>
+        </div>
+        <div class="settings__glow-slider">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            :value="glowPercent"
+            aria-label="Room text glow"
+            @pointerdown="revealGlowPreview"
+            @pointerup="hideGlowPreviewSoon"
+            @pointercancel="hideGlowPreviewSoon"
+            @focus="revealGlowPreview"
+            @blur="hideGlowPreviewSoon"
+            @input="onGlowInput"
+            @change="saveGlow"
+          />
+        </div>
+        <div
+          v-if="showGlowPreview"
+          class="settings__glow-preview"
+          :style="{ '--room-glow-strength': glowDraft }"
+          aria-hidden="true"
+        >
+          <div class="settings__glow-preview-scene" :class="wallClass">
+            <img class="settings__glow-preview-window" :src="windowArt" alt="" />
+            <div class="settings__glow-preview-copy">
+              <span class="settings__glow-preview-text room-glow">Welcome back, you two</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <template v-if="!isMobile">
         <div class="settings__divider"></div>
