@@ -1,7 +1,7 @@
 # Journeybook — Specification
 
 Status: **Living specification of shipped behaviour (v1).**
-Last updated: **2026-10-17.**
+Last updated: **2026-10-19.**
 Implementation reference: commit `bcda56d`.
 
 This document is the single source of truth for what Journeybook is and how it
@@ -16,6 +16,7 @@ not be described here as shipped.
 
 | Date       | Change                                                                                                                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-19 | Documented the installable web app: Apple touch icon, web app manifest, standalone metadata, icon assets, and base-relative URLs (§4.6, §17.1).                                                                                                                           |
 | 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18. |
 | 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21.                                 |
 | 2026-10-08 | Initial product and technical spec (`7973394`).                                                                                                                                                                                                                           |
@@ -148,6 +149,27 @@ user art, social feeds, and engagement mechanics.
 - Schema changes are additive by default. Destructive migrations require explicit
   approval and a verified backup.
 - Trash retains deletions for 30 days before a scheduled hard purge.
+
+### 4.6 Installable web app
+
+- The SPA can be added to the iOS home screen as a standalone web app. The shell
+  sets `apple-mobile-web-app-capable`, `mobile-web-app-capable`,
+  `apple-mobile-web-app-title` (`Journeybook`), and
+  `apple-mobile-web-app-status-bar-style`.
+- The home-screen icon comes from `public/icons/apple-touch-icon-180.png`, linked
+  with `rel="apple-touch-icon"`. iOS ignores the SVG favicon used by browser
+  tabs. The PNGs are opaque and generated from
+  `src/assets/svg/app-icon.svg`: a full-bleed cream (`#f7efdd`) square with the
+  doodle heart centred.
+- `public/manifest.webmanifest` sets `name`, `short_name`, `start_url: "./"`,
+  `scope: "./"`, `display: standalone`, `theme_color`/`background_color`
+  (`#f7efdd`), and 192/512 px icons plus a 512 px maskable icon.
+- `index.html` references both with Vite's `%BASE_URL%` placeholder so they
+  resolve at the root and under `APP_BASE` (§17.1).
+- iOS snapshots the icon when the shortcut is added: updating it requires
+  removing and re-adding the shortcut. Safari also caches touch icons, so a
+  changed icon may need a new filename.
+- No splash-screen (`apple-touch-startup-image`) assets are provided.
 
 ## 5. Navigation and shell
 
@@ -1177,7 +1199,8 @@ Rules:
   form.
 - `APP_BASE` supports serving at the root or any subpath. Hashed assets are
   immutable; `/api/files/*` is cached privately for a year; SPA HTML is
-  `no-cache`.
+  `no-cache`. Vite copies `public/` (the web app manifest and home-screen icons,
+  §4.6) into the image root; they are served as static files under `APP_BASE`.
 - Environment variables (names only): `VITE_PB_URL`, `VITE_BASE`, `DOMAIN`,
   `APP_BASE`, `PB_IMAGE`, `WEB_IMAGE`, `IMAGE_TAG`, `PB_VERSION`, `BACKUP_KEEP`,
   `BACKUP_REMOTE`, `BACKUP_RSYNC_TARGET`, `BACKUP_STAGE_DIR`, `PB_DATA_DIR`,
