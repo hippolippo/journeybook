@@ -2212,6 +2212,69 @@ img[alt=''] {
   gap: 0.4rem;
   background: var(--card);
 }
+.event-dialog .event-dialog__check {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.event-dialog .event-dialog__check input {
+  width: auto;
+  accent-color: var(--terracotta);
+}
+.event-dialog__title-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+.event-dialog__info {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line-soft);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink-2);
+  font-family: var(--font-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.event-dialog__info:hover {
+  background: var(--paper-2);
+}
+.event-dialog__title-help {
+  padding: 0.5rem 0.65rem;
+  border: 2px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font-size: 0.78rem;
+}
+.event-dialog__title-help ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0;
+  padding-left: 1rem;
+}
+.event-dialog__title-help code {
+  padding: 0 0.2rem;
+  border-radius: 3px;
+  background: var(--cream);
+  font-family: var(--font-body);
+}
 .event-dialog__delete {
   margin-left: auto;
   color: #a4443f;

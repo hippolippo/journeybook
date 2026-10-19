@@ -5,6 +5,7 @@ import type { CalendarEvent } from '@/data/types';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
 import {
+  occurrenceTitle,
   occurrencesOnDay,
   sameDay,
   startOfDay,
@@ -311,7 +312,7 @@ const banner = computed(() => {
                         class="cal-chip"
                         :class="{ 'is-recurring': occ.event.recurrence !== 'none' }"
                         :style="{ background: KIND_META[occ.event.kind].color }"
-                        :title="occ.event.title"
+                        :title="occurrenceTitle(occ.event, occ.start)"
                       ></span>
                     </span>
                   </button>

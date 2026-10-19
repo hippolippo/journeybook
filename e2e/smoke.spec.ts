@@ -1057,6 +1057,10 @@ function localDateTime(daysAhead: number): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+function localDate(daysAhead: number): string {
+  return localDateTime(daysAhead).slice(0, 10);
+}
+
 test('home countdown opens the calendar', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/');
@@ -1079,6 +1083,26 @@ test('calendar: add a visit and count down to it', async ({ page }) => {
   await expect(page.locator('.event-dialog')).toHaveCount(0);
   await expect(page.locator('.calendar__banner')).toContainText("until you're together");
   await expect(page.locator('.event-card', { hasText: 'Trip to see her' }).first()).toBeVisible();
+});
+
+test('calendar: recurring titles use % numbering', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/calendar');
+  await page.locator('.calendar__head').getByRole('button', { name: 'Add' }).click();
+  await page.locator('.event-dialog select').first().selectOption('anniversary');
+  await page.locator('.event-dialog input[type=text]').first().fill('%%1 Anniversary');
+  await page.locator('.event-dialog select').nth(1).selectOption('yearly');
+  const [year, month, day] = localDate(10).split('-');
+  await page.locator('.event-dialog input[type=date]').fill(`${Number(year) - 1}-${month}-${day}`);
+  await expect(
+    page.getByText('Use % for the number or %% for the number + suffix'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Numbering help' }).click();
+  await expect(page.getByText('The first event starts at 0')).toBeVisible();
+  await expect(page.getByLabel('Show occurrences before the initial date')).not.toBeChecked();
+  await page.locator('.event-dialog').getByRole('button', { name: 'Add', exact: true }).click();
+  await expect(page.locator('.event-dialog')).toHaveCount(0);
+  await expect(page.locator('.event-card', { hasText: '2nd Anniversary' }).first()).toBeVisible();
 });
 
 test('calendar: a visit in progress reads as together', async ({ page }) => {
