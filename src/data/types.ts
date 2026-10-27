@@ -152,6 +152,84 @@ export interface ImagePreset {
   id: string;
   name: string;
   effects: ImageEffects;
+  /** Soft-delete timestamp; absent or 0 means live. */
+  deletedAt?: number;
+}
+
+/** One inline stretch of a letter. Missing fields inherit the note defaults. */
+export interface RichRun {
+  text: string;
+  /** Font id from NOTE_FONTS (src/notes/richText.ts). */
+  font?: string;
+  /** Logical px at the 480-wide page. */
+  size?: number;
+  /** Ink colour (hex). */
+  color?: string;
+  /** Highlight colour (hex). */
+  highlight?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strike?: boolean;
+}
+
+/** One paragraph of a letter, with its own horizontal alignment. */
+export interface RichBlock {
+  align: 'left' | 'center' | 'right';
+  runs: RichRun[];
+}
+
+/**
+ * A sanitised rich-text letter body. Versioned so the future multi-box editor
+ * can migrate it rather than guess at a legacy shape.
+ */
+export interface RichDoc {
+  v: 1;
+  blocks: RichBlock[];
+}
+
+export type NoteStatus = 'draft' | 'sent';
+
+export interface NoteEnvelope {
+  /** Envelope paper tint (hex). */
+  tint: string;
+  /** Wax seal colour (hex). */
+  seal: string;
+  /** Stamp colour preset id (src/notes/envelope.ts). */
+  stamp: string;
+  /** Custom stamp colour (hex); overrides the preset. */
+  stampPaper?: string;
+  /** Custom postmark colour (hex); overrides the preset. */
+  stampWaves?: string;
+  /** Author's first initial pressed into the wax seal (one character). */
+  initial?: string;
+}
+
+/**
+ * A private letter. Drafts are visible only to their author; sent letters are
+ * shared by the author and recipient. `openedAt` locks author edits.
+ */
+export interface Note {
+  id: string;
+  authorId: string;
+  recipientId: string;
+  status: NoteStatus;
+  body: RichDoc;
+  /** Note paper asset id (see NOTE_PAPERS). */
+  paper: string;
+  paperColor?: string;
+  /** Logical page height at the fixed 480-wide page. */
+  pageHeight: number;
+  envelope: NoteEnvelope;
+  createdAt: number;
+  updatedAt: number;
+  /** 0 while a draft. */
+  sentAt: number;
+  /** 0 until the recipient breaks the seal. */
+  openedAt: number;
+  /** Best-effort notification bookkeeping (0 = not emailed). */
+  emailedAt: number;
+  deletedAt?: number;
 }
 
 /** An uploaded image in a book's album. Bytes live in IndexedDB (local) or PocketBase files. */
@@ -201,6 +279,8 @@ export interface StoredLayout {
   name: string;
   room: Room;
   items: RoomItem[];
+  /** Soft-delete timestamp; absent or 0 means live. */
+  deletedAt?: number;
 }
 
 export type DayNightMode = 'auto' | 'day' | 'night';
@@ -269,7 +349,7 @@ export interface AppData {
 }
 
 /** What can be recovered from the trash. */
-export type TrashKind = 'book' | 'page' | 'media' | 'event' | 'layout' | 'preset';
+export type TrashKind = 'book' | 'page' | 'media' | 'event' | 'layout' | 'preset' | 'note';
 
 /** A reference to one soft-deleted record, plus its data for local restore. */
 export interface TrashRecordRef {

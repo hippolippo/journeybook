@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { auditIntegrity } from './integrity';
-import type { AppData } from './types';
+import { auditIntegrity, auditNotes } from './integrity';
+import type { AppData, Note } from './types';
 
 function data(partial: Partial<AppData['content']>): AppData {
   return {
@@ -62,5 +62,64 @@ describe('auditIntegrity', () => {
     expect(report.orphanElements).toBe(1);
     expect(report.orphanMedia).toBe(1);
     expect(report.total).toBe(3);
+  });
+
+  it('finds image and room attachment references without a parent', () => {
+    const d = data({
+      nodes: [{ id: 'n1', type: 'scrapbook', title: 'Us', parentId: null, tags: [], order: 0 }],
+      pages: [{ id: 'p1', bookId: 'n1', index: 0 }],
+      elements: [
+        {
+          id: 'e1',
+          pageId: 'p1',
+          kind: 'image',
+          mediaId: 'gone-media',
+          x: 0,
+          y: 0,
+          w: 1,
+          h: 1,
+          rotation: 0,
+          z: 1,
+          opacity: 1,
+        },
+      ],
+    });
+    d.roomItems = [
+      {
+        id: 'r1',
+        catalogId: 'floor-lamp',
+        layer: 'surface',
+        z: 1,
+        attachTo: 'gone-host',
+        color: {},
+        desktop: { x: 0.5, y: 0.5, scale: 0.2, rotation: 0, flip: false },
+      },
+    ];
+    const report = auditIntegrity(d);
+    expect(report.danglingMediaRefs).toBe(1);
+    expect(report.danglingAttachments).toBe(1);
+    expect(report.total).toBe(2);
+  });
+
+  it('finds notes whose people no longer exist', () => {
+    const note: Note = {
+      id: 'n1',
+      authorId: 'gone-a',
+      recipientId: 'gone-b',
+      status: 'draft',
+      body: { v: 1, blocks: [] },
+      paper: 'lined',
+      pageHeight: 380,
+      envelope: { tint: '#fff', seal: '#b44', stamp: 'bird', initial: 'A' },
+      createdAt: 1,
+      updatedAt: 1,
+      sentAt: 0,
+      openedAt: 0,
+      emailedAt: 0,
+    };
+    expect(auditNotes([note], ['a', 'b']).orphanNotes).toBe(1);
+    expect(auditNotes([{ ...note, authorId: 'a', recipientId: 'b' }], ['a', 'b']).orphanNotes).toBe(
+      0,
+    );
   });
 });

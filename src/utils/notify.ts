@@ -16,6 +16,8 @@ export interface SyncStatus {
   pending: number;
   working: boolean;
   failed: boolean;
+  /** Writes that stopped retrying and need a person to retry or discard them. */
+  dead: number;
 }
 
 type NoticeListener = (notice: Notice) => void;

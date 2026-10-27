@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Journeybook · Notes (mockup)</title>
+    <meta name="description" content="Static mockup of Journeybook Notes: letters, envelopes, drafts and sending." />
+    <link rel="icon" href="assets/svg/doodle-heart.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="notes.css?v=3" />
+  </head>
+  <body>
+    <div class="room" aria-hidden="true">
+      <div class="room__wall"></div>
+      <div class="room__floor"></div>
+      <div class="room__baseboard"></div>
+      <img class="room__lights" src="assets/svg/string-lights.svg" alt="" />
+      <div class="room__vignette"></div>
+    </div>
+
+    <div class="shell">
+      <div id="roombar"></div>
+      <main class="content" id="view"></main>
+    </div>
+
+    <div id="dialogMount"></div>
+    <div id="emailMount"></div>
+    <div id="toasts" aria-live="polite"></div>
+    <div class="mockdock" id="dock" role="group" aria-label="Mockup controls"></div>
+
+    <script src="notes-data.js?v=3"></script>
+    <script src="notes.js?v=4"></script>
+  </body>
+</html>

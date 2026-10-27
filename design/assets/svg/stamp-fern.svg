@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="84" height="100" viewBox="0 0 84 100" fill="none" aria-hidden="true">
+  <rect x="4" y="4" width="76" height="92" rx="3" fill="#fbf6ec"/>
+  <rect x="4" y="4" width="76" height="92" rx="3" stroke="#4a3b2e" stroke-opacity="0.42" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"/>
+  <rect x="9" y="9" width="66" height="82" rx="1" fill="none" stroke="#9caf88" stroke-opacity="0.75" stroke-width="1"/>
+  <path d="M42 82 C 41 66, 42 50, 43 32" stroke="#7e8f6b" stroke-width="2.4" stroke-linecap="round"/>
+  <g fill="#9caf88">
+    <path d="M42 70 C 34 68, 29 62, 29 55 C 36 56, 41 62, 42 70 Z"/>
+    <path d="M43 63 C 51 61, 56 55, 56 48 C 49 49, 44 55, 43 63 Z"/>
+    <path d="M42 54 C 35 52, 31 47, 31 41 C 37 42, 41 47, 42 54 Z"/>
+    <path d="M43 47 C 50 45, 54 40, 54 34 C 48 35, 44 40, 43 47 Z"/>
+    <path d="M42 39 C 37 37, 34 33, 34 28 C 39 29, 42 33, 42 39 Z"/>
+  </g>
+  <circle cx="42" cy="27" r="3.2" fill="#d9a94e"/>
+  <g fill="#4a3b2e" opacity="0.55">
+    <circle cx="17" cy="17" r="1.4"/>
+    <circle cx="67" cy="17" r="1.4"/>
+    <circle cx="67" cy="83" r="1.4"/>
+  </g>
+</svg>

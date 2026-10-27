@@ -1,9 +1,10 @@
-import PocketBase, { type RecordModel } from 'pocketbase';
+import PocketBase, { ClientResponseError, type RecordModel } from 'pocketbase';
 import type {
   AppData,
   CalendarEvent,
   ImagePreset,
   MediaAsset,
+  Note,
   PageElement,
   PageGroup,
   Room,
@@ -16,10 +17,12 @@ import type {
 import {
   loadData,
   loadLayouts,
+  loadNotes,
   loadPresets,
   loadTrashItems,
   saveData,
   saveLayouts,
+  saveNotes,
   savePresets,
   saveTrashItems,
 } from './storage';
@@ -27,6 +30,9 @@ import { createEmptyData } from './seed';
 import { createOutbox } from './outbox';
 import { idbDelete } from './mediaStore';
 import { clone } from '@/utils/clone';
+import { normalizeDoc } from '@/notes/richText';
+import { normalizeEnvelope } from '@/notes/envelope';
+import { NOTE_DEFAULT_HEIGHT, clampPageHeight } from '@/notes/page';
 
 export const PB_URL = ((import.meta.env.VITE_PB_URL as string | undefined) ?? '').trim();
 export const pbEnabled = PB_URL.length > 0;
@@ -52,6 +58,12 @@ export interface Backend {
   applyRoomLayout(room: Room, items: RoomItem[]): void;
   eventSave(event: CalendarEvent): void;
   eventDelete(id: string): void;
+  fetchNotes(): Promise<Note[]>;
+  noteCreate(note: Note): void;
+  noteUpdate(note: Note): void;
+  /** Recipient-only targeted update; avoids rewriting the letter body. */
+  noteOpen(id: string, openedAt: number): void;
+  subscribeNotes(onChange: () => void): void;
   listLayouts(): Promise<StoredLayout[]>;
   saveLayout(layout: StoredLayout): Promise<void>;
   deleteLayout(id: string): Promise<void>;
@@ -67,6 +79,15 @@ export interface Backend {
 }
 
 const noop = () => {};
+
+/** Local notes upsert, keyed by id. The store owns the in-memory list. */
+function upsertLocalNote(note: Note): void {
+  const list = loadNotes() ?? [];
+  const index = list.findIndex((item) => item.id === note.id);
+  if (index >= 0) list[index] = clone(note);
+  else list.push(clone(note));
+  saveNotes(list);
+}
 
 export const localBackend: Backend = {
   kind: 'local',
@@ -92,8 +113,26 @@ export const localBackend: Backend = {
   applyRoomLayout: noop,
   eventSave: noop,
   eventDelete: noop,
+  async fetchNotes() {
+    return loadNotes() ?? [];
+  },
+  noteCreate(note) {
+    upsertLocalNote(note);
+  },
+  noteUpdate(note) {
+    upsertLocalNote(note);
+  },
+  noteOpen(id, openedAt) {
+    const list = loadNotes() ?? [];
+    const index = list.findIndex((note) => note.id === id);
+    if (index >= 0) {
+      list[index] = { ...list[index], openedAt, updatedAt: openedAt };
+      saveNotes(list);
+    }
+  },
+  subscribeNotes: noop,
   async listLayouts() {
-    return loadLayouts();
+    return loadLayouts().filter((layout) => !layout.deletedAt);
   },
   async saveLayout(layout) {
     const list = loadLayouts().filter((l) => l.id !== layout.id);
@@ -104,7 +143,7 @@ export const localBackend: Backend = {
     saveLayouts(loadLayouts().filter((l) => l.id !== id));
   },
   async listImagePresets() {
-    return loadPresets();
+    return loadPresets().filter((preset) => !preset.deletedAt);
   },
   async saveImagePreset(preset) {
     const list = loadPresets().filter((p) => p.id !== preset.id);
@@ -115,6 +154,26 @@ export const localBackend: Backend = {
     savePresets(loadPresets().filter((p) => p.id !== id));
   },
   trash(item) {
+    if (item.records.some((ref) => ref.collection === 'room_layouts')) {
+      const ids = new Set(
+        item.records.filter((ref) => ref.collection === 'room_layouts').map((ref) => ref.id),
+      );
+      saveLayouts(
+        loadLayouts().map((layout) =>
+          ids.has(layout.id) ? { ...layout, deletedAt: item.deletedAt } : layout,
+        ),
+      );
+    }
+    if (item.records.some((ref) => ref.collection === 'image_presets')) {
+      const ids = new Set(
+        item.records.filter((ref) => ref.collection === 'image_presets').map((ref) => ref.id),
+      );
+      savePresets(
+        loadPresets().map((preset) =>
+          ids.has(preset.id) ? { ...preset, deletedAt: item.deletedAt } : preset,
+        ),
+      );
+    }
     saveTrashItems([...loadTrashItems(), item]);
   },
   async listTrash() {
@@ -122,42 +181,81 @@ export const localBackend: Backend = {
   },
   async restoreTrash(item) {
     const data = loadData();
-    if (data) {
-      for (const ref of item.records) {
-        if (!ref.record) continue;
-        switch (ref.collection) {
-          case 'nodes':
-            if (!data.content.nodes.some((r) => r.id === ref.id))
-              data.content.nodes.push(ref.record as ScrapNode);
-            break;
-          case 'pages':
-            if (!data.content.pages.some((r) => r.id === ref.id))
-              data.content.pages.push(ref.record as ScrapPage);
-            break;
-          case 'elements':
-            if (!data.content.elements.some((r) => r.id === ref.id))
-              data.content.elements.push(ref.record as PageElement);
-            break;
-          case 'media':
-            if (!data.content.media.some((r) => r.id === ref.id))
-              data.content.media.push(ref.record as MediaAsset);
-            break;
-          case 'events':
-            if (!data.events.some((r) => r.id === ref.id))
-              data.events.push(ref.record as CalendarEvent);
-            break;
-          default:
-            break;
-        }
+    const notes = loadNotes() ?? [];
+    let notesChanged = false;
+    for (const ref of item.records) {
+      if (ref.collection === 'notes') {
+        const index = notes.findIndex((note) => note.id === ref.id);
+        if (index >= 0) notes[index] = { ...notes[index], deletedAt: undefined };
+        else if (ref.record) notes.push(ref.record as Note);
+        notesChanged = true;
+        continue;
       }
-      saveData(data);
+      if (!data || !ref.record) continue;
+      switch (ref.collection) {
+        case 'nodes':
+          if (!data.content.nodes.some((r) => r.id === ref.id))
+            data.content.nodes.push(ref.record as ScrapNode);
+          break;
+        case 'pages':
+          if (!data.content.pages.some((r) => r.id === ref.id))
+            data.content.pages.push(ref.record as ScrapPage);
+          break;
+        case 'elements':
+          if (!data.content.elements.some((r) => r.id === ref.id))
+            data.content.elements.push(ref.record as PageElement);
+          break;
+        case 'media':
+          if (!data.content.media.some((r) => r.id === ref.id))
+            data.content.media.push(ref.record as MediaAsset);
+          break;
+        case 'events':
+          if (!data.events.some((r) => r.id === ref.id))
+            data.events.push(ref.record as CalendarEvent);
+          break;
+        default:
+          break;
+      }
     }
+    for (const ref of item.records) {
+      if (ref.collection === 'room_layouts') {
+        const layouts = loadLayouts();
+        const index = layouts.findIndex((layout) => layout.id === ref.id);
+        if (index >= 0) layouts[index] = { ...layouts[index], deletedAt: undefined };
+        else if (ref.record) layouts.push(ref.record as StoredLayout);
+        saveLayouts(layouts);
+      }
+      if (ref.collection === 'image_presets') {
+        const presets = loadPresets();
+        const index = presets.findIndex((preset) => preset.id === ref.id);
+        if (index >= 0) presets[index] = { ...presets[index], deletedAt: undefined };
+        else if (ref.record) presets.push(ref.record as ImagePreset);
+        savePresets(presets);
+      }
+    }
+    if (data) saveData(data);
+    if (notesChanged) saveNotes(notes);
     saveTrashItems(loadTrashItems().filter((t) => t.id !== item.id));
   },
   async purgeTrash(item) {
     for (const ref of item.records.filter((r) => r.collection === 'media')) {
       await idbDelete(ref.id);
     }
+    const noteIds = new Set(
+      item.records.filter((ref) => ref.collection === 'notes').map((ref) => ref.id),
+    );
+    if (noteIds.size) {
+      const notes = loadNotes();
+      if (notes) saveNotes(notes.filter((note) => !noteIds.has(note.id)));
+    }
+    const layoutIds = new Set(
+      item.records.filter((ref) => ref.collection === 'room_layouts').map((ref) => ref.id),
+    );
+    if (layoutIds.size) saveLayouts(loadLayouts().filter((layout) => !layoutIds.has(layout.id)));
+    const presetIds = new Set(
+      item.records.filter((ref) => ref.collection === 'image_presets').map((ref) => ref.id),
+    );
+    if (presetIds.size) savePresets(loadPresets().filter((preset) => !presetIds.has(preset.id)));
     saveTrashItems(loadTrashItems().filter((t) => t.id !== item.id));
   },
   subscribe: noop,
@@ -286,6 +384,7 @@ function mapLayout(rec: RecordModel): StoredLayout {
     name: field<string>(rec, 'name', 'Untitled'),
     room: data.room,
     items: data.items ?? [],
+    deletedAt: field<number>(rec, 'deletedAt', 0) || undefined,
   };
 }
 
@@ -315,8 +414,51 @@ function mapPreset(rec: RecordModel): ImagePreset {
     id: rec.id,
     name: field<string>(rec, 'name', 'Untitled'),
     effects: field(rec, 'effects', {}),
+    deletedAt: field<number>(rec, 'deletedAt', 0) || undefined,
   };
 }
+function mapNote(rec: RecordModel): Note {
+  const status = field<string>(rec, 'status', 'draft');
+  return {
+    id: rec.id,
+    authorId: field<string>(rec, 'author', ''),
+    recipientId: field<string>(rec, 'recipient', ''),
+    status: status === 'sent' ? 'sent' : 'draft',
+    body: normalizeDoc(field<unknown>(rec, 'body', null)),
+    paper: field<string>(rec, 'paper', 'lined') || 'lined',
+    paperColor: field<string>(rec, 'paperColor', '') || undefined,
+    pageHeight: clampPageHeight(field<number>(rec, 'pageHeight', NOTE_DEFAULT_HEIGHT)),
+    envelope: normalizeEnvelope(field<unknown>(rec, 'envelope', null)),
+    createdAt: field<number>(rec, 'createdAt', 0),
+    updatedAt: field<number>(rec, 'updatedAt', 0),
+    sentAt: field<number>(rec, 'sentAt', 0),
+    openedAt: field<number>(rec, 'openedAt', 0),
+    emailedAt: field<number>(rec, 'emailedAt', 0),
+    deletedAt: field<number>(rec, 'deletedAt', 0) || undefined,
+  };
+}
+
+function noteBody(note: Note): Record<string, unknown> {
+  return {
+    author: note.authorId,
+    recipient: note.recipientId,
+    status: note.status,
+    body: note.body,
+    paper: note.paper,
+    paperColor: note.paperColor ?? '',
+    pageHeight: note.pageHeight,
+    envelope: note.envelope,
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
+    sentAt: note.sentAt,
+    openedAt: note.openedAt,
+    // Mail bookkeeping is server-owned. Reset it only when a letter returns to
+    // draft, so a later send can notify the recipient again.
+    ...(note.status === 'draft' ? { emailedAt: 0 } : {}),
+    deletedAt: note.deletedAt ?? 0,
+  };
+}
+
 function mapEvent(rec: RecordModel): CalendarEvent {
   const data = field<CalendarEvent>(rec, 'data', {
     id: rec.id,
@@ -385,12 +527,22 @@ export function roomItemBody(item: RoomItem): Record<string, unknown> {
   };
 }
 
+/** Fixed ID makes first-load creation race-safe across the two accounts. */
+export const ROOM_RECORD_ID = 'room00000000000';
+
 async function ensureRoom(client: PocketBase): Promise<{ room: Room; items: RoomItem[] }> {
   let roomRecs = await client.collection('room').getFullList();
   if (roomRecs.length === 0) {
     // A fresh library starts with an empty room: default wall/floor, no items.
-    await client.collection('room').create(roomBody(createEmptyData().room));
+    try {
+      await client
+        .collection('room')
+        .create({ id: ROOM_RECORD_ID, ...roomBody(createEmptyData().room) });
+    } catch {
+      // The other account may have won the same first-load race.
+    }
     roomRecs = await client.collection('room').getFullList();
+    if (roomRecs.length === 0) throw new Error('Could not create the shared room');
   }
   const itemRecs = await client.collection('room_items').getFullList();
   return { room: mapRoom(roomRecs[0]), items: itemRecs.map(mapRoomItem) };
@@ -414,12 +566,69 @@ type PbOp =
   | { t: 'applyRoomLayout'; room: Room; items: RoomItem[] }
   | { t: 'trashGroup'; item: TrashItem };
 
+export interface ReplayRecordClient {
+  collection(name: string): {
+    create(body: Record<string, unknown>): Promise<unknown>;
+    update(id: string, body: Record<string, unknown>): Promise<unknown>;
+    getOne(id: string): Promise<unknown>;
+  };
+}
+
+function isNotFound(error: unknown): boolean {
+  return error instanceof ClientResponseError && error.status === 404;
+}
+
+/**
+ * A create whose response was lost must not wedge the queue on a duplicate ID.
+ * If the ID already exists, replay the body as an update.
+ */
+export async function createIdempotently(
+  client: ReplayRecordClient,
+  collection: string,
+  id: string,
+  body: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await client.collection(collection).create({ id, ...body });
+  } catch (error) {
+    try {
+      await client.collection(collection).getOne(id);
+    } catch {
+      throw error;
+    }
+    await client.collection(collection).update(id, body);
+  }
+}
+
+async function deleteIdempotently(
+  client: PocketBase,
+  collection: string,
+  id: string,
+): Promise<void> {
+  try {
+    await client.collection(collection).delete(id);
+  } catch (error) {
+    if (!isNotFound(error)) throw error;
+  }
+}
+
+function isPermanentPbError(error: unknown): boolean {
+  if (!(error instanceof ClientResponseError)) return false;
+  return (
+    error.status >= 400 &&
+    error.status < 500 &&
+    error.status !== 401 &&
+    error.status !== 408 &&
+    error.status !== 429
+  );
+}
+
 async function runPbOp(op: PbOp): Promise<void> {
   const client = pb;
   if (!client) return;
   switch (op.t) {
     case 'create':
-      await client.collection(op.collection).create({ id: op.id, ...op.body });
+      await createIdempotently(client, op.collection, op.id, op.body);
       return;
     case 'update':
       await client.collection(op.collection).update(op.id, op.body);
@@ -432,7 +641,7 @@ async function runPbOp(op: PbOp): Promise<void> {
       }
       return;
     case 'delete':
-      await client.collection(op.collection).delete(op.id);
+      await deleteIdempotently(client, op.collection, op.id);
       return;
     case 'updateFirst': {
       const recs = await client.collection(op.collection).getFullList();
@@ -455,10 +664,10 @@ async function runPbOp(op: PbOp): Promise<void> {
         .map((p) => p.id);
       const elements = await client.collection('elements').getFullList();
       for (const el of elements.filter((e) => pageIds.includes(field<string>(e, 'page', '')))) {
-        await client.collection('elements').delete(el.id);
+        await deleteIdempotently(client, 'elements', el.id);
       }
-      for (const pid of pageIds) await client.collection('pages').delete(pid);
-      for (const nid of doomed) await client.collection('nodes').delete(nid);
+      for (const pid of pageIds) await deleteIdempotently(client, 'pages', pid);
+      for (const nid of doomed) await deleteIdempotently(client, 'nodes', nid);
       return;
     }
     case 'applyRoomLayout': {
@@ -467,14 +676,14 @@ async function runPbOp(op: PbOp): Promise<void> {
       const existing = await client.collection('room_items').getFullList();
       const keep = new Set(op.items.map((i) => i.id));
       for (const r of existing.filter((row) => !keep.has(row.id))) {
-        await client.collection('room_items').delete(r.id);
+        await deleteIdempotently(client, 'room_items', r.id);
       }
       for (const item of op.items) {
         const body = roomItemBody(item);
         try {
           await client.collection('room_items').update(item.id, body);
         } catch {
-          await client.collection('room_items').create({ id: item.id, ...body });
+          await createIdempotently(client, 'room_items', item.id, body);
         }
       }
       return;
@@ -482,10 +691,13 @@ async function runPbOp(op: PbOp): Promise<void> {
     case 'trashGroup': {
       const { item } = op;
       for (const ref of item.records) {
-        await client.collection(ref.collection).update(ref.id, { deletedAt: item.deletedAt });
+        try {
+          await client.collection(ref.collection).update(ref.id, { deletedAt: item.deletedAt });
+        } catch (error) {
+          if (!isNotFound(error)) throw error;
+        }
       }
-      await client.collection('trash').create({
-        id: item.id,
+      await createIdempotently(client, 'trash', item.id, {
         kind: item.kind,
         label: item.label,
         detail: item.detail ?? '',
@@ -550,6 +762,8 @@ export const pbOutbox = pbEnabled
       run: runPbOp,
       storageKey: 'journeybook:outbox:v1',
       coalesce: coalescePbOps,
+      isPermanent: isPermanentPbError,
+      deadLetterAfter: 5,
     })
   : null;
 
@@ -673,10 +887,50 @@ export const pbBackend: Backend = {
   eventDelete(id) {
     pbOutbox?.enqueue({ t: 'delete', collection: 'events', id });
   },
+  async fetchNotes() {
+    const client = pb;
+    if (!client) return [];
+    const recs = await client.collection('notes').getFullList({ filter: 'deletedAt = 0' });
+    return recs.map(mapNote);
+  },
+  noteCreate(note) {
+    pbOutbox?.enqueue({
+      t: 'create',
+      collection: 'notes',
+      id: note.id,
+      body: clone(noteBody(note)),
+    });
+  },
+  noteUpdate(note) {
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'notes',
+      id: note.id,
+      body: clone(noteBody(note)),
+    });
+  },
+  noteOpen(id, openedAt) {
+    pbOutbox?.enqueue({
+      t: 'update',
+      collection: 'notes',
+      id,
+      body: { openedAt, updatedAt: openedAt },
+    });
+  },
+  subscribeNotes(onChange) {
+    const client = pb;
+    if (!client) return;
+    void client
+      .collection('notes')
+      .subscribe('*', () => onChange())
+      .catch((e) => console.error('subscribe notes', e));
+  },
   async listLayouts() {
     const client = pb;
     if (!client) return [];
-    const recs = await client.collection('room_layouts').getFullList();
+    const recs = await client.collection('room_layouts').getFullList({
+      filter: 'deletedAt = 0',
+    });
     return recs.map(mapLayout);
   },
   async saveLayout(layout) {
@@ -693,7 +947,9 @@ export const pbBackend: Backend = {
   async listImagePresets() {
     const client = pb;
     if (!client) return [];
-    const recs = await client.collection('image_presets').getFullList();
+    const recs = await client.collection('image_presets').getFullList({
+      filter: 'deletedAt = 0',
+    });
     return recs.map(mapPreset);
   },
   async saveImagePreset(preset) {

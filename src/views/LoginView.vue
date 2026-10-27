@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { safeRedirect } from '@/utils/redirect';
 
 const auth = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const email = ref('');
 const password = ref('');
 const error = ref('');
@@ -15,7 +17,8 @@ async function submit() {
   busy.value = true;
   try {
     await auth.login(email.value.trim(), password.value);
-    router.push({ name: 'home' });
+    const redirect = safeRedirect(route.query.redirect);
+    await router.push(redirect ? { path: redirect } : { name: 'home' });
   } catch (e) {
     error.value = 'That email or password did not match.';
     console.error(e);

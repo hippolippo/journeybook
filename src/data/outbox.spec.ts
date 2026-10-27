@@ -67,6 +67,54 @@ describe('createOutbox', () => {
     expect(localStorage.getItem('test:resume')).toBeNull();
   });
 
+  it('moves permanently failing writes aside without blocking later writes', async () => {
+    const seen: string[] = [];
+    const outbox = createOutbox<Op>({
+      run: async (op) => {
+        if (op.id === 'bad') throw new Error('invalid');
+        seen.push(op.id);
+      },
+      storageKey: 'test:dead',
+      baseBackoffMs: 1,
+      maxBackoffMs: 2,
+      isPermanent: () => true,
+      deadLetterAfter: 2,
+    });
+    outbox.enqueue({ id: 'bad', v: 1 });
+    outbox.enqueue({ id: 'good', v: 1 });
+    await outbox.whenIdle();
+    expect(seen).toEqual(['good']);
+    expect(outbox.size()).toBe(0);
+    expect(outbox.failedCount()).toBe(1);
+    expect(outbox.failed()[0]?.op.id).toBe('bad');
+
+    outbox.retryFailed();
+    await outbox.whenIdle();
+    expect(outbox.failedCount()).toBe(1);
+
+    outbox.discardFailed();
+    expect(outbox.failedCount()).toBe(0);
+  });
+
+  it('keeps transient failures in the live queue', async () => {
+    let tries = 0;
+    const outbox = createOutbox<Op>({
+      run: async () => {
+        tries++;
+        if (tries < 3) throw new Error('offline');
+      },
+      storageKey: 'test:transient',
+      baseBackoffMs: 1,
+      maxBackoffMs: 2,
+      isPermanent: () => false,
+      deadLetterAfter: 2,
+    });
+    outbox.enqueue({ id: 'a', v: 1 });
+    await outbox.whenIdle();
+    expect(outbox.failedCount()).toBe(0);
+    expect(tries).toBe(3);
+  });
+
   it('never loses a coalesced update that races an in-flight op', async () => {
     const order: string[] = [];
     const outbox = createOutbox<Op>({

@@ -27,7 +27,7 @@ async function openRoomEditor(page: Page) {
 test('home loads and opens the scrapbooks organizer', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('Welcome back, you two')).toBeVisible();
-  await page.locator('.hero-book').click();
+  await page.locator('.hero-book:not(.hero-book--notes)').click();
   await expect(page.locator('.crumb').first()).toHaveText('Scrapbooks');
   await expect(page.locator('.tile').first()).toBeVisible();
 });

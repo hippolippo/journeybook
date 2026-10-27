@@ -8,13 +8,16 @@ import windowArt from '@/assets/svg/window-day.svg';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
 import { useEditorStore } from '@/stores/editor';
+import { useNotesStore } from '@/stores/notes';
 import { useViewport } from '@/composables/useViewport';
 import { exportLibrary, importLibrary } from '@/data/libraryTransfer';
-import { notify } from '@/utils/notify';
+import { pbOutbox } from '@/data/backend';
+import { notify, onSyncStatus, type SyncStatus } from '@/utils/notify';
 
 const app = useAppStore();
 const auth = useAuthStore();
 const editor = useEditorStore();
+const notes = useNotesStore();
 const router = useRouter();
 const { isMobile } = useViewport();
 
@@ -23,7 +26,12 @@ const importInput = ref<HTMLInputElement | null>(null);
 const glowDraft = ref(auth.roomGlow);
 const glowPercent = computed(() => Math.round(glowDraft.value * 100));
 const showGlowPreview = ref(false);
+const integrityTotal = computed(() => app.integrity.total + notes.integrity.orphanNotes);
+const sync = ref<SyncStatus>(
+  pbOutbox?.status() ?? { pending: 0, working: false, failed: false, dead: 0 },
+);
 let glowPreviewTimer: ReturnType<typeof setTimeout> | undefined;
+let stopSyncStatus: (() => void) | null = null;
 const wallClass = computed(() => wallById(app.room.wallId).className);
 
 function revealGlowPreview() {
@@ -42,6 +50,7 @@ function hideGlowPreviewSoon() {
 }
 onBeforeUnmount(() => {
   if (glowPreviewTimer) clearTimeout(glowPreviewTimer);
+  stopSyncStatus?.();
 });
 
 watch(
@@ -60,6 +69,7 @@ const KIND_LABELS: Record<TrashKind, string> = {
   media: 'Photo',
   event: 'Calendar',
   layout: 'Room layout',
+  note: 'Letter',
   preset: 'Image preset',
 };
 
@@ -116,7 +126,26 @@ async function emptyTrash() {
 }
 
 function cleanOrphans() {
-  if (window.confirm('Remove items that are no longer attached to a scrapbook?')) app.cleanOrphans();
+  if (
+    !window.confirm(
+      'Clean up orphaned pages, photos, broken room attachments and orphaned letters?',
+    )
+  )
+    return;
+  app.cleanOrphans();
+  const orphanNotes = notes.cleanOrphanNotes();
+  if (orphanNotes) notify('info', 'Moved orphaned letters to the trash');
+}
+
+function retrySync() {
+  pbOutbox?.retryFailed();
+}
+
+function discardSync() {
+  if (!window.confirm('Discard the changes that could not be saved? This cannot be undone.'))
+    return;
+  pbOutbox?.discardFailed();
+  notify('info', 'Unsynced changes discarded');
 }
 
 async function exportAll() {
@@ -163,7 +192,12 @@ async function onImportFile(event: Event) {
   }
 }
 
-onMounted(() => void app.loadTrash());
+onMounted(() => {
+  void app.loadTrash();
+  stopSyncStatus = onSyncStatus((next) => {
+    sync.value = next;
+  });
+});
 </script>
 
 <template>
@@ -295,6 +329,27 @@ onMounted(() => void app.loadTrash());
       </template>
     </div>
 
+    <div v-if="sync.dead > 0" class="settings__card">
+      <div class="settings__row settings__row--field">
+        <div class="settings__text">
+          <span class="settings__label">
+            <Icon name="lock" />
+            Unsynced changes
+          </span>
+          <span class="settings__sub">
+            {{ sync.dead }} change{{ sync.dead === 1 ? '' : 's' }} couldn’t be saved. Your other
+            writes are still safe.
+          </span>
+        </div>
+        <span class="settings__actions">
+          <button class="btn btn--small" type="button" @click="retrySync">Retry</button>
+          <button class="btn btn--small is-danger" type="button" @click="discardSync">
+            Discard
+          </button>
+        </span>
+      </div>
+    </div>
+
     <div v-if="!isMobile" class="settings__card">
       <div class="settings__row settings__row--field">
         <div class="settings__text">
@@ -302,7 +357,9 @@ onMounted(() => void app.loadTrash());
             <Icon name="trash" />
             Trash
           </span>
-          <span class="settings__sub">Deleted things wait here so either of you can restore them.</span>
+          <span class="settings__sub"
+            >Deleted things wait here so either of you can restore them.</span
+          >
         </div>
         <button v-if="app.trash.length" class="btn btn--small" type="button" @click="emptyTrash">
           Empty
@@ -320,7 +377,9 @@ onMounted(() => void app.loadTrash());
           </span>
           <span class="trash__actions">
             <button class="btn btn--small" type="button" @click="restore(item)">Restore</button>
-            <button class="btn btn--small is-danger" type="button" @click="purge(item)">Delete</button>
+            <button class="btn btn--small is-danger" type="button" @click="purge(item)">
+              Delete
+            </button>
           </span>
         </li>
       </ul>
@@ -369,12 +428,12 @@ onMounted(() => void app.loadTrash());
         <div class="settings__text">
           <span class="settings__label">Library check</span>
           <span class="settings__sub">
-            <template v-if="app.integrity.total === 0">Everything looks intact.</template>
-            <template v-else>{{ app.integrity.total }} orphaned item(s) found.</template>
+            <template v-if="integrityTotal === 0">Everything looks intact.</template>
+            <template v-else>{{ integrityTotal }} integrity issue(s) found.</template>
           </span>
         </div>
         <button
-          v-if="app.integrity.total > 0"
+          v-if="integrityTotal > 0"
           class="btn btn--small"
           type="button"
           @click="cleanOrphans"

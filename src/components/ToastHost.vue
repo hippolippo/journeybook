@@ -7,7 +7,7 @@ interface Live extends Notice {
 }
 
 const items = ref<Live[]>([]);
-const status = ref<SyncStatus>({ pending: 0, working: false, failed: false });
+const status = ref<SyncStatus>({ pending: 0, working: false, failed: false, dead: 0 });
 let stopNotices: (() => void) | null = null;
 let stopStatus: (() => void) | null = null;
 
@@ -52,8 +52,16 @@ onBeforeUnmount(() => {
         </button>
       </div>
     </TransitionGroup>
-    <div v-if="status.pending > 0" class="sync-pill" role="status">
-      {{ status.failed ? `Reconnecting… ${status.pending} unsaved` : `Saving… ${status.pending}` }}
+    <div v-if="status.pending > 0 || status.dead > 0" class="sync-pill" role="status">
+      <template v-if="status.pending > 0">
+        {{
+          status.failed ? `Reconnecting… ${status.pending} unsaved` : `Saving… ${status.pending}`
+        }}
+      </template>
+      <template v-if="status.pending > 0 && status.dead > 0"> · </template>
+      <template v-if="status.dead > 0"
+        >{{ status.dead }} unsynced {{ status.dead === 1 ? 'change' : 'changes' }}</template
+      >
     </div>
   </div>
 </template>

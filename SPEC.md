@@ -1,8 +1,8 @@
 # Journeybook — Specification
 
 Status: **Living specification of shipped behaviour (v1).**
-Last updated: **2026-10-19.**
-Implementation reference: commit `bcda56d`.
+Last updated: **2026-10-26.**
+Implementation reference: `main`.
 
 This document is the single source of truth for what Journeybook is and how it
 behaves. It describes the app **as implemented**, with a separate list of known
@@ -14,14 +14,48 @@ not be described here as shipped.
 
 ## Spec change log
 
-| Date       | Change                                                                                                                                                                                                                                                                    |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-19 | Added recurring-event anchor clamping and `%` / `%%` occurrence numbering with optional start digits, `\%` / `\\` escapes, a title hint, and expandable help (§10).                                                                                                         |
-| 2026-10-19 | Added the per-user room text glow setting (0–1 slider with a floating mini-room preview), synced through the PocketBase user record with a local fallback; documented the day-mode halo (§11, §13, §14.1).                                                              |
-| 2026-10-19 | Documented the installable web app: Apple touch icon, web app manifest, standalone metadata, icon assets, and base-relative URLs (§4.6, §17.1).                                                                                                                           |
-| 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18. |
-| 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21.                                 |
-| 2026-10-08 | Initial product and technical spec (`7973394`).                                                                                                                                                                                                                           |
+| Date       | Change                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-26 | Envelope finish: a continuous outline now sits above the body and flap so the nice border encloses the full rectangle; the flap remains a separate clipped triangle only for the opening animation. The wax seal is larger (19% card / 18% large, capped at 76/96 px) with a slightly larger initial (§16, §22.4).                                                                                 |
+| 2026-10-26 | Cloudflare proxy/www: documented proxied web records with Full (strict) TLS, DNS-only Resend MX/TXT records, and a www-to-apex redirect preserving paths/query; the app URL stays on the apex (§4.2, §17).                                                                                                                                                                                         |
+| 2026-10-26 | Email delivery setup: documented provider SMTP, sender authentication (SPF/DKIM/DMARC), `notifications@haftels.com`, and the existing non-hardcoded `meta.senderAddress`/`meta.appURL` configuration (§17.5).                                                                                                                                                                                      |
+| 2026-10-26 | Envelope stamp labels: the custom stamp controls now read **Stamp** and **Postmark** instead of Paper and Waves, with matching accessible colour-picker labels (§22.3–§22.4).                                                                                                                                                                                                                      |
+| 2026-10-26 | Page resize grip: pointer capture/touch-action suppression freezes the stage during the drag, a 96 px edge zone ramps auto-scroll (down while growing, up while shrinking), temporary bottom space preserves scroll range so the grip follows the finger, and the visible pill has a 44 px touch target (§16, §22.3).                                                                              |
+| 2026-10-26 | Data safety: outbox creates/deletes are replay-safe; permanent failures move to a persisted retry/discard recovery lane without blocking later writes; the sync pill and Settings expose it (§14.2, §16).                                                                                                                                                                                          |
+| 2026-10-26 | Data safety: library/book imports validate and re-key every record/reference, media deletion trashes placed elements with the photo, host deletion detaches children, layouts/presets use trash, the room has a fixed singleton row, and integrity checks cover media/room/note references (§13–§16).                                                                                              |
+| 2026-10-26 | Privacy/backend: media files are Protected and use short-lived tokens; the notes hook enforces the author lock after opening, validates participants, and retries email every 15 minutes with a cooldown; hook callbacks use a shared required module because PocketBase isolates callback scope (§13, §14, §16, §17.5, §22.5–§22.6).                                                              |
+| 2026-10-26 | Offline/local recovery: remote data/notes/trash/layouts/presets cache in a snapshot with an offline pill, a production app-shell service worker allows offline reload, and local trash/object URLs expire/purge like the server (§14, §16, §17.1).                                                                                                                                                 |
+| 2026-10-26 | Drafts list: removed per-card “Draft” repetition (title, chip and timestamp prefix) and the duplicate body preview; cards now show the note paper’s first line and an edited timestamp, with the selected Drafts tab carrying the status (§16, §22.2).                                                                                                                                             |
+| 2026-10-26 | Letter editing: clicking the paper outside the text now places the caret at the nearest text position (end below the last line, start above the first, nearest line otherwise) instead of doing nothing (§16, §22.3).                                                                                                                                                                              |
+| 2026-10-26 | Mobile composer layout: the Style pencil button sits left of the Letter/Envelope switch so the switch stays put across modes; Paper/Pen panes share the taller content height so the sheet no longer resizes when switching (§16, §22.3).                                                                                                                                                          |
+| 2026-10-26 | Mobile colour pickers: the lifted envelope/selected-text layout now stays in place after choosing a colour and only restores when the native picker is dismissed; colour changes no longer drop the layout (§16, §22.3).                                                                                                                                                                           |
+| 2026-10-26 | Mobile colour pickers: while a native picker is open the room/composer bars move out of the way, the envelope is pinned to the top area and the selected letter text scrolls to the top; closing restores the normal layout (§16, §22.3).                                                                                                                                                          |
+| 2026-10-26 | Mobile envelope editor: controls are permanently open without Style/Done/header chrome; the Envelope/Wax seal/Stamp panel is compact, redundant captions and hints are removed, and the Stamp heading shares a row with the custom Paper/Waves pickers (§16, §22.3).                                                                                                                               |
+| 2026-10-26 | Mobile page-height editing: the composer stage keeps an extra 88 px end margin so a taller page can be scrolled clear and its grip reached to shrink it (§16, §22.3).                                                                                                                                                                                                                              |
+| 2026-10-26 | Home: removed the wooden shelf plank under the Scrapbooks/Notes buttons and reclaimed its vertical padding; the covers now sit in the centered flex layout directly over the room (§6, §22.7).                                                                                                                                                                                                     |
+| 2026-10-26 | Mobile style-sheet scrolling: while the Pen menu is open, the composer stage reserves the panel height so the page bottom (and red overflow) can scroll above it; the room background stays fixed (§16, §22.3).                                                                                                                                                                                    |
+| 2026-10-26 | Mobile keyboard behaviour: with the Paper & Pen sheet open the editor stays selectable but the soft keyboard is suppressed; the phone shell stays pinned when the keyboard opens, while the composer stage adds the keyboard inset and scrolls only the paper/caret above it (§5.3, §16, §22.3).                                                                                                   |
+| 2026-10-26 | Paper texture/previews: Kraft now renders its grain/fibre texture (previously dropped by the URL resolver) with a stronger grain, and paper-preview cards use a quarter-scale rule/texture rhythm so more of each pattern is visible (§8.5, §16, §22.3).                                                                                                                                           |
+| 2026-10-26 | Notes composer controls: the toolbar mirrors the caret/selection formatting (font, size, ink, highlight, toggles and alignment); the mobile Paper & pen sheet uses remembered Paper/Pen tabs and a compact one-row tabs/Done header, sized to their content; dragging the height grip against the bottom auto-scrolls the stage (§16, §22.3).                                                      |
+| 2026-10-26 | Notes composer sidebar: the desktop Paper & pen panel is content-sized (capped at the stage with scrolling) instead of stretching to the stage bottom (§16, §22.3).                                                                                                                                                                                                                                |
+| 2026-10-26 | Note surfaces use the full shell height: the paper and its red overflow may extend over the room floor to the bottom edge instead of stopping at the content safe area (§5.2, §16, §22.3).                                                                                                                                                                                                         |
+| 2026-10-26 | Notes paper picker: larger four-column preview cards with visible paper names and a checked terracotta selected state, so the paper buttons read as tappable choices (§22.3).                                                                                                                                                                                                                      |
+| 2026-10-26 | Notes page width + reading zoom: page height no longer changes the visual scale (width is stage-driven and tall pages scroll); compose/read share the phone gutter, and double-click/double-tap in the reader opens a larger vertically scrollable zoom (§16, §22.3, §22.5).                                                                                                                       |
+| 2026-10-26 | Notes colours: every swatch group (paper tint, ink, highlight, envelope tint, wax seal) now has a free colour picker, and the stamp exposes custom paper/wave colours in addition to its presets; envelope custom stamp colours persist in the envelope JSON (§12, §16, §22.3–§22.4).                                                                                                              |
+| 2026-10-26 | Rich-text typing styles: font, size, ink, highlight and inline toggles now apply at a collapsed caret, and later controls compose with that pending style; no text selection is required. Selection formatting is unchanged (§16, §22.3).                                                                                                                                                          |
+| 2026-10-26 | Paper picker: merged the three duplicate Sticky Rose/Sage/Sky papers into one Sticky note entry with its full tint palette, so every paper now has tints and the picker has seven papers (§8.5, §16, §22.3).                                                                                                                                                                                       |
+| 2026-10-26 | Composer cleanup: removed the Page section (height readout, fit meter and explanatory copy) from the letter settings panel; the paper grip remains the only height control and overflow is still reported on send (§16, §22.3).                                                                                                                                                                    |
+| 2026-10-26 | Mobile Home and paper rules: the Home covers are compact (~240–280 × 100 px at iPhone widths) with a fit-content shelf so the decorated room stays visible; ruled/grid background tiles now match one rule rhythm so the top rule is no longer split or doubled (§6, §16, §22.3, §22.7).                                                                                                           |
+| 2026-10-26 | Mobile composer bar: at iPhone widths every control stays on one non-wrapping row — icon back/style, recipient with full status underneath, compact Letter/Envelope switch, and Send/Save; desktop keeps the text labels (§5.3, §16, §22.3).                                                                                                                                                       |
+| 2026-10-26 | Mobile polish: the Home covers stack on phones (with taller cards so labels and props stay readable), and the Notes sheet keeps its smaller raised placement.                                                                                                                                                                                                                                      |
+| 2026-10-26 | Notes polish: the wax seal carries the author's first initial (G in local mode) in a tonal shade of the seal; ruled/grid papers now share the paragraph line grid and first baseline; the page-height slider was removed in favour of the bottom-edge grip; Home aligns the flower and lined-sheet anchors (§6, §12, §22.3–§22.4).                                                                 |
+| 2026-10-26 | Added the standalone Notes (letters) surface: the `notes` collection with private drafts, rich-text letters, fixed-width author-set pages with red overflow, envelope/seal/stamp customisation reusing the shipped wax-seal and postage-stamp art, send/inbox/outbox, opening animation, notification email, Home shelf entry and unread badge. Page notes stay plain text (§2–§6, §8.5, §12–§22). |
+| 2026-10-19 | Added recurring-event anchor clamping and `%` / `%%` occurrence numbering with optional start digits, `\%` / `\\` escapes, a title hint, and expandable help (§10).                                                                                                                                                                                                                                |
+| 2026-10-19 | Added the per-user room text glow setting (0–1 slider with a floating mini-room preview), synced through the PocketBase user record with a local fallback; documented the day-mode halo (§11, §13, §14.1).                                                                                                                                                                                         |
+| 2026-10-19 | Documented the installable web app: Apple touch icon, web app manifest, standalone metadata, icon assets, and base-relative URLs (§4.6, §17.1).                                                                                                                                                                                                                                                    |
+| 2026-10-17 | Documented the concrete production deployment (DigitalOcean droplet, `haftels.com/journeybook`, GHCR images, repository variables/secrets, deploy and backup specifics) and confirmed the media thumbnail/caching behaviour; corrected the media file-access risk in §18.                                                                                                                          |
+| 2026-10-17 | Full rewrite against the implementation. Merged `design/SPEC.md`, documented the room catalog/lighting/effects, scrapbook editor, calendar, persistence/outbox/trash, deployment, and known gaps. Added the spec-discipline rules in §21.                                                                                                                                                          |
+| 2026-10-08 | Initial product and technical spec (`7973394`).                                                                                                                                                                                                                                                                                                                                                    |
 
 ---
 
@@ -53,6 +87,10 @@ user art, social feeds, and engagement mechanics.
   albums, publish flag, duplicate, and file import/export.
 - **Calendar**: shared month calendar, visits, anniversaries, birthdays,
   occasions, flight legs, recurrence, and togetherness countdown.
+- **Notes**: a standalone letters surface with private drafts, rich-text letters
+  on the existing note papers, a fixed-width page with an author-set height,
+  envelope/seal/stamp customisation, inbox/outbox, sending, an opening animation,
+  a notification email, and a Home shelf entry with an unread badge.
 - **Accounts**: exactly two invite-only users with a `him`/`her` role.
 - **Data**: local-storage mode for development, PocketBase mode for the deployed
   app, a persistent write outbox, realtime refresh, trash/restore, integrity
@@ -61,12 +99,15 @@ user art, social feeds, and engagement mechanics.
   support, GitHub Actions image builds, backup-on-redeploy, and off-box backup
   tooling.
 - **Mobile**: read-only content browsing, responsive room/scrapbook/calendar
-  layouts, and a rotate-to-landscape gate on phones.
+  layouts, a rotate-to-landscape gate on phones, and Notes composition on phones
+  (the calendar and notes are the two editable mobile surfaces).
 
 ### Not shipped
 
-- A standalone Notes feature and a `notes` collection. Notes exist only as
-  elements on scrapbook pages.
+- Advanced notes composition: stickers, photos, and multiple text boxes. Notes
+  are one page with one text flow.
+- Notes in the whole-library or book export (drafts are private), notes search,
+  replies, attachments, and notification preferences.
 - Games and Camera, despite being part of the product vision.
 - Organizer search, tag UI, manual reorder, and move-between-folders.
 - Doodles, freehand drawing, and a distinct text element.
@@ -83,16 +124,20 @@ user art, social feeds, and engagement mechanics.
 - Exactly **two** accounts: the owner and their partner. Invite-only; public
   registration is disabled at the schema level.
 - Both users share one space: the same books, room, calendar, media, and trash.
-  There is no per-user ownership or private content.
+  The exception is **note drafts**, which are visible only to their author. A
+  sent letter is visible to both the author and the recipient. Everything else
+  is shared.
 - Each account has a `name` and a `role` (`him` or `her`). The role drives
   greetings, avatars, and the wording of visit directions. It does **not** grant
-  permissions; both users can edit and delete everything.
+  scrapbook/room permissions; both users can edit and delete the shared content.
+  Notes use their own per-user PocketBase rules (§13).
 - Auth is PocketBase email/password. There is no signup UI, password-reset UI,
   passkey, or OAuth.
 - When no backend is configured, the app runs in local mode with no login.
 - When a backend is configured, every route except `/login` requires a session.
-  Unauthenticated users are redirected to `/login`; authenticated users are
-  redirected away from it.
+  Unauthenticated users are redirected to `/login` with a `redirect` query and
+  returned to the target after sign-in (used by note email links); authenticated
+  users are redirected away from `/login`.
 - Provisioning: `server/setup.sh` creates the two local development accounts;
   production accounts are created manually in the PocketBase admin UI with
   `name` and `role` set (`docs/DEPLOYMENT.md`).
@@ -111,9 +156,11 @@ user art, social feeds, and engagement mechanics.
 ### 4.2 Backend
 
 - PocketBase, self-hosted on a 1 GB DigitalOcean droplet (Ubuntu 24.04), fronted
-  by Caddy for TLS. Production lives at `https://haftels.com/journeybook/`; the
-  domain's A record is DNS-only (grey cloud) so Caddy can complete its
-  Let's Encrypt HTTP-01 challenge.
+  by Caddy for TLS. Production lives at `https://haftels.com/journeybook/`.
+  Cloudflare's web proxy may front the A/CNAME records with **Full (strict)** TLS;
+  mail MX/TXT records stay DNS-only. A proxied `www` redirect rule forwards to the
+  apex while preserving the path and query. Caddy owns the origin certificate and
+  may fall back to a Cloudflare Origin Certificate if proxy renewals fail.
 - PocketBase provides SQLite, file storage, auth, and realtime subscriptions.
 - The schema is committed as JS migrations in `server/pb_migrations/` and applied
   automatically when the container starts.
@@ -131,7 +178,9 @@ user art, social feeds, and engagement mechanics.
 ### 4.4 Realtime
 
 - PocketBase realtime subscriptions cover `nodes`, `pages`, `elements`, `media`,
-  `room`, `room_items`, `room_layouts`, `image_presets`, `events`, and `trash`.
+  `room`, `room_items`, `room_layouts`, `image_presets`, `events`, `trash`, and
+  `notes`. Notes use their own store subscription and pause refresh while a
+  letter is being written.
 - A remote change schedules a debounced (250 ms) **full refetch**, not a delta
   merge. Bursts are serialised.
 - Refetch is skipped while the outbox has pending writes or while an editor
@@ -145,7 +194,10 @@ user art, social feeds, and engagement mechanics.
 
 - Content is precious and personal. Data loss is the worst possible failure.
 - Local mode never overwrites an unreadable payload: corrupt or version-mismatched
-  documents are copied to `journeybook:v1.corrupt:<timestamp>` first.
+  documents are copied to `journeybook:v1.corrupt:<timestamp>` first. Notes use
+  the same rule under `journeybook:notes:v1.corrupt:<timestamp>`.
+- Notes are stored separately from `AppData` and are **not** included in
+  library/book export, so a private draft cannot leak through a shared export.
 - In PocketBase mode, the deployed app requires off-box backups before it holds
   real memories (§17).
 - Schema changes are additive by default. Destructive migrations require explicit
@@ -177,14 +229,18 @@ user art, social feeds, and engagement mechanics.
 
 ### 5.1 Routes
 
-| Route                    | Screen    | Notes                                          |
-| ------------------------ | --------- | ---------------------------------------------- |
-| `/login`                 | Login     | Public; only when a backend is configured.     |
-| `/`                      | Home      | Greeting, hero scrapbook, togetherness status. |
-| `/scrapbooks/:folderId?` | Organizer | Folder contents; omitted `folderId` = root.    |
-| `/book/:bookId`          | Book      | Page spread and page editor entry.             |
-| `/calendar`              | Calendar  | Month grid, day pane, upcoming pane.           |
-| `/settings`              | Settings  | Device/room/data controls.                     |
+| Route                    | Screen       | Notes                                               |
+| ------------------------ | ------------ | --------------------------------------------------- |
+| `/login`                 | Login        | Public; only when a backend is configured.          |
+| `/`                      | Home         | Greeting, two hero objects, togetherness status.    |
+| `/scrapbooks/:folderId?` | Organizer    | Folder contents; omitted `folderId` = root.         |
+| `/book/:bookId`          | Book         | Page spread and page editor entry.                  |
+| `/notes`                 | Notes        | Letters / Outbox / Drafts; `?tab=outbox` etc.       |
+| `/notes/new`             | Compose note | Creates a draft and replaces the URL with its edit. |
+| `/notes/:noteId/edit`    | Compose note | Draft, or a sent letter before it is opened.        |
+| `/notes/:noteId`         | Note         | Sealed envelope / opened letter; marks it opened.   |
+| `/calendar`              | Calendar     | Month grid, day pane, upcoming pane.                |
+| `/settings`              | Settings     | Device/room/data controls.                          |
 
 There is no catch-all/404 route; unknown paths render the persistent room shell
 with empty content.
@@ -200,20 +256,38 @@ with empty content.
   placed.
 - Content is fixed to the viewport height and clips; the app never scrolls
   vertically. Individual panes (organizer shelf, settings, mobile calendar panes,
-  editor panels) scroll inside their own bounds.
-- Settings is the only route allowed to reach the bottom edge.
+  editor panels, note stages, and the notes shelves) scroll inside their own
+  bounds.
+- The note composer and reader are full-height surfaces. Their letter stages
+  scroll to reveal text that runs below the paper, and their paper plus red spill
+  may extend over the room floor to the bottom edge. On phones the style panel is
+  a fixed bottom sheet.
+- Settings and the note letter surfaces are allowed to reach the bottom edge in
+  the desktop shell; the mobile notes style sheet floats above the floor and
+  respects the safe-area inset.
 
 ### 5.3 Mobile policy
 
 - Breakpoint: `width <= 760px` is mobile.
 - A touch phone in landscape (`width > height`, `height <= 500`) is replaced by a
   "rotate your phone" screen.
-- Mobile is **read-only** for content: no create/rename/delete, no page editing,
-  no room editing, no trash/backup/library-check. Calendar remains editable.
+- Mobile is **read-only** for scrapbook/room content: no create/rename/delete,
+  no page editing, no room editing, no trash/backup/library-check. Calendar and
+  Notes remain editable. Notes compose in the normal phone layout, with the style
+  controls in a bottom sheet. The composer bar never wraps: back and style are
+  icon buttons, the recipient and its full status share a compact two-line block,
+  and the mode switch plus Send/Save fill the rest of the row.
+- The phone shell is pinned to the layout viewport. Opening the soft keyboard does
+  not move or resize the room or top bar; the note stage adds the keyboard inset as
+  bottom space and scrolls only the paper/current caret above the keyboard. While
+  the Paper & Pen sheet is open the editor stays selectable but the soft keyboard
+  is suppressed (`inputmode="none"` / manual virtual-keyboard policy); opening
+  the sheet blurs the editor and closing it restores normal keyboard behaviour.
 - The read-only policy is enforced by component-level `v-if`/guards, not by route
   metadata, store permissions, or the backend.
 - Pinch zoom and multi-touch gestures are disabled; text selection is disabled
-  outside form fields and contenteditable regions.
+  outside form fields and contenteditable regions. Rendered letters are not
+  selectable; the composer is contenteditable.
 - Safe-area insets are respected on mobile.
 
 ## 6. Home
@@ -221,16 +295,24 @@ with empty content.
 - Tag: "a little home just for two".
 - Greeting: "Welcome back, {name}" when authenticated, otherwise "Welcome back,
   you two".
-- One hero object: the **Scrapbooks** book on a CSS shelf, with a pressed
-  daisy-on-stem. Clicking it opens the organizer root.
+- Two hero objects on one centered shelf layout with no visible wooden plank:
+  side by side on desktop, stacked compactly on phones so the decorated room
+  stays visible while both labels and props remain readable:
+  - **Scrapbooks**: the rose book with a pressed daisy-on-stem; opens the
+    organizer root.
+  - **Notes**: the same cover shape in sage, with a lined-paper sheet instead of
+    the flower. It opens `/notes` and shows a mustard **“N unread”** badge only
+    when there is at least one unread letter. No badge is shown at zero.
 - One status line derived from the calendar:
   - together → "You're together right now"
   - apart → "N days until we're together"
   - none → "Plan our next visit" (links to Calendar)
-- There are no Notes/Games/Camera pills or other hero objects. New features are
-  expected to become shelf objects, but the shelf currently holds one.
+- There are no Games/Camera pills or other hero objects. New features are
+  expected to become shelf objects; the shelf currently holds Scrapbooks and
+  Notes.
 - The Home status line does not tick while the page stays open; it recomputes on
-  re-render. The room bar countdown refreshes every 30 seconds.
+  re-render. The room bar countdown refreshes every 30 seconds. The unread badge
+  follows the notes store and updates on load and realtime refresh.
 
 ## 7. Organizer
 
@@ -382,14 +464,18 @@ Behaviour:
 
 ### 8.5 Notes
 
-- Ten asset-defined note papers plus a transparent `none` option. The fallback is
-  sticky paper.
+- These are the **scrapbook page-note** controls. The standalone Notes surface
+  (§22) reuses the same papers and pens but has its own page, rich text and
+  envelope model.
+- Seven asset-defined note papers plus a transparent `none` option. The fallback
+  is sticky paper. Sticky note is one paper with eight tint options; the former
+  Sticky Rose/Sage/Sky papers are tints of it, not separate picker entries.
 - Papers support lined/grid/dot rules, sheen, fibre texture, a margin rule, line
-  colour, spacing multiplier, radius, shadow, palette, and ordering.
+  colour, spacing multiplier, radius, shadow, palette, and ordering. Kraft carries
+  a visible grain/fibre texture rather than a flat tan fill.
 - Rules are computed from font metrics and measured line count so they sit on the
   text baseline at the 480 px page reference.
-- Only `colorable` papers accept a tint; fixed-colour papers ignore it; `none` is
-  transparent.
+- Every asset paper accepts a tint; `none` is transparent and ignores it.
 - Ten handwriting pens: Caveat, Patrick Hand, Permanent Marker, Caveat Brush,
   Architects Daughter, Homemade Apple, Shadows Into Light, Shantell Sans, Gochi
   Hand, Kalam.
@@ -461,8 +547,9 @@ Behaviour:
   elements, media (as data URLs), room, room items, events, layouts, and image
   presets.
 - Library import replaces the whole shared library after the user types
-  `REPLACE`; current root nodes and events are moved to trash first. Old room,
-  room items, layouts, and presets are not trashed.
+  `REPLACE`; current root nodes and events are moved to trash first, the old
+  room/items are saved as a “Before import” named layout in trash, and old layouts
+  and presets are trashed. Restoring that layout must be applied manually.
 
 ## 9. Room
 
@@ -500,7 +587,7 @@ Current inventory:
 - Categories: 25 trinkets, 8 furniture, 6 wall decor, 3 pets.
 - Layers: 28 surface, 9 floor, 5 wall.
 - Bands: 32 floor, 10 wall, 0 both.
-- **98 stickers**, **2 tapes**, **1 asset frame**, **1 asset paper**, **10 note
+- **98 stickers**, **2 tapes**, **1 asset frame**, **1 asset paper**, **7 note
   papers**.
 
 Catalog item contract (see `src/catalog/types.ts`):
@@ -958,6 +1045,7 @@ interface ImagePreset {
   id: string;
   name: string;
   effects: ImageEffects;
+  deletedAt?: number; // absent/0 = live
 }
 
 interface Room {
@@ -987,6 +1075,7 @@ interface StoredLayout {
   name: string;
   room: Room;
   items: RoomItem[];
+  deletedAt?: number; // absent/0 = live
 }
 
 interface AppData {
@@ -998,37 +1087,120 @@ interface AppData {
 }
 ```
 
+Notes are **not** part of `AppData`; they are stored under their own local key
+and PocketBase collection so drafts can stay private. Types:
+
+```ts
+interface RichRun {
+  text: string;
+  font?: string; // NOTE_FONTS id
+  size?: number; // logical px at the 480-wide page
+  color?: string; // hex
+  highlight?: string; // hex
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strike?: boolean;
+}
+
+interface RichBlock {
+  align: 'left' | 'center' | 'right';
+  runs: RichRun[];
+}
+
+interface RichDoc {
+  v: 1;
+  blocks: RichBlock[];
+}
+
+interface NoteEnvelope {
+  tint: string; // hex, preset or custom
+  seal: string; // hex, wax seal art colour, preset or custom
+  stamp: string; // stamp colour preset id
+  stampPaper?: string; // custom stamp colour hex, overrides the preset
+  stampWaves?: string; // custom postmark colour hex, overrides the preset
+  initial?: string; // author's first initial pressed into the seal
+}
+
+interface Note {
+  id: string;
+  authorId: string;
+  recipientId: string;
+  status: 'draft' | 'sent';
+  body: RichDoc;
+  paper: string;
+  paperColor?: string;
+  pageHeight: number; // 380–1100 logical px at a fixed 480 width
+  envelope: NoteEnvelope;
+  createdAt: number;
+  updatedAt: number;
+  sentAt: number;
+  openedAt: number;
+  emailedAt: number;
+  deletedAt?: number;
+}
+```
+
+`TrashKind` includes `'note'`. A page note (`NoteElement`, §8.5) is still a
+plain-text scrapbook element; it is unrelated to a `Note` letter.
+
 ## 13. PocketBase schema
 
-All collections use the same rule `@request.auth.id != ""` for list, view, create,
-update, and delete, except `users`. There is no per-owner filtering. Relationships
-are plain text IDs, not relation fields, and there are no custom indexes,
-uniqueness constraints, or foreign keys.
+Most collections use the rule `@request.auth.id != ""` for list, view, create,
+update, and delete. `users` is auth-only; `notes` adds per-user rules (below).
+Otherwise there is no per-owner filtering. Relationships are plain text IDs, not
+relation fields, and there are no custom indexes, uniqueness constraints, or
+foreign keys.
 
-| Collection      | Fields                                                                                                                                                                                                      | Notes                                                                            |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `users` (auth)  | `name` (text 80), `role` (`him`/`her`), `roomGlow` (text 0–1), auth fields                                                                                                                                  | list/view authenticated; create/delete null (no signup); update only own record. |
-| `nodes`         | `type` (`folder`/`scrapbook`), `title` (200), `parent` (20), `tags` (JSON), `order` (number), `cover` (20), `published` (bool), `deletedAt`                                                                 | Tree via text `parent`.                                                          |
-| `pages`         | `book` (20), `index` (number), `background` (40), `groups` (JSON), `paperColors` (JSON), `deletedAt`                                                                                                        |                                                                                  |
-| `elements`      | `page` (20), `kind` (`photo`/`note`/`sticker`/`image`/`tape`), `payload` (JSON), `x`, `y`, `w`, `h`, `rotation`, `z`, `opacity`, `locked`, `aspectLocked`, `group` (40), `name` (120), `scale`, `deletedAt` | `payload` holds the full element; columns are fallbacks.                         |
-| `room`          | `wallId` (40), `floorId` (40), `dayNightMode` (10), `referenceTz` (60)                                                                                                                                      | Singleton by convention, not by schema.                                          |
-| `room_items`    | `catalogId` (60), `layer` (`wall`/`floor`/`surface`), `z`, `attachTo` (20), `color` (JSON), `desktop` (JSON), `mobile` (JSON), `hideMobile` (bool), `locked` (bool), `data` (JSON)                          | `data` preserves fields without a column (`lightLevel`, `shadow`).               |
-| `room_layouts`  | `name` (120), `data` (JSON), `deletedAt`                                                                                                                                                                    | `data` = `{ room, items }`.                                                      |
-| `media`         | `book` (20), `name` (200), `file` (single, 25 MB), `deletedAt`                                                                                                                                              | MIME: JPEG, PNG, WebP, GIF, AVIF. Thumbs `480x480`, `1200x1200f`.                |
-| `image_presets` | `name` (120), `effects` (JSON), `deletedAt`                                                                                                                                                                 | Shared globally.                                                                 |
-| `events`        | `kind` (20), `title` (200), `data` (JSON), `deletedAt`                                                                                                                                                      | Full event in `data`; no queryable date column.                                  |
-| `trash`         | `kind` (20), `label` (200), `detail` (120), `records` (JSON), `deletedAt`                                                                                                                                   | `records` is refs; local mode stores snapshots.                                  |
+| Collection      | Fields                                                                                                                                                                                                                                 | Notes                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `users` (auth)  | `name` (text 80), `role` (`him`/`her`), `roomGlow` (text 0–1), auth fields                                                                                                                                                             | list/view authenticated; create/delete null (no signup); update only own record.  |
+| `nodes`         | `type` (`folder`/`scrapbook`), `title` (200), `parent` (20), `tags` (JSON), `order` (number), `cover` (20), `published` (bool), `deletedAt`                                                                                            | Tree via text `parent`.                                                           |
+| `pages`         | `book` (20), `index` (number), `background` (40), `groups` (JSON), `paperColors` (JSON), `deletedAt`                                                                                                                                   |                                                                                   |
+| `elements`      | `page` (20), `kind` (`photo`/`note`/`sticker`/`image`/`tape`), `payload` (JSON), `x`, `y`, `w`, `h`, `rotation`, `z`, `opacity`, `locked`, `aspectLocked`, `group` (40), `name` (120), `scale`, `deletedAt`                            | `payload` holds the full element; columns are fallbacks.                          |
+| `room`          | `wallId` (40), `floorId` (40), `dayNightMode` (10), `referenceTz` (60)                                                                                                                                                                 | Fixed-ID singleton + API create guard; not a DB uniqueness constraint.            |
+| `room_items`    | `catalogId` (60), `layer` (`wall`/`floor`/`surface`), `z`, `attachTo` (20), `color` (JSON), `desktop` (JSON), `mobile` (JSON), `hideMobile` (bool), `locked` (bool), `data` (JSON)                                                     | `data` preserves fields without a column (`lightLevel`, `shadow`).                |
+| `room_layouts`  | `name` (120), `data` (JSON), `deletedAt`                                                                                                                                                                                               | `data` = `{ room, items }`.                                                       |
+| `media`         | `book` (20), `name` (200), `file` (single, 25 MB, Protected), `deletedAt`                                                                                                                                                              | MIME: JPEG, PNG, WebP, GIF, AVIF. Thumbs `480x480`, `1200x1200f`; token required. |
+| `image_presets` | `name` (120), `effects` (JSON), `deletedAt`                                                                                                                                                                                            | Shared globally.                                                                  |
+| `events`        | `kind` (20), `title` (200), `data` (JSON), `deletedAt`                                                                                                                                                                                 | Full event in `data`; no queryable date column.                                   |
+| `notes`         | `author` (20), `recipient` (20), `status` (10), `body` (JSON), `paper` (40), `paperColor` (20), `pageHeight` (number), `envelope` (JSON), `createdAt`, `updatedAt`, `sentAt`, `openedAt`, `emailedAt`, `emailLastAttempt`, `deletedAt` | Private drafts; sent letters shared. Rules below.                                 |
+| `trash`         | `kind` (20), `label` (200), `detail` (120), `records` (JSON), `deletedAt`                                                                                                                                                              | `records` is refs; local mode stores snapshots.                                   |
 
-Migrations are numbered `1700000001`…`1700000014`. `1700000010` is an idempotent
+Migrations are numbered `1700000001`…`1700000018`. `1700000010` is an idempotent
 repair pass for fields that older PocketBase versions recorded as applied without
 adding. `1700000013` introduces soft deletes and `trash`. `1700000014` adds media
-thumbnails. PocketBase applies migrations automatically on container start.
+thumbnails. `1700000016` adds `notes`; `1700000017` adds the email retry
+bookkeeping; `1700000018` protects media files. PocketBase applies migrations
+automatically on container start.
+
+Notes rules:
+
+- list/view: `@request.auth.id != "" && (author = @request.auth.id || (status = "sent" && recipient = @request.auth.id))`
+- create: `@request.auth.id != "" && @request.auth.id = author`
+- update: authenticated and either the author or the sent letter's recipient
+- delete: the author only
+
+The update rule is coarse because PocketBase has no per-field rules.
+`notes.pb.js` (with shared helpers in `notes-lib.js`) rejects content-field
+changes from the recipient; only `openedAt` (and the `updatedAt` bookkeeping
+written with it) is accepted. After the recipient opens a letter, it also rejects
+all author changes except `deletedAt`, so the UI lock is backed by the server.
 
 `server/pb_hooks/` adds:
 
 - A daily 03:00 PocketBase backup (14 retained) if no schedule exists.
 - A daily 04:00 hard purge of trash entries and referenced records older than 30
   days.
+- A best-effort note notification email after a note becomes `sent`, using the
+  PocketBase mail settings and `meta.appURL`; a 15-minute cron retries failures
+  with a cooldown; see §17.5.
+- A room singleton guard that rejects a second `room` row.
+- The media collection is Protected; `/api/files/...` requires a short-lived file
+  token.
+
+Hook callbacks are isolated by PocketBase, so reusable helpers live in a
+CommonJS module (`notes-lib.js`) and are required inside each callback.
 
 ## 14. Persistence, sync, trash, and integrity
 
@@ -1042,6 +1214,8 @@ Keys:
 | `journeybook:layouts:v1`                | Named room layouts.                    |
 | `journeybook:image-presets:v1`          | Custom image presets.                  |
 | `journeybook:trash:v1`                  | Trash entries with record snapshots.   |
+| `journeybook:notes:v1`                  | Note letters and drafts.               |
+| `journeybook:notes:v1.corrupt:<ts>`     | Quarantined unreadable notes payload.  |
 | `journeybook:outbox:v1`                 | Pending writes (unused in local mode). |
 | `journeybook:performance`               | Performance-lighting preference.       |
 | `journeybook:room-glow`                 | Local/signed-out room text glow (0–1). |
@@ -1049,56 +1223,88 @@ Keys:
 | IndexedDB `journeybook-media` / `blobs` | Media bytes keyed by asset ID.         |
 
 - `saveData` throws on storage failure (for example quota); the app toasts.
+  Note saves throw only from the local backend's note write; the notes store
+  surfaces load/write failures with a toast.
 - Layout, preset, and trash saves swallow errors.
-- Object URLs for local media are cached for the session and are not evicted.
-- There is no automatic trash expiry in local mode.
+- Object URLs for local media are revoked when media is purged or no longer in
+  the live library; restoring rehydrates them from IndexedDB.
+- Local trash expires after 30 days, matching the server purge. Expiry also
+  removes photo bytes, notes, layouts and presets held by those entries.
 
 ### 14.2 PocketBase mode
 
 - Reads fetch all live records on boot and on realtime refresh.
 - Writes are optimistic and queued in a persistent FIFO outbox.
 - Outbox operations: `create`, `update`, `upsert`, `delete`, `updateFirst`,
-  `deleteNode`, `applyRoomLayout`, `trashGroup`.
+  `deleteNode`, `applyRoomLayout`, `trashGroup`. Notes use `create`/`update`;
+  marking a letter opened uses a targeted `update` containing only `openedAt` and
+  `updatedAt` so it cannot rewrite the letter.
 - Retries use exponential backoff from 1 s to 30 s and reset after success. The
   queue resumes on module load and on `online`.
 - Coalescing: update folds into a pending create; latest update wins; create+
   delete cancels; update+delete becomes delete; `updateFirst` collapses per
   collection. `applyRoomLayout` and `trashGroup` are not coalesced.
-- A permanently failing head blocks the queue. There is no dead-letter path.
-  Non-`upsert` creates are not idempotent: a lost success response can loop on a
-  duplicate-ID error.
+- Creates are replay-safe: if a create succeeded but its response was lost, the
+  retry updates the existing record. Deletes treat a missing record as already
+  done. A create followed by a lost response therefore cannot wedge on a
+  duplicate ID, including a sent note.
+- After five consecutive permanent errors (validation/permission, excluding
+  auth/network throttling), the write leaves the live queue for a persisted
+  dead-letter lane. Later writes continue. Settings → **Unsynced changes** shows
+  the count with **Retry** and **Discard** actions; nothing is silently dropped.
 - Media uploads, trash restore/purge, and all reads bypass the outbox.
-- The UI shows a sync pill: "Saving… N" or "Reconnecting… N unsaved".
-- There is no content cache in `localStorage` when PocketBase is configured. A
-  load failure shows "We couldn't load your memories" with Try again; cached local
-  content is not shown.
+- The UI shows a sync pill: "Saving… N", "Reconnecting… N unsaved", or
+  "N unsynced changes".
+- While online, every successful full fetch, notes fetch, trash load, layout
+  load and preset load updates a `journeybook:remote-snapshot:v1` fallback.
+  Remote mode uses that snapshot (data, current account's notes, trash, layouts
+  and presets) if the API is unreachable, showing an **Offline copy** pill instead
+  of the blocking load-error gate. The snapshot is cleared on logout. A production
+  service worker caches the app shell/static assets (never `/api`, `/_` or
+  protected media), so an offline reload can reach the cached app and snapshot.
+- Notes refresh through their own subscription. The notes store skips realtime
+  refreshes while a composer is open or writes are queued, then catches up when
+  the composer closes.
 
 ### 14.3 Trash
 
 - Soft delete is `deletedAt` (epoch ms, 0 = live) on nodes, pages, elements,
-  media, events, room_layouts, image_presets.
+  media, events, room_layouts, image_presets, and notes.
 - Deleting a book/folder collects descendant nodes, pages, elements, and media
   into one trash entry.
 - Deleting a page collects the page and its elements.
-- Elements removed inside the page editor, room items, layouts, and presets are
-  hard-deleted, not trashed.
+- Deleting an album photo also collects every placed image element that uses it
+  into the same trash entry, so pages cannot keep a missing-photo reference.
+- Elements removed inside the page editor and room items are hard-deleted. Named
+  layouts and image presets are soft-deleted into trash and restore from Settings;
+  Notes are soft-deleted only by their author. A local note restore un-deletes the
+  stored record.
 - Restore un-deletes referenced records. Purge deletes them permanently. A daily
-  hook purges entries older than 30 days.
+  server hook and local startup purge entries older than 30 days; local expiry also
+  removes the associated bytes/notes/layouts/presets.
 - Local restore re-adds snapshotted records and de-dupes by ID.
 - Trash is shared and has no attribution.
 
 ### 14.4 Integrity and transfer
 
 - Integrity audit counts orphan pages (missing book), orphan elements (missing
-  page), and orphan media (missing book). It does not check dangling `mediaId`,
-  duplicate indexes, invalid paper/frame IDs, room items, layouts, or event data.
-- Clean-up deletes orphan pages/elements and trashes orphan media.
+  page), orphan media (missing book), placed images with a missing photo, and
+  attached room items with a missing host. It also counts notes whose author or
+  recipient account no longer exists. It does not check duplicate indexes,
+  invalid paper/frame IDs, layouts, or event data.
+- Clean-up deletes orphan pages/elements, trashes orphan media, detaches dangling
+  room attachments, and moves orphaned notes to the trash.
 - Library export/import is destructive and requires `REPLACE`.
-- Library import validation checks only `format` and that `content.nodes` is an
-  array.
-- Book import validation checks only `format` and that `pages` is an array.
-- Importing the same library can collide with existing soft-deleted media IDs
-  because IDs are reused.
+- Library import validates the required shape, re-keys every node/page/element/
+  media/event/layout/preset, rewrites parent/page/media/preset/attachment
+  references, validates asset IDs, and skips elements that cannot resolve. Media
+  therefore cannot collide with live or soft-deleted record IDs. Before replacing
+  the room, the old room/items are saved as a named “Before import” layout and old
+  layouts/presets are trashed; restoring the layout is a manual apply.
+- Book import re-keys pages/media/elements, validates page and media references,
+  and drops an image element whose bytes could not be imported.
+- Notes are deliberately excluded from both library and book export. There is no
+  per-user notes export yet (§18).
 
 ## 15. Visual design, responsive rules, and accessibility
 
@@ -1172,6 +1378,11 @@ Keys:
 - Pinch zoom is disabled and text is non-selectable outside inputs, which is an
   accessibility trade-off.
 - Toasts use `role="status"`; there is no explicit `aria-live` or toast limit.
+- Notes: the letter editor is a labelled contenteditable textbox; paper,
+  typography and envelope controls are labelled buttons/selects. Overflow is
+  shown in red **and** announced by a text meter / warning, so colour is not the
+  only signal. The send confirmation declares `role="dialog"` but, like the other
+  dialogs, has no focus trap. The mobile style sheet has a visible Done action.
 
 ### 15.6 Art assets
 
@@ -1198,9 +1409,46 @@ Rules:
   Test Utils; critical flows use Playwright.
 - Never claim something works without running the relevant checks. If a check
   cannot be run, say so and why.
-- Current coverage: 31 Vitest spec files and one Playwright file. E2E runs in
-  local-storage mode with a seeded fixture; there are no PocketBase, auth,
-  realtime, outbox-failure, trash, or backup tests.
+- Current coverage: 39 Vitest spec files and two Playwright files. Data-safety
+  coverage includes outbox replay/dead-letter behaviour, idempotent creates,
+  import re-keying and dangling-reference validation, room attachment/photo
+  referential cleanup, local trash expiry, remote snapshot/offline fallback,
+  tokenised media URLs and note/room integrity. New notes coverage:
+  rich-text sanitisation/round-trip, envelope/page helpers, the seal
+  initial, the local notes store (draft/send/unsend/open/trash/restore), and a
+  local-mode Playwright flow covering compose → draft → send → outbox → read →
+  pull back (including the G seal initial), plus mobile Home and composer-bar
+  checks: the compact covers stack, stay at most 300 × 130 px, and clear the Notes
+  label, every composer control stays on one non-overflowing row at 390 px
+  through the draft and sent-unopened states, draft cards show only the paper’s
+  first line and an edited timestamp without per-card Draft labels or a duplicate
+  preview, the settings panel has no Page
+  section while the paper grip remains present, the picker exposes seven labeled
+  tintable papers with one Sticky note and zoomed-out preview patterns, Kraft’s
+  texture renders on the page and preview, custom paper/ink/envelope/seal/stamp colours are
+  applied, a collapsed caret accepts font, size, ink and bold for the next text,
+  the paper and red overflow use the full shell height, the desktop settings
+  sidebar stays content-sized, the mobile sheet remembers its Paper/Pen tab in a
+  compact tabs/Done header with stable Paper/Pen sheet height, the mobile envelope
+  panel stays open and compact with no Done/hints, the envelope border encloses
+  the full rectangle and the wax seal is prominent, the Stamp/Postmark labels and
+  custom pickers are present, the Style button and mode tabs
+  keep a fixed order, clicking the blank paper puts the caret at the nearest text
+  (end below, start above), a native colour picker hides the bars and lifts the envelope or
+  selected text, the toolbar mirrors the caret style, page-height dragging
+  auto-scrolls at the bottom and freezes/edge-scrolls while shrinking, the mobile
+  stage reserves an end margin for
+  reaching the grip, the keyboard inset scrolls the paper while
+  the shell stays fixed and the open style sheet suppresses the keyboard and
+  reserves its own height below the paper, and the read page opens a larger zoom
+  without changing width when its height changes.
+- E2E runs in local-storage mode with a seeded fixture; there are no automated
+  PocketBase/auth/realtime/email/backup tests. Migrations, protected media,
+  room singleton, note locking and the email attempt fields are verified manually
+  against a local PocketBase instance.
+- Three older smoke tests reference sticker names/layers (“Dreamy moon”,
+  “Sparkle”, heart-burst drag) that are not in the current fixture/catalog and
+  fail independently of Notes; the Notes flow and the Home smoke test pass.
 - CI does not run tests, typecheck, lint, or format before deploying.
 
 ## 17. Deployment
@@ -1222,14 +1470,18 @@ Rules:
   available for other apps. A bare base path redirects to the trailing-slash
   form.
 - `APP_BASE` supports serving at the root or any subpath. Hashed assets are
-  immutable; `/api/files/*` is cached privately for a year; SPA HTML is
-  `no-cache`. Vite copies `public/` (the web app manifest and home-screen icons,
-  §4.6) into the image root; they are served as static files under `APP_BASE`.
+  immutable; `/api/files/*` requires a Protected-file token and is cached
+  privately for a year; SPA HTML is `no-cache`. Vite copies `public/` (the web app
+  manifest, home-screen icons, §4.6, and the app-shell service worker) into the
+  image root; they are served as static files under `APP_BASE`.
 - Environment variables (names only): `VITE_PB_URL`, `VITE_BASE`, `DOMAIN`,
   `APP_BASE`, `PB_IMAGE`, `WEB_IMAGE`, `IMAGE_TAG`, `PB_VERSION`, `BACKUP_KEEP`,
   `BACKUP_REMOTE`, `BACKUP_RSYNC_TARGET`, `BACKUP_STAGE_DIR`, `PB_DATA_DIR`,
   `COMPOSE_PROJECT_NAME`, plus local setup/admin credential variables documented
   in `server/README.md`.
+- Note notification email is configured in the PocketBase admin UI, not through a
+  compose variable: **Settings → Mail settings** and **Settings → Application
+  URL** (§17.5).
 
 ### 17.2 CI/CD
 
@@ -1268,7 +1520,8 @@ Rules:
   the admin UI at `{APP_BASE}/_/` with `name` and `role` (`him`/`her`); there is
   no signup.
 - PocketBase applies migrations on container start, **after** the pre-deploy
-  snapshot.
+  snapshot. `1700000016` adds the `notes` collection on the first deploy that
+  contains notes.
 - The deploy script hardcodes the volume name `journeybook_pb_data`.
 - Restore is documented as a manual drill: stop, replace volume contents from a
   snapshot, redeploy; or use the PocketBase admin Backups → Restore.
@@ -1287,13 +1540,42 @@ Three layers:
    encryption, checksum verification, automated restore test, or remote
    retention.
 
+### 17.5 Notes email
+
+- `server/pb_hooks/notes.pb.js` sends a short notification when a note becomes
+  `sent` (never the letter content): the sender's name, a link to
+  `{meta.appURL}/notes/{id}`, and a Journeybook footer.
+- SMTP is configured in the PocketBase admin UI, not in the repository. Set
+  **Settings → Mail settings** (host, port, user, password, TLS), sender address
+  and name, and use the test button. The sender address and public link are
+  `settings.meta.senderAddress` and `settings.meta.appURL`, never hardcoded. The
+  Alpine backend image has no local `sendmail`, so SMTP is required in production.
+  The sending domain must be verified with the provider and carry SPF, DKIM and
+  DMARC records for trusted delivery.
+- **Settings → Application URL** must be the public app URL (for example
+  `https://haftels.com/journeybook`); it is used for the deep link. With no app
+  URL the email contains only a relative path.
+- Sending is best-effort and never blocks a letter. A failure is logged and
+  `emailLastAttempt` starts a 15-minute cooldown; a cron hook retries while
+  `emailedAt` is 0. There is no external queue.
+- The link lands on `/notes/{id}` through the login redirect (§3). The recipient
+  must be signed in.
+- The hook rejects recipient attempts to change content fields on a sent letter;
+  only `openedAt` (with `updatedAt`) is accepted. After opening, the author's
+  content/openedAt/mail fields are frozen too; only `deletedAt` (trash) remains.
+  A concurrent editor save is rejected and lands in the sync recovery lane.
+
 ## 18. Known gaps and risks
 
 These are current facts, not desired behaviour. Fixing one requires a spec update.
 
 **Product gaps**
 
-- Notes, Games, and Camera are not implemented.
+- Games and Camera are not implemented.
+- Notes are implemented (§22) but advanced composition — stickers, photos,
+  multiple text boxes — is not. Notes are one page with one text flow.
+- Notes are excluded from library/book export; there is no per-user notes export.
+- Notes have no search, replies, attachments, or multi-page letters.
 - Organizer lacks search, tags UI, reorder, and move-between-folders.
 - No doodle/freehand tool, no caption editor, no distinct text element.
 - No multi-select or true grouping in either editor.
@@ -1303,23 +1585,26 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
 
 **Data and sync risks**
 
-- Outbox creates are not idempotent; a lost success response can wedge the queue
-  on duplicate IDs.
-- A permanently failing outbox head blocks all later writes; there is no
-  dead-letter path.
-- Media files are not marked Protected, so a direct `/api/files/...` URL works
-  without a token but is also readable by anyone who knows the record ID and
-  random filename. Record listing remains auth-gated.
-- Room is a singleton only by convention; a simultaneous first load could create
-  two rows.
-- Library import reuses media IDs and can collide with soft-deleted records.
-- No cache of remote content; reloading offline can strand the app at login/load
-  error.
-- `room_layouts` and `image_presets` have `deletedAt`, but no code trashes them.
-- Local object URLs are never evicted.
-- Local mode has no trash expiry.
+- Local mode has one local identity (`local`) and a placeholder partner. Notes
+  compose and land in Outbox/Drafts, but the local Letters inbox stays empty; no
+  partner account exists offline.
+- Rich-text letters align ruled/grid papers to a 32 px paragraph grid and the
+  first baseline (64 px for Wide ruled). Very large runs can exceed one line box
+  and break rule alignment; mixed font sizes on a single line can shift a
+  baseline slightly.
 - Off-box backups are not configured yet; until they are, recovery depends on
-  on-box snapshots.
+  on-box snapshots. This needs a real remote target/credentials and is not
+  something the app can complete by itself.
+- Protected media URLs contain a short-lived bearer token; anyone who copies a
+  live URL can use it until that token expires. File records remain auth-gated.
+- Library import stores the previous room/items as a named layout and moves the
+  old layouts/presets to trash, but restoring that layout still requires the user
+  to apply it manually.
+- The offline snapshot is written only after a successful sync and is limited by
+  browser storage quota; a first-ever offline load has nothing to show. It stores
+  data/notes metadata, not album photo bytes, so photos still need a connection.
+- The note email link still depends on `meta.appURL`; without it the email
+  contains a relative path.
 
 **Room risks**
 
@@ -1330,21 +1615,33 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
   `glow` recipe is night-filtered.
 - Per-variant `effect` is discarded by the loader (only per-variant animations and
   particles survive).
-- A locked attached child is not detached when its host is deleted, leaving a
-  dangling `attachTo`.
 - A hidden host hides its children on mobile even when a child is not hidden.
 - Auto day/night does not tick while the room stays open.
 - No snapping, alignment, collision prevention, or whole-item on-screen clamp.
 
+**Notes risks**
+
+- The email deep link requires the recipient to be signed in; there is no magic
+  link or signed token.
+- Note draft privacy depends on the PocketBase list/view rules. A superuser or
+  admin can read drafts.
+- The mobile notes style sheet covers the letter while it is open; the letter is
+  visible behind/above it but not interactive until Done.
+- There is no unread indicator outside Home/Notes (no room-bar badge or push).
+- The wax seal initial is derived from the author’s name (G in local mode) and is
+  not separately editable. It uses the lighter outer-wax tint, not an independent
+  colour.
+- A simultaneous recipient opening and author save is resolved by the server
+  lock, but the author's already-optimistic local edit is not automatically
+  reconciled; the failed save sits in the sync recovery lane until retried or
+  discarded.
+
 **Scrapbook risks**
 
-- Deleting album media does not rewrite elements that reference it.
-- Book import validation is minimal and can leave dangling media references.
 - Captions are modelled and rendered but cannot be edited.
 - Legacy `photo` elements have no creation path.
 - Sticker single-colour `tint` support is unused by shipped assets.
 - Rendered note text is not selectable; only the textarea is.
-- Frame/paper/sticker asset IDs are not validated on import.
 - Album uploads are stored at full resolution (up to 25 MB); only display
   thumbnails are generated. There is no upload downscaling or storage re-encode.
 
@@ -1357,6 +1654,9 @@ These are current facts, not desired behaviour. Fixing one requires a spec updat
 - Icons are not consistently labelled or hidden for screen readers.
 - Unknown routes render an empty shell with no 404.
 - No CI gates before deploy.
+- `pnpm format` reports pre-existing style issues in files outside the Notes
+  work; new notes files pass Prettier. Three legacy Playwright smoke tests fail on
+  stale sticker/layer names (see §16).
 - `server/README.md`, `README.md`, and this document must be kept aligned (see
   §21).
 
@@ -1368,15 +1668,21 @@ Status is indicative, not a commitment.
 2. ~~Square pages with freeform elements.~~ Done.
 3. ~~Room rendered from `room`/`room_items`, then a desktop editor.~~ Done.
 4. ~~Calendar, settings, trash, backups, mobile read-only.~~ Done.
-5. Notes feature, then Games, then Camera.
-6. Organizer search/tags/reorder.
-7. Doodles/freehand, captions, true grouping.
-8. Fix known gaps in §18, starting with data-safety items.
+5. ~~Notes feature.~~ Done (§22). Games, then Camera next.
+6. Advanced notes: stickers, photos, and multiple text boxes; optional replies and
+   a per-user notes export.
+7. Organizer search/tags/reorder.
+8. Doodles/freehand, captions, true grouping.
+9. Continue with the remaining §18 gaps; data-safety/correctness items are implemented.
 
 ## 20. Open questions
 
-- How should the Notes feature relate to page notes? Separate collection and
-  surface, or reuse the element editor?
+- Should notes be exportable per user (and in what format), given that they are
+  excluded from the shared library export?
+- Should advanced notes reuse the scrapbook page editor (freeform layers) or
+  stay a separate rich-text model with a block/box extension?
+- Which SMTP provider will send the note notification in production, and should
+  the app show an in-app unread indicator outside Home/Notes?
 - Should published books become genuinely public/shareable, or is the flag only a
   personal "finished" marker? If public, what is the access model?
 - Should the two users be allowed different permissions (owner-only editor), or
@@ -1415,6 +1721,245 @@ Status is indicative, not a commitment.
 - `design/` is visual reference only. It is never authoritative for behaviour.
 
 ---
+
+## 22. Notes (letters)
+
+Notes are a private letter exchange between the two users. A note is **one page
+with one rich-text flow**, separate from the plain-text notes that sit on
+scrapbook pages (§8.5). It is not a second scrapbook page editor.
+
+### 22.1 Model and privacy
+
+- A `Note` carries the author, recipient, status (`draft`/`sent`), rich-text
+  body, paper and tint, a fixed-width/author-set page height, an envelope
+  configuration, and timestamps (`createdAt`, `updatedAt`, `sentAt`, `openedAt`,
+  `emailedAt`, `deletedAt`). The types are in §12.
+- Drafts are visible only to their author. Sent letters are shared by the author
+  and recipient for reading. PocketBase enforces this on list/view (§13).
+- The recipient is the other account in the shared space. The author is the
+  signed-in user. In local mode the single local identity is `local`; its
+  placeholder partner has no inbox.
+- Sent letters are editable and unsendable by the author until the recipient
+  opens them. Opening locks author edits in the UI; see §18 for the backend
+  limitation.
+- The recipient may only record `openedAt` (with `updatedAt`); the notes hook
+  rejects content rewrites from the recipient.
+
+### 22.2 Lists and navigation
+
+- `/notes` has three lists: **Letters** (received, unread count on the tab),
+  **Outbox** (sent), and **Drafts** (private). `?tab=outbox`/`?tab=drafts` selects
+  a list; the composer navigates back to the matching tab.
+- A received unopened letter shows no preview (“A sealed letter. Break the seal
+  to read it.”); an opened one shows a two-line preview. Outbox cards show
+  Sealed/Opened. Draft cards show the note paper and its first line, followed by
+  an edited timestamp. The selected Drafts tab already identifies the list, so
+  draft cards do not repeat “Draft” in a title, chip, preview, or timestamp.
+- Counts are per-list; there is no search, sort control, reply action, or
+  per-letter notification list.
+- The Home layout has a Notes cover (§6). It opens `/notes` and shows a mustard
+  “N unread” badge only while the inbox has unread letters.
+
+### 22.3 Composer and rich text
+
+- `/notes/new` creates a draft immediately and replaces the URL with
+  `/notes/:noteId/edit`, so a refresh keeps the same draft.
+- The letter is a fixed **480 logical-px-wide** page with an author-set height of
+  380–1100 px in 10 px steps (default 620). The height is set only by dragging the
+  paper’s bottom grip; there is no slider, no Page section in the composer panel,
+  and no height readout. The page’s visual width is set only by the available
+  stage width (capped at the 480 logical px page), never by its height; compose and
+  read use the same horizontal gutter on phones, and tall pages scroll vertically.
+  Resizing captures the pointer and suppresses native touch scrolling. The stage
+  stays fixed while the pointer is away from its edges. Within the 96 px bottom
+  edge zone it auto-scrolls down with a proximity ramp while the page grows; when
+  shrinking, it stays fixed until the pointer enters the 96 px top edge zone, then
+  auto-scrolls up so the drag can continue. While shrinking, the stage temporarily
+  adds bottom space equal to the removed page height so its scroll range does not
+  collapse and the grip can follow the finger; the spacer is removed on release.
+  Both directions stop at the 1100 px limit. The visible grip is small but has a
+  larger 44 px touch target. On phones the stage also keeps an 88 px end margin
+  below the page, so a taller page can be scrolled clear and the grip reached to
+  shrink it again.
+  The composer and reader use the full shell height instead of reserving the
+  bottom safe area, so the paper and its red overflow can extend down over the
+  room floor. The send confirmation still reports fit or overflow.
+- The page sits on one of the seven asset-defined note papers (the transparent
+  `none` option is not offered in Notes). The picker uses labeled four-column
+  preview cards; the selected card has a terracotta outline and check. Preview
+  backgrounds use a quarter-scale rule/texture rhythm so several repeats are
+  visible (Kraft’s grain included). Every paper exposes its tint palette plus a
+  free colour picker; Sticky note carries rose, sage, sky and other tints in one
+  entry.
+  Ruled/grid/dot papers share the paragraph line grid: a 32 px rhythm (64 px for
+  Wide ruled), with the first text baseline on the first writing rule and a blank
+  rule above it. Paragraph margins are zero so every line stays on that grid.
+  Horizontal and vertical rule tiles are each exactly one rhythm high/wide, so
+  neither paper edge nor the top of the page paints a split or doubled rule.
+  Very large runs can overflow a single 32 px line box and sit differently relative
+  to the rules.
+- Text is stored as a versioned `RichDoc` of blocks and runs (sanitised on every
+  serialise). Supported formatting:
+  - fonts: the ten scrapbook pens plus Print (Nunito) and Serif (Fraunces);
+  - size: 10–48 offered in the toolbar (model clamps 8–96 px);
+  - ink: the eight-note palette or any colour; highlight: five presets, any
+    colour, or clear;
+  - bold, italic, underline, strikethrough;
+  - per-paragraph left, centre, or right alignment.
+- Font, size, ink, highlight and the bold/italic/underline/strikethrough toggles
+  apply to a selection, or at a collapsed caret they set the typing style for the
+  text entered next. A collapsed caret can therefore set the next text's font,
+  size, colour, highlight and decorations without selecting words; later controls
+  compose with the pending typing style. Alignment applies to the current
+  paragraph. Invisible typing markers are stripped from the stored document.
+- The Writing controls mirror the format at the current selection or caret:
+  font and size selects, active ink/highlight presets, the centre colour of both
+  custom pickers, bold/italic/underline/strikethrough, and alignment. The custom
+  highlight centre is transparent when no highlight is active. Moving the caret
+  updates every control.
+- Clicking anywhere on the paper outside the text moves the caret to the nearest
+  text position: above the first line it goes to the start of the letter, below
+  the last line it goes to the end, and within the text it goes to the nearest
+  line and character. Clicking directly in the text keeps native selection.
+- Pasting inserts plain text only. The sanitizer drops scripts, media, links,
+  event handlers, unknown fonts, unsafe colours, and out-of-range sizes.
+- Text that runs past the page continues below the paper in red. The send
+  confirmation repeats the overflow (“Runs about N lines past the page”) and the
+  paper grip is the only height control. The edge is not auto-fitted; the author
+  lengthens the page or trims the text.
+- Drafts autosave about 450 ms after the last edit. Desktop shows **Save draft**,
+  which flushes and opens Drafts; on phones the action is hidden and closing the
+  composer flushes and keeps the draft. **Save changes** on a sent-before-opened
+  letter flushes and returns to Outbox. In-app navigation flushes; closing the
+  browser tab while the 450 ms autosave is still pending triggers the standard
+  unsaved-changes warning.
+- Phones can compose. The stage keeps the letter visible and the style controls
+  are a fixed bottom sheet with a Done action. The paper/pen and envelope
+  sections remain available in the sheet. The composer bar is one non-wrapping
+  row at iPhone widths (375–430 px): icon back, recipient with the full sent/draft
+  status underneath, icon-only Style button, compact Letter/Envelope switch, and
+  Send/Save. The Style button sits left of the mode switch so hiding it in Envelope
+  mode does not move the switch. The desktop bar keeps the full text labels; on phones
+  “Seal & send” becomes **Send**, “Save changes” becomes **Save**, and the
+  **All notes** and **Style** labels become accessible icon buttons.
+- With the Paper & Pen sheet open, the composer stage gets extra bottom space
+  equal to the sheet height, so the paper can scroll completely above the sheet
+  and its bottom edge remains visible. The sheet and room background stay fixed;
+  only the page stage scrolls.
+- While a native colour picker is open on a phone, the room bar and composer bar
+  are hidden, the envelope is pinned to the open top area, and the panel’s reserved
+  space is removed. In the letter editor the selected text/line is scrolled to
+  the top. Selecting a colour does not restore the layout; it stays lifted until
+  the native picker is dismissed (the colour input blurs), then the normal bars
+  and layout return.
+- On desktop the Paper & pen settings sidebar is content-sized: it ends after its
+  Paper/Writing content rather than stretching to the stage bottom, and caps at
+  the stage height with internal scrolling if needed. On phones the same controls
+  are a fixed bottom sheet with **Paper** and **Pen** tabs; the tabs and **Done**
+  share one compact header row (no sheet title or grip), and the sheet is only as
+  tall as the taller of the Paper/Pen contents, capped at 52dvh. Both panes stay
+  laid out with the inactive one hidden, so switching tabs never resizes the sheet.
+  It remembers the last tab.
+  In Envelope mode on phones the controls are always open: there is no Style
+  toggle, sheet header, Done button, or Paper/Pen tabs. The envelope stays visible
+  above the compact Envelope/Wax seal/Stamp panel, which is reserved out of the
+  stage; the envelope caption, section hints and stamp-reuse hint are omitted.
+  The Stamp heading and custom Stamp/Postmark pickers share one row.
+- On phones, opening the sheet blurs the editor and turns off the soft keyboard
+  without making the letter read-only: text can still be selected and restyled.
+  Closing the sheet restores the normal editor keyboard policy. The sheet and the
+  room shell stay put when the keyboard appears; the composer stage grows its
+  bottom padding by the keyboard inset and scrolls the paper so the caret stays
+  visible.
+- The composer’s Letter/Envelope switch shows a live front-of-envelope preview
+  when Envelope is selected.
+
+### 22.4 Envelope, seal and stamp
+
+- The envelope is CSS-drawn on one of eight paper-tint presets or any custom
+  colour. A continuous outline sits above the body and flap, so the border encloses
+  the full envelope rectangle; the clipped triangular flap is separate only for
+  the flip/slide opening animation. There is no liner customisation.
+- The wax seal reuses the shipped `wax-seal-stamp` sticker art and its recolour
+  palette or any custom colour, and carries the author’s first initial. It is
+  deliberately prominent (about a fifth of the envelope width, capped at 76 px
+  and 96 px in the large/read view). The initial uses the lighter outer-wax tint
+  with an embossed shadow; in local mode it is **G**. In PocketBase mode it is the
+  author’s name initial (fallback G).
+  The stamp reuses the shipped `postage-stamp` sticker art with five preset
+  colourways plus independent custom **Stamp** and **Postmark** colours. The
+  address is drawn as “To {recipient} / from {author}”; no address editor.
+- The initial is derived, not separately editable. There is no uploadable
+  envelope or sticker decoration; the envelope front, seal and stamp are the only
+  customisation.
+
+### 22.5 Sending, opening and locking
+
+- **Seal & send** opens a confirmation with the recipient, a fit/overflow
+  warning, and a reminder that the author can still edit or pull it back until
+  the recipient opens it.
+- Sending sets `status = sent`, `sentAt`, resets `openedAt` and `emailedAt`, and
+  writes through the outbox. The letter appears in the author’s Outbox and the
+  recipient’s Letters.
+- A sent letter is editable (`Edit`) and unsendable (`Pull back`) while
+  `openedAt` is 0. Pull back returns it to Drafts and resets `sentAt`, `openedAt`
+  and `emailedAt`.
+- The author sees their own letter immediately when they open it. The recipient
+  sees a sealed envelope first; **Break the seal** animates the flap, drops the
+  seal, slides the envelope down, and fades the stationary letter in. The stage
+  reserves the same geometry as the final reader so the letter does not jump.
+  After the animation the recipient records `openedAt` with a targeted update.
+- Once opened, the read view is locked: there is no Edit/Pull back for the
+  author (Trash remains). The recipient has no destructive action. The
+  PocketBase note-update guard enforces the same lock, so an offline/stale
+  editor cannot overwrite an opened letter; its queued save becomes an unsynced
+  change for retry or discard.
+- The opened letter can be enlarged by double-clicking or double-tapping the
+  paper. The read-only zoom overlay uses nearly full width on phones and up to
+  760 px on desktop, scrolls vertically when the page is taller than the screen,
+  and closes with its Close button or Escape.
+- Notes can be moved to the trash by the author; recipients cannot. A trashed
+  note is soft-deleted and can be restored from Settings’ trash. The daily purge
+  eventually removes it.
+
+### 22.6 Persistence, sync and email
+
+- Local mode stores notes under `journeybook:notes:v1` and quarantines unreadable
+  payloads under `journeybook:notes:v1.corrupt:<timestamp>`. There is one local
+  identity; drafts/outbox work, but the Letters inbox is empty.
+- PocketBase stores notes in the `notes` collection (§13). Writes use the
+  persistent outbox; opens use a targeted `openedAt` update. The notes store
+  subscribes to `notes`, skips refreshes while composing or while writes are
+  queued, and catches up when the composer closes.
+- Notes are **not** in `AppData` and are excluded from whole-library and book
+  export/import (§14.4). The PocketBase backup includes them.
+- On `sent`, `notes.pb.js` sends a short notification email through PocketBase’s
+  mail settings: sender name, a link to `{meta.appURL}/notes/{id}`, and no letter
+  content. Sending is best-effort; a 15-minute cron retries while `emailedAt` is
+  0, with `emailLastAttempt` preventing rapid repeats. The recipient must sign in;
+  the login redirect returns them to the letter. See §17.5.
+- When the API is unreachable, the notes list uses the current account’s last
+  successful snapshot; logging out clears it. The app-wide offline pill marks the
+  cached state.
+
+### 22.7 Home
+
+- Notes appears beside Scrapbooks as a matching cover: sage, the same spine,
+  tape, cream label plate and dimensions; a lined-paper sheet replaces the
+  scrapbook’s pressed flower. The flower and the sheet share the right-edge
+  anchor; the sheet is smaller, sits above the card floor, and its folded corner
+  is cut out so the cover shows through the notch. There is no floating letter on
+  the cover. On phones the two covers stack vertically in a compact layout
+  (roughly 240–280 px wide and 100 px tall at iPhone widths); the shelf layout shrinks to
+  fit them so the decorated wall remains visible around all four sides. Labels
+  and props scale down but stay readable and clear of each other.
+- The only badge is the unread count; it disappears at zero.
+
+### 22.8 Limits
+
+Advanced composition (stickers, photos, multiple text boxes), replies,
+attachments, multi-page letters, notes search, per-user notes export, and an
+in-app unread indicator outside Home/Notes are not implemented. See §18–§19.
 
 ## Appendix A — Spec refresh audit (commits since `7973394`)
 

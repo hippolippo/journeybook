@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { pb, pbEnabled } from '@/data/backend';
+import { clearMediaToken, refreshMediaToken, startMediaTokenRefresh } from '@/data/media';
+import { clearRemoteSnapshot } from '@/data/snapshot';
 import type { UserRole } from '@/data/types';
 import {
   clampRoomGlow,
@@ -77,15 +79,32 @@ export const useAuthStore = defineStore('auth', {
       if (client.authStore.isValid) {
         try {
           await client.collection('users').authRefresh();
-        } catch {
-          client.authStore.clear();
+        } catch (error) {
+          const status = (error as { status?: number }).status;
+          // A network failure must not erase the offline session. Only a real
+          // auth rejection clears the saved account and cached snapshot.
+          if (status === 401 || status === 403) {
+            client.authStore.clear();
+            clearRemoteSnapshot();
+          }
         }
       }
       this.user = mapUser(client.authStore.record);
       await this.loadPartner();
+      if (this.user) {
+        await refreshMediaToken();
+        startMediaTokenRefresh();
+      }
       client.authStore.onChange(() => {
         this.user = mapUser(client.authStore.record);
-        void this.loadPartner();
+        if (this.user) {
+          void this.loadPartner();
+          void refreshMediaToken();
+          startMediaTokenRefresh();
+        } else {
+          clearMediaToken();
+          this.partner = null;
+        }
       });
       this.ready = true;
     },
@@ -94,6 +113,8 @@ export const useAuthStore = defineStore('auth', {
       const auth = await pb.collection('users').authWithPassword(email, password);
       this.user = mapUser(auth.record);
       await this.loadPartner();
+      await refreshMediaToken();
+      startMediaTokenRefresh();
     },
     /** Save the per-user room text glow (PocketBase) or local fallback. */
     async setRoomGlow(value: number) {
@@ -116,6 +137,8 @@ export const useAuthStore = defineStore('auth', {
     },
     logout() {
       pb?.authStore.clear();
+      clearMediaToken();
+      clearRemoteSnapshot();
       this.user = null;
       this.partner = null;
     },

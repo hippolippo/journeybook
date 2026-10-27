@@ -8,7 +8,15 @@ import type {
   StickerElement,
   TapeElement,
 } from './types';
-import { elementBody, mapElement, mapRoomItem, roomItemBody, coalescePbOps } from './backend';
+import {
+  createIdempotently,
+  elementBody,
+  mapElement,
+  mapRoomItem,
+  roomItemBody,
+  coalescePbOps,
+  type ReplayRecordClient,
+} from './backend';
 
 /** Wrap a record body the way PocketBase hands it back, adding the id. */
 function asRecord(body: Record<string, unknown>, id: string): RecordModel {
@@ -195,6 +203,74 @@ describe('room item round-trip', () => {
       lightLevel: 0.3,
     };
     expect(roundTripItem(item).lightLevel).toBe(0.3);
+  });
+});
+
+describe('createIdempotently', () => {
+  function client(overrides: {
+    create?: () => Promise<unknown>;
+    getOne?: () => Promise<unknown>;
+    update?: () => Promise<unknown>;
+  }): ReplayRecordClient {
+    return {
+      collection: () => ({
+        create: overrides.create ?? (async () => ({})),
+        getOne: overrides.getOne ?? (async () => ({})),
+        update: overrides.update ?? (async () => ({})),
+      }),
+    };
+  }
+
+  it('creates normally', async () => {
+    let created = false;
+    await createIdempotently(
+      client({
+        create: async () => {
+          created = true;
+        },
+      }),
+      'nodes',
+      'n1',
+      { title: 'a' },
+    );
+    expect(created).toBe(true);
+  });
+
+  it('updates when a lost response left the record behind', async () => {
+    let updated = false;
+    await createIdempotently(
+      client({
+        create: async () => {
+          throw new Error('duplicate');
+        },
+        getOne: async () => ({}),
+        update: async () => {
+          updated = true;
+        },
+      }),
+      'nodes',
+      'n1',
+      { title: 'a' },
+    );
+    expect(updated).toBe(true);
+  });
+
+  it('rethrows when the record does not exist after a failed create', async () => {
+    await expect(
+      createIdempotently(
+        client({
+          create: async () => {
+            throw new Error('validation');
+          },
+          getOne: async () => {
+            throw new Error('missing');
+          },
+        }),
+        'nodes',
+        'n1',
+        { title: 'a' },
+      ),
+    ).rejects.toThrow('validation');
   });
 });
 

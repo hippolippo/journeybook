@@ -5,6 +5,7 @@ import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { useAuthStore } from '@/stores/auth';
+import { useNotesStore } from '@/stores/notes';
 import { useViewport } from '@/composables/useViewport';
 import { wallById } from '@/catalog/options';
 import RoomStage from '@/room/RoomStage.vue';
@@ -18,6 +19,7 @@ const app = useAppStore();
 const editor = useEditorStore();
 const pageEditor = usePageEditorStore();
 const auth = useAuthStore();
+const notes = useNotesStore();
 const route = useRoute();
 const { width, height, isMobile, rotate } = useViewport();
 
@@ -25,7 +27,12 @@ onMounted(() => void auth.init());
 watch(
   () => auth.isAuthed,
   (authed) => {
-    if (authed) void app.initBackend();
+    if (authed) {
+      void app.initBackend();
+      void notes.init();
+    } else {
+      notes.reset();
+    }
   },
   { immediate: true },
 );
@@ -42,13 +49,24 @@ function onBeforeUnload(event: BeforeUnloadEvent) {
 onMounted(() => window.addEventListener('beforeunload', onBeforeUnload));
 onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload));
 
+function onOnline() {
+  if (!app.offline) return;
+  void app.retryInit();
+  void notes.init(true);
+}
+onMounted(() => window.addEventListener('online', onOnline));
+onBeforeUnmount(() => window.removeEventListener('online', onOnline));
+
 const mobilePreview = computed(() => editor.isEditing && editor.viewport === 'mobile');
 const mainLayout = computed<Viewport>(() =>
   editor.isEditing ? 'desktop' : isMobile.value ? 'mobile' : 'desktop',
 );
 const mainInteractive = computed(() => editor.isEditing && editor.viewport === 'desktop');
-/** Settings is a full-height view: its content may reach the bottom edge. */
-const fullHeight = computed(() => route.name === 'settings');
+const noteSurface = computed(() =>
+  ['note-new', 'note-edit', 'note-read'].includes(String(route.name)),
+);
+/** Settings and the note letter surfaces may reach the bottom edge. */
+const fullHeight = computed(() => route.name === 'settings' || noteSurface.value);
 /** Calendar lets its text halos spill outside the content box. */
 const contentClass = computed(() => ({ 'content--calendar': route.name === 'calendar' }));
 /** Accounts are configured but nobody is signed in: show only the login card. */
@@ -94,6 +112,9 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
     :class="rootClass"
     :style="{ '--room-glow': roomGlow, '--room-glow-strength': roomGlowStrength }"
   >
+    <div v-if="app.offline && !locked" class="offline-pill" role="status">
+      Offline copy · last saved {{ new Date(app.offlineSavedAt).toLocaleString() }}
+    </div>
     <div v-if="rotate" class="rotate-gate">
       <img :src="rotatePhone" alt="" aria-hidden="true" />
       <p class="rotate-gate__title">Please rotate your phone</p>
@@ -117,7 +138,10 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
     <template v-else>
       <template v-if="!mobilePreview">
         <RoomStage :layout="mainLayout" :interactive="mainInteractive" />
-        <div class="app-shell" :class="{ 'app-shell--full': fullHeight }">
+        <div
+          class="app-shell"
+          :class="{ 'app-shell--full': fullHeight, 'app-shell--note': noteSurface }"
+        >
           <RoomBar />
           <div class="content" :class="contentClass" @pointerdown="onContentDown">
             <router-view />

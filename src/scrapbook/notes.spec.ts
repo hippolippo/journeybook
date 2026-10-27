@@ -13,7 +13,20 @@ import {
 } from './notes';
 
 function note(patch: Partial<NoteElement> = {}): NoteElement {
-  return { id: 'n', pageId: 'p', kind: 'note', text: 'hi', x: 0.5, y: 0.5, w: 0.5, h: 0.2, rotation: 0, z: 1, opacity: 1, ...patch };
+  return {
+    id: 'n',
+    pageId: 'p',
+    kind: 'note',
+    text: 'hi',
+    x: 0.5,
+    y: 0.5,
+    w: 0.5,
+    h: 0.2,
+    rotation: 0,
+    z: 1,
+    opacity: 1,
+    ...patch,
+  };
 }
 
 describe('pens', () => {
@@ -41,9 +54,17 @@ describe('papers', () => {
     expect(notePaperById('wide').spacing).toBe(2);
   });
 
-  it('uses the paper background for non-colorable papers, ignoring tint', () => {
-    const style = noteInnerStyle(note({ paper: 'sticky-rose', color: '#00ff00' }));
-    expect(style.background).toBe(notePaperById('sticky-rose').bg);
+  it('offers every paper as one tintable sheet', () => {
+    const papers = NOTE_PAPERS.filter((paper) => paper.id !== 'none');
+    expect(papers).toHaveLength(7);
+    expect(papers.filter((paper) => paper.id.startsWith('sticky'))).toHaveLength(1);
+    for (const paper of papers) {
+      expect(paper.colorable).toBe(true);
+      expect(paper.palette?.length).toBeGreaterThan(1);
+    }
+    expect(notePaperById('sticky').palette).toEqual(
+      expect.arrayContaining(['#f7c9c9', '#cfe3c5', '#cfe0ea']),
+    );
   });
 
   it('uses the tint for colorable papers', () => {
@@ -53,7 +74,9 @@ describe('papers', () => {
   });
 
   it('is transparent for no paper', () => {
-    expect(noteInnerStyle(note({ paper: 'none', color: '#ff0000' })).background).toBe('transparent');
+    expect(noteInnerStyle(note({ paper: 'none', color: '#ff0000' })).background).toBe(
+      'transparent',
+    );
   });
 });
 
@@ -82,7 +105,9 @@ describe('note paper patterns follow the text', () => {
 
 describe('note text style', () => {
   it('applies pen, size, ink and effects', () => {
-    const s = noteTextStyle(note({ font: 'marker', size: 30, ink: '#123456', bold: true, uppercase: true, shadow: true }));
+    const s = noteTextStyle(
+      note({ font: 'marker', size: 30, ink: '#123456', bold: true, uppercase: true, shadow: true }),
+    );
     expect(s.fontFamily).toContain('Permanent Marker');
     expect(s.fontSize).toBe('30px');
     expect(s.color).toBe('#123456');

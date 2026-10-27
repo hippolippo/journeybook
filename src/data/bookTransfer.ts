@@ -1,6 +1,8 @@
 import type { PageElement, PageGroup, ScrapNode } from './types';
 import { useAppStore } from '@/stores/app';
 import { getMediaBlob } from './media';
+import { cleanImportedElement } from './importSanitize';
+import { PAPERS } from '@/scrapbook/paper';
 import { newId } from '@/utils/id';
 
 export const BOOK_FILE_FORMAT = 'journeybook.book';
@@ -86,46 +88,92 @@ export async function exportBookData(bookId: string): Promise<string> {
 }
 
 /** Create a new book from an exported file, under `parentId`. */
+function isBookFile(value: unknown): value is BookFile {
+  if (!value || typeof value !== 'object') return false;
+  const file = value as Partial<BookFile>;
+  return (
+    file.format === BOOK_FILE_FORMAT &&
+    file.version === BOOK_FILE_VERSION &&
+    Array.isArray(file.pages) &&
+    Array.isArray(file.elements) &&
+    Array.isArray(file.media)
+  );
+}
+
 export async function importBookData(json: string, parentId: string | null): Promise<ScrapNode> {
   const app = useAppStore();
-  const data = JSON.parse(json) as Partial<BookFile>;
-  if (!data || data.format !== BOOK_FILE_FORMAT || !Array.isArray(data.pages)) {
-    throw new Error('Not a Journeybook book file');
-  }
+  const parsed = JSON.parse(json) as unknown;
+  if (!isBookFile(parsed)) throw new Error('Not a Journeybook book file');
+  const data = parsed;
+
+  const pageIds = new Set<string>();
+  const pages = [...data.pages]
+    .filter((page) => {
+      if (!page || typeof page.id !== 'string' || !page.id || pageIds.has(page.id)) return false;
+      pageIds.add(page.id);
+      return true;
+    })
+    .sort(
+      (a, b) => (Number.isFinite(a.index) ? a.index : 0) - (Number.isFinite(b.index) ? b.index : 0),
+    );
 
   const node = app.createNode('scrapbook', parentId, data.book?.title ?? 'Imported book');
-  if (data.book?.cover) app.updateNode(node.id, { cover: data.book.cover as ScrapNode['cover'] });
+  const cover = data.book?.cover;
+  if (cover && ['rose', 'sage', 'mustard', 'terracotta', 'sky', 'kraft'].includes(cover)) {
+    app.updateNode(node.id, { cover: cover as ScrapNode['cover'] });
+  }
 
   const mediaMap = new Map<string, string>();
-  for (const m of data.media ?? []) {
+  for (const media of data.media) {
+    if (!media || typeof media.id !== 'string' || typeof media.dataUrl !== 'string') continue;
     try {
-      const asset = await app.addMedia(node.id, dataUrlToFile(m.dataUrl, m.name || 'photo.jpg'));
-      mediaMap.set(m.id, asset.id);
+      const asset = await app.addMedia(
+        node.id,
+        dataUrlToFile(media.dataUrl, media.name || 'photo.jpg'),
+      );
+      mediaMap.set(media.id, asset.id);
     } catch (e) {
       console.error('import media', e);
     }
   }
 
   const pageMap = new Map<string, string>();
-  const sorted = [...(data.pages ?? [])].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
-  for (const p of sorted) {
+  const groupMaps = new Map<string, Map<string, string>>();
+  for (const source of pages) {
     const page = app.addPage(node.id);
-    pageMap.set(p.id, page.id);
-    if (p.background || p.groups || p.paperColors)
+    pageMap.set(source.id, page.id);
+    const groups = Array.isArray(source.groups) ? source.groups : [];
+    const groupMap = new Map(groups.map((group) => [group.id, newId()]));
+    groupMaps.set(source.id, groupMap);
+    const nextGroups = groups.map((group) => ({
+      ...group,
+      id: groupMap.get(group.id)!,
+    }));
+    const background =
+      source.background && PAPERS.some((paper) => paper.id === source.background)
+        ? source.background
+        : undefined;
+    if (background || nextGroups.length || source.paperColors) {
       app.updatePage(page.id, {
-        background: p.background,
-        paperColors: p.paperColors,
-        groups: p.groups,
+        background,
+        paperColors: source.paperColors,
+        groups: nextGroups.length ? nextGroups : undefined,
       });
+    }
   }
 
-  for (const el of data.elements ?? []) {
-    const pageId = pageMap.get(el.pageId);
+  for (const element of data.elements) {
+    const pageId = pageMap.get(element.pageId);
     if (!pageId) continue;
-    const copy = { ...el, id: newId(), pageId } as PageElement;
-    if (copy.kind === 'image' && copy.mediaId)
-      copy.mediaId = mediaMap.get(copy.mediaId) ?? copy.mediaId;
-    app.putElement(copy);
+    const sourcePageId = pages.find((page) => pageMap.get(page.id) === pageId)?.id;
+    const clean = cleanImportedElement(
+      element,
+      pageId,
+      mediaMap,
+      sourcePageId ? (groupMaps.get(sourcePageId) ?? new Map()) : new Map(),
+      new Map(),
+    );
+    if (clean) app.putElement(clean);
   }
 
   return node;

@@ -271,12 +271,32 @@ export const useEditorStore = defineStore('editor', {
           childPlacement,
           aspect,
         );
-        this.detach(
-          child.id,
-          this.viewport,
-          Math.min(0.98, Math.max(0.02, x)),
-          Math.min(1, Math.max(0, y)),
-        );
+        const nextX = Math.min(0.98, Math.max(0.02, x));
+        const nextY = Math.min(1, Math.max(0, y));
+        if (child.locked) {
+          // A locked child cannot be moved by normal editing, but removing its
+          // host must still clear the dangling attachment.
+          child.attachTo = undefined;
+          if (mobile) {
+            child.mobile = {
+              ...(child.mobile ?? deriveMobile(child.desktop)),
+              x: nextX,
+              y: nextY,
+              ax: undefined,
+              ay: undefined,
+            };
+          } else {
+            child.desktop = {
+              ...child.desktop,
+              x: nextX,
+              y: nextY,
+              ax: undefined,
+              ay: undefined,
+            };
+          }
+        } else {
+          this.detach(child.id, this.viewport, nextX, nextY);
+        }
       }
       this.draft.items = this.draft.items.filter((i) => i.id !== id);
       if (this.selectedId === id) this.selectedId = null;

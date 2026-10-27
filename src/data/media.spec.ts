@@ -41,4 +41,15 @@ describe('mediaUrl', () => {
       'http://127.0.0.1:8090/api/files/media/abc1234567890/pic.png?thumb=480x480',
     );
   });
+
+  it('adds the short-lived Protected-file token', async () => {
+    vi.stubEnv('VITE_PB_URL', 'http://127.0.0.1:8090');
+    const { pb } = await import('./backend');
+    const { mediaUrl, refreshMediaToken } = await import('./media');
+    vi.spyOn(pb!.files, 'getToken').mockResolvedValue('file-token');
+    await refreshMediaToken();
+    expect(mediaUrl(asset('pic.png'))).toBe(
+      'http://127.0.0.1:8090/api/files/media/abc1234567890/pic.png?token=file-token',
+    );
+  });
 });

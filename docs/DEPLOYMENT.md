@@ -6,7 +6,9 @@ URL subpath (default `/journeybook`):
 - **pb** — PocketBase (SQLite + file storage + auth + realtime). Data lives in
   the `pb_data` named volume.
 - **web** — the built Vue SPA, served statically, with Caddy reverse-proxying
-  `{APP_BASE}/api/*` and `{APP_BASE}/_/*` to `pb` and terminating TLS.
+  `{APP_BASE}/api/*` and `{APP_BASE}/_/*` to `pb` and terminating TLS. The
+  production SPA registers an app-shell service worker; it caches static assets
+  only, never API responses or protected media.
 
 Images are built by GitHub Actions and pushed to GHCR; the server only pulls
 them, so the box needs no build toolchain. The same images work at the root or
@@ -33,30 +35,31 @@ is replaced.
 ## Prerequisites
 
 - A VPS with Docker + the Compose plugin, reachable on ports 80 and 443.
-- A DNS `A` record for `DOMAIN` pointing at the VPS. On Cloudflare this must be
-  **DNS only** (grey cloud) so Caddy can complete its Let's Encrypt challenge.
+- A DNS `A` record for `DOMAIN` pointing at the VPS. Cloudflare's proxy may be
+  enabled with **Full (strict)** TLS once the origin certificate is valid; do not
+  use Flexible. Resend/email MX and TXT records must remain **DNS only**.
 - A non-root `deploy` user with an SSH key and membership in the `docker` group.
 
 ## Configuration (GitHub repo settings)
 
 **Variables** (Settings → Secrets and variables → Actions → Variables):
 
-| Variable | Purpose | Default |
-| --- | --- | --- |
-| `DOMAIN` | Public hostname Caddy serves | `haftels.com` |
-| `APP_BASE` | URL path the app is served under (no trailing slash) | `/journeybook` |
-| `BACKUP_REMOTE` | Optional rclone remote for off-box backups | — |
-| `BACKUP_RSYNC_TARGET` | Optional rsync target for off-box backups | — |
+| Variable              | Purpose                                              | Default        |
+| --------------------- | ---------------------------------------------------- | -------------- |
+| `DOMAIN`              | Public hostname Caddy serves                         | `haftels.com`  |
+| `APP_BASE`            | URL path the app is served under (no trailing slash) | `/journeybook` |
+| `BACKUP_REMOTE`       | Optional rclone remote for off-box backups           | —              |
+| `BACKUP_RSYNC_TARGET` | Optional rsync target for off-box backups            | —              |
 
 **Secrets**:
 
-| Secret | Purpose |
-| --- | --- |
-| `DEPLOY_HOST` | Server hostname or IP |
-| `DEPLOY_USER` | SSH user (e.g. `deploy`) |
-| `DEPLOY_SSH_KEY` | Private key for the deploy user |
-| `PB_ADMIN_EMAIL` | PocketBase superuser email |
-| `PB_ADMIN_PASSWORD` | PocketBase superuser password |
+| Secret              | Purpose                         |
+| ------------------- | ------------------------------- |
+| `DEPLOY_HOST`       | Server hostname or IP           |
+| `DEPLOY_USER`       | SSH user (e.g. `deploy`)        |
+| `DEPLOY_SSH_KEY`    | Private key for the deploy user |
+| `PB_ADMIN_EMAIL`    | PocketBase superuser email      |
+| `PB_ADMIN_PASSWORD` | PocketBase superuser password   |
 
 GHCR authentication uses the workflow's built-in `GITHUB_TOKEN` — no stored
 registry credential. Credentials are passed to the server over stdin (base64)
@@ -82,10 +85,18 @@ Change `PB_ADMIN_EMAIL` / `PB_ADMIN_PASSWORD` in the repo secrets and redeploy;
 the superuser is upserted on every deploy, so the values you set are the values
 in use.
 
-## TLS
+## TLS and Cloudflare proxy
 
-- **Real domain** — Caddy issues and renews the certificate automatically; keep
-  the DNS record **DNS only**.
+- **Real domain** — Caddy issues and renews the origin certificate automatically.
+  Cloudflare's web proxy may be enabled with **SSL/TLS → Full (strict)**. Never
+  use Flexible, which can create a redirect loop. If Caddy's renewal ever fails
+  behind the proxy, use a Cloudflare Origin Certificate instead.
+- **Resend/email DNS** — MX, SPF and DKIM records must stay **DNS only**. The
+  Cloudflare orange-cloud proxy applies to web A/AAAA/CNAME records, not mail.
+- **www redirect** — add a proxied `www` CNAME to the apex, then create a
+  Cloudflare **Rules → Redirect Rules** rule from `www.haftels.com` to
+  `https://haftels.com` preserving the path and query string. Keep the application
+  URL on the apex (`https://haftels.com/journeybook`).
 - **Bare IP / no DNS** — add `tls internal` inside the site block in
   `docker/Caddyfile`; Caddy uses its internal CA (browsers warn until trusted).
 
@@ -124,6 +135,54 @@ Content is precious. Three layers:
    PocketBase `.zip` archive.)
 3. `IMAGE_TAG=<sha> ./scripts/deploy.sh` (or re-run the workflow) and confirm the
    expected books and images load.
+
+## Notes email
+
+The notes notification is sent by `server/pb_hooks/notes.pb.js`. After the first
+deploy:
+
+1. Open the PocketBase admin UI at `{APP_BASE}/_/` and go to **Settings → Mail
+   settings**. Enable SMTP and enter the host, port, username, password and TLS
+   mode for the sending mailbox. The Alpine `pb` image has no local `sendmail`, so
+   the SMTP fields are required in production.
+2. Set a **sender address** and sender name; the notes hook uses these as the
+   `From` values. Use **Send test email** until it succeeds.
+3. In **Settings → Application URL**, set the public app URL, for example
+   `https://haftels.com/journeybook`. The note email uses it to link straight to
+   the letter; without it the email contains a relative link.
+4. Send a letter between the two accounts and confirm the recipient receives
+   the notification and that the letter opens from the link. If delivery fails,
+   check the PocketBase logs; the hook retries every 15 minutes while
+   `emailedAt` is 0.
+
+Mail is best-effort. A failed send is logged, does not block the letter, and is
+retried by a 15-minute cron while `emailedAt` is still 0; `emailLastAttempt`
+prevents rapid repeats. The letter itself never depends on SMTP. The notes hook
+also enforces the author edit-lock after the recipient opens a letter; only
+moving it to trash remains available.
+
+### Sender authentication
+
+To use `notifications@haftels.com`, verify `haftels.com` with the SMTP provider
+and publish the provider’s SPF, DKIM and return-path records in Cloudflare DNS.
+Do not add a second SPF TXT record; merge `include:` mechanisms instead. Add a
+DMARC record such as:
+
+```txt
+v=DMARC1; p=none; rua=mailto:YOUR-MONITORED-ADDRESS
+```
+
+Start with `p=none` while checking `Authentication-Results: ... spf=pass ...
+dkim=pass ... dmarc=pass`, then move to `p=quarantine` once the records are
+stable. The sender address is not hardcoded: the notes hook reads
+`settings.meta.senderAddress`, and the public link reads `settings.meta.appURL`,
+both from PocketBase settings. An outbound-only address does not need an inbox;
+if replies should work, add a real mailbox or forwarding for it.
+
+Album media is served as **Protected** PocketBase files. Direct
+`/api/files/...` URLs require a short-lived token obtained by a signed-in user;
+the web app refreshes that token automatically. Do not expose those URLs
+publicly.
 
 ## Running locally
 

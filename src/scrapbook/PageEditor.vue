@@ -5,7 +5,14 @@ import { useAppStore } from '@/stores/app';
 import { usePageEditorStore } from '@/stores/pageEditor';
 import { useViewport } from '@/composables/useViewport';
 import { PAPERS, paperById, paperCss } from '@/scrapbook/paper';
-import { STICKER_COLORS, STICKERS, TAPES, TAPE_COLORS, stickerById, tapeById } from '@/scrapbook/decor';
+import {
+  STICKER_COLORS,
+  STICKERS,
+  TAPES,
+  TAPE_COLORS,
+  stickerById,
+  tapeById,
+} from '@/scrapbook/decor';
 import PageItemEditor from '@/scrapbook/PageItemEditor.vue';
 import LayersPane from '@/scrapbook/LayersPane.vue';
 import ImageEditor from '@/scrapbook/ImageEditor.vue';
@@ -20,8 +27,12 @@ const { width, height } = useViewport();
 
 // The panel is fixed on the right and always expanded.
 const inset = computed(() => ({ left: 0, right: 340, top: 0, bottom: 0 }));
-const availW = computed(() => Math.max(160, width.value - inset.value.left - inset.value.right - 40));
-const availH = computed(() => Math.max(160, height.value - inset.value.top - inset.value.bottom - 40));
+const availW = computed(() =>
+  Math.max(160, width.value - inset.value.left - inset.value.right - 40),
+);
+const availH = computed(() =>
+  Math.max(160, height.value - inset.value.top - inset.value.bottom - 40),
+);
 const pageSize = computed(() => Math.floor(Math.min(availW.value, availH.value)));
 const backdropStyle = computed(() => ({
   paddingLeft: `${inset.value.left + 20}px`,
@@ -53,8 +64,12 @@ watchEffect(() => {
 const sel = computed(() => pe.selected);
 const selImage = computed(() => (sel.value && sel.value.kind === 'image' ? sel.value : null));
 const selNote = computed(() => (sel.value && sel.value.kind === 'note' ? sel.value : null));
-const selSticker = computed(() => (sel.value && sel.value.kind === 'sticker' ? stickerById(sel.value.icon) : null));
-const selTape = computed(() => (sel.value && sel.value.kind === 'tape' ? tapeById(sel.value.style) : null));
+const selSticker = computed(() =>
+  sel.value && sel.value.kind === 'sticker' ? stickerById(sel.value.icon) : null,
+);
+const selTape = computed(() =>
+  sel.value && sel.value.kind === 'tape' ? tapeById(sel.value.style) : null,
+);
 const selSlots = computed(() => selSticker.value?.colorSlots ?? selTape.value?.colorSlots ?? []);
 const selPresets = computed(() => selSticker.value?.presets ?? selTape.value?.presets ?? []);
 const selColors = computed(() => {
@@ -83,7 +98,7 @@ const palette = computed(() => {
 });
 const selColor = computed(() => {
   const s = sel.value;
-  return s && 'color' in s && s.color ? s.color : palette.value[0] ?? '#d98c8c';
+  return s && 'color' in s && s.color ? s.color : (palette.value[0] ?? '#d98c8c');
 });
 /** Images always keep their aspect here; only the item's aspectLocked flag applies to other kinds. */
 const selAspectLocked = computed(() => {
@@ -97,7 +112,12 @@ const selFlipX = computed(() => !!sel.value?.flipX);
 function num(v: string) {
   return Number(v);
 }
-function setField(field: 'x' | 'y' | 'rotation' | 'opacity', value: string, min = -Infinity, max = Infinity) {
+function setField(
+  field: 'x' | 'y' | 'rotation' | 'opacity',
+  value: string,
+  min = -Infinity,
+  max = Infinity,
+) {
   if (!sel.value) return;
   const v = Math.min(max, Math.max(min, num(value)));
   pe.updateElement(sel.value.id, { [field]: v });
@@ -172,7 +192,11 @@ function useMedia(id: string) {
   else pe.addImage(id);
 }
 async function deleteMedia(id: string) {
-  if (!window.confirm('Move this photo to the trash? You can restore it later.')) return;
+  const placed = app.data.content.elements.filter(
+    (element) => element.kind === 'image' && element.mediaId === id,
+  ).length;
+  const extra = placed ? ` and ${placed} placed ${placed === 1 ? 'copy' : 'copies'}` : '';
+  if (!window.confirm(`Move this photo${extra} to the trash? You can restore them later.`)) return;
   await app.removeMedia(id);
 }
 
@@ -192,14 +216,19 @@ const dragGhost = ref<({ x: number; y: number } & DragPreview) | null>(null);
 function pageFraction(clientX: number, clientY: number): { x: number; y: number } | null {
   const rect = document.querySelector('.peditor .square-page')?.getBoundingClientRect();
   if (!rect) return null;
-  if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return null;
+  if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom)
+    return null;
   return {
     x: Math.min(0.98, Math.max(0.02, (clientX - rect.left) / rect.width)),
     y: Math.min(0.98, Math.max(0.02, (clientY - rect.top) / rect.height)),
   };
 }
 /** Drag a palette item out; a plain click is handled by the button's own @click. */
-function startPlace(event: PointerEvent, preview: DragPreview, add: (at?: { x: number; y: number }) => void) {
+function startPlace(
+  event: PointerEvent,
+  preview: DragPreview,
+  add: (at?: { x: number; y: number }) => void,
+) {
   if (event.button !== 0) return;
   const pointerId = event.pointerId;
   const startX = event.clientX;
@@ -239,7 +268,12 @@ function startPlace(event: PointerEvent, preview: DragPreview, add: (at?: { x: n
 function isTyping(t: EventTarget | null): boolean {
   const el = t as HTMLElement | null;
   if (!el) return false;
-  return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable;
+  return (
+    el.tagName === 'INPUT' ||
+    el.tagName === 'TEXTAREA' ||
+    el.tagName === 'SELECT' ||
+    el.isContentEditable
+  );
 }
 function onKey(e: KeyboardEvent) {
   if (!pe.isEditing || isTyping(e.target)) return;
@@ -286,9 +320,27 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
         <header class="editor__head">
           <h2>Page editor</h2>
           <span v-if="pe.dirty" class="editor__dot" title="Unsaved changes"></span>
-          <button class="btn btn--small" type="button" title="Undo (⌘Z)" :disabled="!pe.canUndo" @click="pe.undo()"><Icon name="undo" /></button>
-          <button class="btn btn--small" type="button" title="Redo (⌘Y)" :disabled="!pe.canRedo" @click="pe.redo()"><Icon name="redo" /></button>
-          <button class="btn btn--small btn--primary" type="button" @click="pe.requestExit()">Done</button>
+          <button
+            class="btn btn--small"
+            type="button"
+            title="Undo (⌘Z)"
+            :disabled="!pe.canUndo"
+            @click="pe.undo()"
+          >
+            <Icon name="undo" />
+          </button>
+          <button
+            class="btn btn--small"
+            type="button"
+            title="Redo (⌘Y)"
+            :disabled="!pe.canRedo"
+            @click="pe.redo()"
+          >
+            <Icon name="redo" />
+          </button>
+          <button class="btn btn--small btn--primary" type="button" @click="pe.requestExit()">
+            Done
+          </button>
         </header>
 
         <div class="editor__body">
@@ -321,7 +373,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
           <section>
             <div class="editor__row">
               <label style="margin: 0; flex: 1">Album</label>
-              <button class="btn btn--small" type="button" @click="fileInput?.click()">Upload</button>
+              <button class="btn btn--small" type="button" @click="fileInput?.click()">
+                Upload
+              </button>
               <input
                 ref="fileInput"
                 class="visually-hidden"
@@ -338,11 +392,29 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                   type="button"
                   :title="m.name"
                   @click="useMedia(m.id)"
-                  @pointerdown="startPlace($event, { img: app.assetUrl(m.id, MEDIA_THUMB_SMALL) }, (at) => pe.addImage(m.id, at))"
+                  @pointerdown="
+                    startPlace($event, { img: app.assetUrl(m.id, MEDIA_THUMB_SMALL) }, (at) =>
+                      pe.addImage(m.id, at),
+                    )
+                  "
                 >
-                  <img v-if="app.assetUrl(m.id)" :src="app.assetUrl(m.id, MEDIA_THUMB_SMALL)" alt="" draggable="false" loading="lazy" decoding="async" />
+                  <img
+                    v-if="app.assetUrl(m.id)"
+                    :src="app.assetUrl(m.id, MEDIA_THUMB_SMALL)"
+                    alt=""
+                    draggable="false"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
-                <button class="album__del" type="button" title="Delete from album" @click="deleteMedia(m.id)"><Icon name="close" /></button>
+                <button
+                  class="album__del"
+                  type="button"
+                  title="Delete from album"
+                  @click="deleteMedia(m.id)"
+                >
+                  <Icon name="close" />
+                </button>
               </div>
             </div>
             <p v-else class="editor__muted">Upload a photo to start this book's album.</p>
@@ -352,8 +424,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
           <section>
             <label>Add to page</label>
             <div class="editor__row">
-              <button class="btn btn--small" type="button" @click="pe.addNote()" @pointerdown="startPlace($event, { note: true }, (at) => pe.addNote(at))">Note</button>
-              <button class="btn btn--small" type="button" @click="fileInput?.click()">Photo</button>
+              <button
+                class="btn btn--small"
+                type="button"
+                @click="pe.addNote()"
+                @pointerdown="startPlace($event, { note: true }, (at) => pe.addNote(at))"
+              >
+                Note
+              </button>
+              <button class="btn btn--small" type="button" @click="fileInput?.click()">
+                Photo
+              </button>
             </div>
             <div class="chip-row">
               <button
@@ -376,9 +457,19 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                 type="button"
                 :title="`Tape: ${t.label}`"
                 @click="pe.addTape(t.id)"
-                @pointerdown="startPlace($event, { mask: t.mask, color: t.defaultColor }, (at) => pe.addTape(t.id, at))"
+                @pointerdown="
+                  startPlace($event, { mask: t.mask, color: t.defaultColor }, (at) =>
+                    pe.addTape(t.id, at),
+                  )
+                "
               >
-                <span :style="{ background: t.defaultColor, maskImage: `url('${t.mask}')`, WebkitMaskImage: `url('${t.mask}')` }"></span>
+                <span
+                  :style="{
+                    background: t.defaultColor,
+                    maskImage: `url('${t.mask}')`,
+                    WebkitMaskImage: `url('${t.mask}')`,
+                  }"
+                ></span>
               </button>
             </div>
           </section>
@@ -393,44 +484,177 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 
             <div class="field">
               <span>X</span>
-              <input type="range" min="0" max="1" step="0.005" :value="sel.x" @pointerdown="pe.snapshot()" @input="setField('x', ($event.target as HTMLInputElement).value, 0, 1)" />
-              <input type="number" min="0" max="1" step="0.01" :value="sel.x" @change="pe.snapshot(); setField('x', ($event.target as HTMLInputElement).value, 0, 1)" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.005"
+                :value="sel.x"
+                @pointerdown="pe.snapshot()"
+                @input="setField('x', ($event.target as HTMLInputElement).value, 0, 1)"
+              />
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                :value="sel.x"
+                @change="
+                  pe.snapshot();
+                  setField('x', ($event.target as HTMLInputElement).value, 0, 1);
+                "
+              />
             </div>
             <div class="field">
               <span>Y</span>
-              <input type="range" min="0" max="1" step="0.005" :value="sel.y" @pointerdown="pe.snapshot()" @input="setField('y', ($event.target as HTMLInputElement).value, 0, 1)" />
-              <input type="number" min="0" max="1" step="0.01" :value="sel.y" @change="pe.snapshot(); setField('y', ($event.target as HTMLInputElement).value, 0, 1)" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.005"
+                :value="sel.y"
+                @pointerdown="pe.snapshot()"
+                @input="setField('y', ($event.target as HTMLInputElement).value, 0, 1)"
+              />
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                :value="sel.y"
+                @change="
+                  pe.snapshot();
+                  setField('y', ($event.target as HTMLInputElement).value, 0, 1);
+                "
+              />
             </div>
             <div class="field">
               <span>W</span>
-              <input type="range" min="0.06" max="1" step="0.005" :value="sel.w" @pointerdown="pe.snapshot()" @input="setSize('w', ($event.target as HTMLInputElement).value)" />
-              <input type="number" min="0.06" max="1" step="0.01" :value="sel.w" @change="pe.snapshot(); setSize('w', ($event.target as HTMLInputElement).value)" />
+              <input
+                type="range"
+                min="0.06"
+                max="1"
+                step="0.005"
+                :value="sel.w"
+                @pointerdown="pe.snapshot()"
+                @input="setSize('w', ($event.target as HTMLInputElement).value)"
+              />
+              <input
+                type="number"
+                min="0.06"
+                max="1"
+                step="0.01"
+                :value="sel.w"
+                @change="
+                  pe.snapshot();
+                  setSize('w', ($event.target as HTMLInputElement).value);
+                "
+              />
             </div>
             <div class="field">
               <span>H</span>
-              <input type="range" min="0.06" max="1" step="0.005" :value="sel.h" @pointerdown="pe.snapshot()" @input="setSize('h', ($event.target as HTMLInputElement).value)" />
-              <input type="number" min="0.06" max="1" step="0.01" :value="sel.h" @change="pe.snapshot(); setSize('h', ($event.target as HTMLInputElement).value)" />
+              <input
+                type="range"
+                min="0.06"
+                max="1"
+                step="0.005"
+                :value="sel.h"
+                @pointerdown="pe.snapshot()"
+                @input="setSize('h', ($event.target as HTMLInputElement).value)"
+              />
+              <input
+                type="number"
+                min="0.06"
+                max="1"
+                step="0.01"
+                :value="sel.h"
+                @change="
+                  pe.snapshot();
+                  setSize('h', ($event.target as HTMLInputElement).value);
+                "
+              />
             </div>
             <div class="field">
               <span>Rot°</span>
-              <input type="range" min="-180" max="180" step="1" :value="sel.rotation" @pointerdown="pe.snapshot()" @input="setField('rotation', ($event.target as HTMLInputElement).value, -180, 180)" />
-              <input type="number" min="-180" max="180" step="1" :value="sel.rotation" @change="pe.snapshot(); setField('rotation', ($event.target as HTMLInputElement).value, -180, 180)" />
+              <input
+                type="range"
+                min="-180"
+                max="180"
+                step="1"
+                :value="sel.rotation"
+                @pointerdown="pe.snapshot()"
+                @input="setField('rotation', ($event.target as HTMLInputElement).value, -180, 180)"
+              />
+              <input
+                type="number"
+                min="-180"
+                max="180"
+                step="1"
+                :value="sel.rotation"
+                @change="
+                  pe.snapshot();
+                  setField('rotation', ($event.target as HTMLInputElement).value, -180, 180);
+                "
+              />
             </div>
             <div class="field">
               <span>Layer</span>
-              <input type="range" min="0" max="40" step="1" :value="sel.z" @input="setZ(($event.target as HTMLInputElement).value)" />
-              <input type="number" min="0" max="40" step="1" :value="sel.z" @change="setZ(($event.target as HTMLInputElement).value)" />
+              <input
+                type="range"
+                min="0"
+                max="40"
+                step="1"
+                :value="sel.z"
+                @input="setZ(($event.target as HTMLInputElement).value)"
+              />
+              <input
+                type="number"
+                min="0"
+                max="40"
+                step="1"
+                :value="sel.z"
+                @change="setZ(($event.target as HTMLInputElement).value)"
+              />
             </div>
             <div class="field">
               <span>Opacity</span>
-              <input type="range" min="0" max="1" step="0.01" :value="sel.opacity" @pointerdown="pe.snapshot()" @input="setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)" />
-              <input type="number" min="0" max="1" step="0.01" :value="sel.opacity" @change="pe.snapshot(); setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                :value="sel.opacity"
+                @pointerdown="pe.snapshot()"
+                @input="setField('opacity', ($event.target as HTMLInputElement).value, 0, 1)"
+              />
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                :value="sel.opacity"
+                @change="
+                  pe.snapshot();
+                  setField('opacity', ($event.target as HTMLInputElement).value, 0, 1);
+                "
+              />
             </div>
 
-            <label style="margin-top: 0.5rem"><input type="checkbox" :checked="!!sel.dropShadow" @change="toggleShadow" /> Drop shadow</label>
+            <label style="margin-top: 0.5rem"
+              ><input type="checkbox" :checked="!!sel.dropShadow" @change="toggleShadow" /> Drop
+              shadow</label
+            >
             <div v-if="sel.dropShadow" class="field">
               <span>Shadow</span>
-              <input type="range" min="0" max="1" step="0.05" :value="sel.shadowStrength ?? 0.5" @pointerdown="pe.snapshot()" @input="setShadowStrength(($event.target as HTMLInputElement).value)" />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                :value="sel.shadowStrength ?? 0.5"
+                @pointerdown="pe.snapshot()"
+                @input="setShadowStrength(($event.target as HTMLInputElement).value)"
+              />
             </div>
 
             <template v-if="selSlots.length">
@@ -446,29 +670,71 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             <template v-else-if="colorable">
               <label style="margin-top: 0.5rem">Color</label>
               <div class="swatches">
-                <button v-for="c in palette" :key="c" class="swatch" :style="{ background: c }" type="button" @click="setColor(c)"></button>
+                <button
+                  v-for="c in palette"
+                  :key="c"
+                  class="swatch"
+                  :style="{ background: c }"
+                  type="button"
+                  @click="setColor(c)"
+                ></button>
               </div>
-              <input type="color" :value="selColor" @input="setColor(($event.target as HTMLInputElement).value)" />
+              <input
+                type="color"
+                :value="selColor"
+                @input="setColor(($event.target as HTMLInputElement).value)"
+              />
             </template>
 
-            <label style="margin-top: 0.5rem"><input type="checkbox" :checked="selAspectLocked" :disabled="sel.kind === 'image'" @change="toggleAspect" /> Lock aspect ratio</label>
-            <label style="margin-top: 0.5rem"><input type="checkbox" :checked="selFlipX" @change="toggleFlip" /> Flip horizontally</label>
-            <label><input type="checkbox" :checked="!!sel.locked" @change="toggleLock" /> Lock item (finished)</label>
+            <label style="margin-top: 0.5rem"
+              ><input
+                type="checkbox"
+                :checked="selAspectLocked"
+                :disabled="sel.kind === 'image'"
+                @change="toggleAspect"
+              />
+              Lock aspect ratio</label
+            >
+            <label style="margin-top: 0.5rem"
+              ><input type="checkbox" :checked="selFlipX" @change="toggleFlip" /> Flip
+              horizontally</label
+            >
+            <label
+              ><input type="checkbox" :checked="!!sel.locked" @change="toggleLock" /> Lock item
+              (finished)</label
+            >
 
             <template v-if="selImage">
-              <button class="btn btn--small btn--primary" style="margin-top: 0.25rem" type="button" @click="pe.openImageEditor(selImage.id)">
+              <button
+                class="btn btn--small btn--primary"
+                style="margin-top: 0.25rem"
+                type="button"
+                @click="pe.openImageEditor(selImage.id)"
+              >
                 Edit image (frame, crop, effects)
               </button>
             </template>
             <template v-if="selNote">
-              <button class="btn btn--small btn--primary" style="margin-top: 0.25rem" type="button" @click="pe.openNoteEditor(selNote.id)">
+              <button
+                class="btn btn--small btn--primary"
+                style="margin-top: 0.25rem"
+                type="button"
+                @click="pe.openNoteEditor(selNote.id)"
+              >
                 Edit note (write, pen, paper)
               </button>
             </template>
 
             <div class="editor__row" style="margin-top: 0.4rem">
-              <button class="btn btn--small" type="button" @click="pe.duplicateElement(sel.id)">Duplicate</button>
-              <button class="btn btn--small" type="button" :disabled="!!sel.locked" @click="pe.removeElement(sel.id)">
+              <button class="btn btn--small" type="button" @click="pe.duplicateElement(sel.id)">
+                Duplicate
+              </button>
+              <button
+                class="btn btn--small"
+                type="button"
+                :disabled="!!sel.locked"
+                @click="pe.removeElement(sel.id)"
+              >
                 <Icon name="trash" />Remove
               </button>
             </div>
@@ -485,21 +751,38 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
           <p v-if="pe.dirty">You have unsaved changes.</p>
           <p v-else>No changes to save.</p>
           <div class="dialog__actions">
-            <button class="btn btn--primary" type="button" :disabled="!pe.dirty" @click="pe.save()">Save</button>
+            <button class="btn btn--primary" type="button" :disabled="!pe.dirty" @click="pe.save()">
+              Save
+            </button>
             <button class="btn" type="button" @click="pe.discard()">Discard</button>
             <button class="btn btn--ghost" type="button" @click="pe.cancelExit()">Cancel</button>
           </div>
         </div>
       </div>
 
-      <div v-if="dragGhost" class="drag-ghost drag-ghost--shape" :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }" aria-hidden="true">
+      <div
+        v-if="dragGhost"
+        class="drag-ghost drag-ghost--shape"
+        :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }"
+        aria-hidden="true"
+      >
         <span
           v-if="dragGhost.mask"
           class="drag-ghost__shape drag-ghost__shape--tape"
-          :style="{ background: dragGhost.color, maskImage: `url('${dragGhost.mask}')`, WebkitMaskImage: `url('${dragGhost.mask}')` }"
+          :style="{
+            background: dragGhost.color,
+            maskImage: `url('${dragGhost.mask}')`,
+            WebkitMaskImage: `url('${dragGhost.mask}')`,
+          }"
         ></span>
         <span v-else-if="dragGhost.note" class="drag-ghost__shape drag-ghost__shape--note"></span>
-        <img v-else-if="dragGhost.img" class="drag-ghost__shape" :src="dragGhost.img" alt="" draggable="false" />
+        <img
+          v-else-if="dragGhost.img"
+          class="drag-ghost__shape"
+          :src="dragGhost.img"
+          alt=""
+          draggable="false"
+        />
         <span v-else class="drag-ghost__shape drag-ghost__shape--note"></span>
       </div>
     </div>
