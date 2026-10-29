@@ -1,7 +1,7 @@
 # Journeybook — Specification
 
 Status: **Living specification of shipped behaviour (v1).**
-Last updated: **2026-10-26.**
+Last updated: **2026-10-29.**
 Implementation reference: `main`.
 
 This document is the single source of truth for what Journeybook is and how it
@@ -17,6 +17,7 @@ not be described here as shipped.
 | Date       | Change                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-10-26 | Envelope finish: a continuous outline now sits above the body and flap so the nice border encloses the full rectangle; the flap remains a separate clipped triangle only for the opening animation. The wax seal is larger (19% card / 18% large, capped at 76/96 px) with a slightly larger initial (§16, §22.4).                                                                                 |
+| 2026-10-29 | Session recovery: boot-time 401s now clear the stale auth/snapshot/service-worker state and return to login; the load-error screen offers a browser-only **Reset local copy** action. This fixes tabs stuck after deployment or session changes without touching server data (§14.2, §16).                                                                                                         |
 | 2026-10-26 | Cloudflare proxy/www: documented proxied web records with Full (strict) TLS, DNS-only Resend MX/TXT records, and a www-to-apex redirect preserving paths/query; the app URL stays on the apex (§4.2, §17).                                                                                                                                                                                         |
 | 2026-10-26 | Email delivery setup: documented provider SMTP, sender authentication (SPF/DKIM/DMARC), `notifications@haftels.com`, and the existing non-hardcoded `meta.senderAddress`/`meta.appURL` configuration (§17.5).                                                                                                                                                                                      |
 | 2026-10-26 | Envelope stamp labels: the custom stamp controls now read **Stamp** and **Postmark** instead of Paper and Waves, with matching accessible colour-picker labels (§22.3–§22.4).                                                                                                                                                                                                                      |
@@ -1265,6 +1266,11 @@ Keys:
 - Notes refresh through their own subscription. The notes store skips realtime
   refreshes while a composer is open or writes are queued, then catches up when
   the composer closes.
+- If boot requests return **401**, the app clears the stale auth session, remote
+  snapshot and service-worker shell cache, then reloads to the login screen. The
+  load-error screen also offers **Reset local copy**, which performs the same
+  browser-only reset without touching server data. This recovers tabs left with
+  stale sessions or cached shells after a deployment.
 
 ### 14.3 Trash
 
@@ -1436,8 +1442,9 @@ Rules:
   keep a fixed order, clicking the blank paper puts the caret at the nearest text
   (end below, start above), a native colour picker hides the bars and lifts the envelope or
   selected text, the toolbar mirrors the caret style, page-height dragging
-  auto-scrolls at the bottom and freezes/edge-scrolls while shrinking, the mobile
-  stage reserves an end margin for
+  auto-scrolls at the bottom and freezes/edge-scrolls while shrinking, stale
+  boot sessions expose reset/local-copy recovery, the mobile stage reserves an
+  end margin for
   reaching the grip, the keyboard inset scrolls the paper while
   the shell stays fixed and the open style sheet suppresses the keyboard and
   reserves its own height below the paper, and the read page opens a larger zoom

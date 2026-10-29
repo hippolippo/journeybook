@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAppStore, type Viewport } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { usePageEditorStore } from '@/stores/pageEditor';
@@ -21,6 +21,7 @@ const pageEditor = usePageEditorStore();
 const auth = useAuthStore();
 const notes = useNotesStore();
 const route = useRoute();
+const router = useRouter();
 const { width, height, isMobile, rotate } = useViewport();
 
 onMounted(() => void auth.init());
@@ -32,6 +33,9 @@ watch(
       void notes.init();
     } else {
       notes.reset();
+      if (auth.enabled && auth.ready && route.name !== 'login') {
+        void router.replace({ name: 'login', query: { redirect: route.fullPath } });
+      }
     }
   },
   { immediate: true },
@@ -133,6 +137,13 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onGlobalPointerD
       <p class="boot-gate__title">We couldn't load your memories</p>
       <p class="boot-gate__sub">Your saved work is safe. Check your connection and try again.</p>
       <button class="btn btn--primary" type="button" @click="app.retryInit()">Try again</button>
+      <button class="btn btn--small btn--ghost" type="button" @click="app.resetLocalSession()">
+        Reset local copy
+      </button>
+      <p class="boot-gate__sub">
+        Resetting signs you out and clears this browser's cached copy. Your letters stay on the
+        server.
+      </p>
     </div>
 
     <template v-else>

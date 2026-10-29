@@ -22,8 +22,9 @@ import { createEmptyData } from '@/data/seed';
 import { getCatalogItem } from '@/catalog/catalog';
 import { deriveMobile } from '@/room/geometry';
 import { resolveTimeOfDay, type TimeOfDay } from '@/room/daynight';
-import { backend, pbOutbox } from '@/data/backend';
+import { backend, pb, pbOutbox } from '@/data/backend';
 import {
+  clearMediaToken,
   ensureMedia,
   hydrateMedia,
   mediaUrl,
@@ -37,7 +38,7 @@ import { clone } from '@/utils/clone';
 import { newId } from '@/utils/id';
 import { notify } from '@/utils/notify';
 import { auditIntegrity } from '@/data/integrity';
-import { readRemoteSnapshot, updateRemoteSnapshot } from '@/data/snapshot';
+import { clearRemoteSnapshot, readRemoteSnapshot, updateRemoteSnapshot } from '@/data/snapshot';
 
 const COVERS: CoverColor[] = ['rose', 'sage', 'mustard', 'terracotta', 'sky', 'kraft'];
 
@@ -161,6 +162,13 @@ export const useAppStore = defineStore('app', {
         this.synced = true;
       } catch (e) {
         console.error('initBackend', e);
+        const status = (e as { status?: number }).status;
+        if (status === 401) {
+          // A stale browser session must return to login instead of trapping
+          // the tab on the load-error screen forever.
+          await this.resetLocalSession();
+          return;
+        }
         const snapshot = readRemoteSnapshot();
         if (snapshot?.data) {
           this.data = snapshot.data;
@@ -190,6 +198,32 @@ export const useAppStore = defineStore('app', {
     },
     async retryInit() {
       await this.initBackend();
+    },
+    /**
+     * Drop browser-only stale state (session, snapshot, service worker/cache)
+     * without touching server data. Useful when an old tab cannot recover.
+     */
+    async resetLocalSession() {
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+        }
+        if (typeof caches !== 'undefined') {
+          const keys = await caches.keys();
+          await Promise.all(
+            keys
+              .filter((key) => key.startsWith('journeybook-shell-'))
+              .map((key) => caches.delete(key)),
+          );
+        }
+      } catch (error) {
+        console.error('resetLocalSession', error);
+      }
+      clearRemoteSnapshot();
+      clearMediaToken();
+      pb?.authStore.clear();
+      window.location.reload();
     },
     async loadTrash() {
       try {
