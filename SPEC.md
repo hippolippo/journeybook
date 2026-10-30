@@ -17,6 +17,7 @@ not be described here as shipped.
 | Date       | Change                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-10-26 | Envelope finish: a continuous outline now sits above the body and flap so the nice border encloses the full rectangle; the flap remains a separate clipped triangle only for the opening animation. The wax seal is larger (19% card / 18% large, capped at 76/96 px) with a slightly larger initial (§16, §22.4).                                                                                 |
+| 2026-10-30 | Notes glow: room-sitting Notes text now gets the same wall-coloured halo as the rest of the room — the Letters heading, empty-state copy, and the status line beneath a letter (§11).                                                                                                                                                                                                              |
 | 2026-10-30 | Login alerts: PocketBase's new-device **Login from a new location** email is disabled on the `users` collection, so the only automated email is the letter notification (§17.5).                                                                                                                                                                                                                   |
 | 2026-10-30 | Expired sessions: an expired or missing auth token now clears the cached PocketBase account record instead of showing a signed-in shell whose requests are anonymous. The app also refuses to fetch shared data without a valid token, so a stale session lands on login rather than the blocking load-error gate. An email deep link can no longer trap a browser (§14.2, §18).                   |
 | 2026-10-29 | Session recovery: boot-time 401s now clear the stale auth/snapshot/service-worker state and return to login; the load-error screen offers a browser-only **Reset local copy** action. This fixes tabs stuck after deployment or session changes without touching server data (§14.2, §16).                                                                                                         |
@@ -989,7 +990,9 @@ Desktop unless noted:
   on the room, and only applies in day mode. The default is `0.92`, matching the
   original fixed halo. In PocketBase mode the value is stored on the signed-in
   user's `roomGlow` field; local mode (and signed-out use) falls back to
-  `localStorage['journeybook:room-glow']`.
+  `localStorage['journeybook:room-glow']`. On the Notes surface this includes
+  the Letters heading, empty-state copy, and the status line beneath a letter
+  page — all text that sits directly on the room.
 - **Edit room** (desktop): enters the room editor.
 - **Trash**: lists soft-deleted books, pages, media, events, layouts, and presets;
   restore, delete permanently, or empty all. Shared between both users.

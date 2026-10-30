@@ -1347,6 +1347,11 @@ img[alt=''] {
 :is(
   .room-glow,
   .home__heading,
+  .notes-view__heading,
+  .notes-empty .hand,
+  .notes-empty h2,
+  .notes-empty p,
+  .note-read__line,
   .crumb-sep,
   .tag--draft,
   .page-nav__label,
@@ -1359,6 +1364,11 @@ img[alt=''] {
 :is(
   .room-glow,
   .home__heading,
+  .notes-view__heading,
+  .notes-empty .hand,
+  .notes-empty h2,
+  .notes-empty p,
+  .note-read__line,
   .crumb-sep,
   .tag--draft,
   .page-nav__label,
@@ -1383,6 +1393,11 @@ img[alt=''] {
 .is-night
   :is(
     .home__heading,
+    .notes-view__heading,
+    .notes-empty .hand,
+    .notes-empty h2,
+    .notes-empty p,
+    .note-read__line,
     .crumb-sep,
     .tag--draft,
     .page-nav__label,
