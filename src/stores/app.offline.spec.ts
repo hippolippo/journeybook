@@ -22,9 +22,22 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+/** Minimal unsigned JWT with only the expiry claim the SDK reads. */
+function token(exp: number): string {
+  const payload = btoa(JSON.stringify({ exp }))
+    .replace(/=+$/, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+  return `e30.${payload}.signature`;
+}
+
 describe('remote offline fallback', () => {
   it('shows the last snapshot instead of the load-error gate', async () => {
     vi.stubEnv('VITE_PB_URL', 'http://127.0.0.1:1');
+    localStorage.setItem(
+      'pocketbase_auth',
+      JSON.stringify({ token: token(Math.floor(Date.now() / 1000) + 3600), record: null }),
+    );
     const { updateRemoteSnapshot } = await import('@/data/snapshot');
     updateRemoteSnapshot({ data, notes: [], ownerId: 'me' });
 

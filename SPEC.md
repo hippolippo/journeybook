@@ -1,7 +1,7 @@
 # Journeybook — Specification
 
 Status: **Living specification of shipped behaviour (v1).**
-Last updated: **2026-10-29.**
+Last updated: **2026-10-30.**
 Implementation reference: `main`.
 
 This document is the single source of truth for what Journeybook is and how it
@@ -17,6 +17,7 @@ not be described here as shipped.
 | Date       | Change                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-10-26 | Envelope finish: a continuous outline now sits above the body and flap so the nice border encloses the full rectangle; the flap remains a separate clipped triangle only for the opening animation. The wax seal is larger (19% card / 18% large, capped at 76/96 px) with a slightly larger initial (§16, §22.4).                                                                                 |
+| 2026-10-30 | Expired sessions: an expired or missing auth token now clears the cached PocketBase account record instead of showing a signed-in shell whose requests are anonymous. The app also refuses to fetch shared data without a valid token, so a stale session lands on login rather than the blocking load-error gate. An email deep link can no longer trap a browser (§14.2, §18).                   |
 | 2026-10-29 | Session recovery: boot-time 401s now clear the stale auth/snapshot/service-worker state and return to login; the load-error screen offers a browser-only **Reset local copy** action. This fixes tabs stuck after deployment or session changes without touching server data (§14.2, §16).                                                                                                         |
 | 2026-10-26 | Cloudflare proxy/www: documented proxied web records with Full (strict) TLS, DNS-only Resend MX/TXT records, and a www-to-apex redirect preserving paths/query; the app URL stays on the apex (§4.2, §17).                                                                                                                                                                                         |
 | 2026-10-26 | Email delivery setup: documented provider SMTP, sender authentication (SPF/DKIM/DMARC), `notifications@haftels.com`, and the existing non-hardcoded `meta.senderAddress`/`meta.appURL` configuration (§17.5).                                                                                                                                                                                      |
@@ -1266,6 +1267,13 @@ Keys:
 - Notes refresh through their own subscription. The notes store skips realtime
   refreshes while a composer is open or writes are queued, then catches up when
   the composer closes.
+- An expired or missing auth token always counts as signed out: the cached
+  PocketBase account record and remote snapshot are cleared before the app maps a
+  user. Without this, the app would render a signed-in shell while every request
+  went out anonymously, leaving the blocking load-error gate on every visit
+  (notably when an email deep link opens in a browser with an old session). The
+  app also refuses to fetch shared data without a valid token, so recovery lands
+  on login.
 - If boot requests return **401**, the app clears the stale auth session, remote
   snapshot and service-worker shell cache, then reloads to the login screen. The
   load-error screen also offers **Reset local copy**, which performs the same

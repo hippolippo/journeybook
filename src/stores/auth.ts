@@ -88,6 +88,13 @@ export const useAuthStore = defineStore('auth', {
             clearRemoteSnapshot();
           }
         }
+      } else {
+        // PocketBase keeps the cached account record after its token expires.
+        // Mapping that record would mark the app as signed in while every
+        // request goes out anonymously, trapping the tab on the load-error
+        // screen. An expired or missing token is a signed-out session.
+        client.authStore.clear();
+        clearRemoteSnapshot();
       }
       this.user = mapUser(client.authStore.record);
       await this.loadPartner();

@@ -146,6 +146,15 @@ export const useAppStore = defineStore('app', {
         await this.expireTrash();
         return;
       }
+      // Never fetch shared data without a valid token: the list rules would
+      // return empty pages, the first-load room creation would fail, and the
+      // app would land on the blocking load-error gate instead of login.
+      if (!pb?.authStore.isValid) {
+        this.loading = false;
+        this.loadError = false;
+        this.offline = false;
+        return;
+      }
       this.loading = true;
       this.loadError = false;
       await refreshMediaToken();

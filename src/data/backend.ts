@@ -531,6 +531,12 @@ export function roomItemBody(item: RoomItem): Record<string, unknown> {
 export const ROOM_RECORD_ID = 'room00000000000';
 
 async function ensureRoom(client: PocketBase): Promise<{ room: Room; items: RoomItem[] }> {
+  if (!client.authStore.isValid) {
+    throw new ClientResponseError({
+      status: 401,
+      response: { message: 'Sign in again to open the shared room.' },
+    });
+  }
   let roomRecs = await client.collection('room').getFullList();
   if (roomRecs.length === 0) {
     // A fresh library starts with an empty room: default wall/floor, no items.
