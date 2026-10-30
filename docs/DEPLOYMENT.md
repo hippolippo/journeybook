@@ -161,6 +161,10 @@ prevents rapid repeats. The letter itself never depends on SMTP. The notes hook
 also enforces the author edit-lock after the recipient opens a letter; only
 moving it to trash remains available.
 
+PocketBase's generic **Login from a new location** alert is disabled by
+migration `1700000019_disable_login_alerts.js`. Leave it disabled so the only
+automated email is the letter notification.
+
 ### Sender authentication
 
 To use `notifications@haftels.com`, verify `haftels.com` with the SMTP provider

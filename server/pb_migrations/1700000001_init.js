@@ -17,6 +17,9 @@ migrate(
     users.createRule = null; // no public signup
     users.updateRule = 'id = @request.auth.id';
     users.deleteRule = null;
+    // The only automated email is the letter notification; generic new-device
+    // login alerts are noise for a two-person private app.
+    users.authAlert.enabled = false;
     app.save(users);
 
     const auth = '@request.auth.id != ""';
